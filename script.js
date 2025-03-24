@@ -30,7 +30,7 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Scanner (From Eye, Moves Up and Down - Translation)
+// V-Shaped Scanner (Stable Apex, Tilts Up and Down)
 const vShapeGeometry = new THREE.BufferGeometry();
 const vAngle = Math.PI / 12; // 15° half-angle (30° total)
 const vLength = 25; // Length of V arms
@@ -43,7 +43,7 @@ vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 vShapeGeometry.setIndex([0, 1, 2]);
 const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
 const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-scannerField.position.set(-14.7, 2, 5.5); // Apex at eye
+scannerField.position.set(-14.7, 2, 5.5); // Apex fixed at eye
 scene.add(scannerField);
 
 // Debug Marker (to confirm apex position)
@@ -54,14 +54,14 @@ const marker = new THREE.Mesh(
 marker.position.set(-14.7, 2, 5.5); // Matches eye
 scene.add(marker);
 
-// Enhanced Ships (Sci-Fi Design, Horizontal)
+// Enhanced Ships (Horizontal, Pointing Right)
 const shipGeometry = new THREE.ConeGeometry(0.3, 1.5, 8); // Tapered, sleek shape
 const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.7 });
 const ships = [];
 let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-    ship.rotation.z = -Math.PI / 2; // Rotate 90° counterclockwise to lie horizontal (tip points left)
+    ship.rotation.z = Math.PI / 2; // Rotate 90° clockwise to point right (tip at positive x)
     ship.position.set(
         20 + Math.random() * 5, // Extreme right (x: 20 to 25)
         2 + (Math.random() - 0.5) * 10, // Wider y-range
@@ -91,7 +91,7 @@ countSprite.scale.set(4, 1, 1);
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
-// Typewriter Effect (HTML-Based)
+// Typewriter Effect (HTML-Based, Aligned with "P")
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 768;
@@ -109,9 +109,9 @@ const delayBetween = 1000; // 1s delay between cycles
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), 10, 50); // Adjusted y-position for bigger canvas
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), 0, 50); // Start at x: 0 to align with h1
     const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(10 + textWidth, 25, 2, 30); // Bigger cursor
+    typewriterCtx.fillRect(textWidth, 25, 2, 30); // Cursor after text
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -141,9 +141,9 @@ let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Move Scanner Field Up and Down (Translation)
+    // Tilt Scanner Field Up and Down (Stable Apex)
     time += 0.05;
-    scannerField.position.y = 2 + Math.sin(time) * 5; // ±5 units vertical movement
+    scannerField.rotation.x = Math.sin(time) * Math.PI / 6; // ±30° tilt
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
@@ -158,7 +158,7 @@ function animate() {
 
             // Check if ship is within V-shaped scanner
             const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
-            const vDirection = new THREE.Vector3(1, 0, 0); // Fixed direction (no rotation)
+            const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion); // Adjust for tilt
             const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
             if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
@@ -192,7 +192,7 @@ function animate() {
 
                 // Spawn a New Ship
                 const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                newShip.rotation.z = -Math.PI / 2; // Horizontal (tip points left)
+                newShip.rotation.z = Math.PI / 2; // Horizontal, pointing right
                 newShip.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
