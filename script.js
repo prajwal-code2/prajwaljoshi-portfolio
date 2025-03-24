@@ -4,52 +4,87 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Camera (Left Side)
-const camGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32);
-const camMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.8 });
-const cam = new THREE.Mesh(camGeometry, camMaterial);
-cam.position.set(-15, 0, 5);
-cam.rotation.z = Math.PI / 2;
-scene.add(cam);
+// Robot (Simplified Humanoid)
+const robotGroup = new THREE.Group();
 
-// Scanning Beam
-const beamGeometry = new THREE.PlaneGeometry(0.2, 20);
+// Head
+const headGeometry = new THREE.BoxGeometry(1, 1, 1);
+const headMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.8 });
+const head = new THREE.Mesh(headGeometry, headMaterial);
+head.position.set(-15, 2, 5);
+robotGroup.add(head);
+
+// Eyes (Beam Source)
+const eyeGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0 });
+const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+leftEye.position.set(-15.3, 2.2, 5.4);
+const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+rightEye.position.set(-14.7, 2.2, 5.4);
+robotGroup.add(leftEye, rightEye);
+
+// Body
+const bodyGeometry = new THREE.BoxGeometry(1.5, 2, 1);
+const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.6 });
+const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+body.position.set(-15, 0.5, 5);
+robotGroup.add(body);
+
+scene.add(robotGroup);
+
+// Scanning Beam from Eyes
+const beamGeometry = new THREE.PlaneGeometry(20, 0.2);
 const beamMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.5 });
 const beam = new THREE.Mesh(beamGeometry, beamMaterial);
-beam.position.set(-15, 0, 5);
+beam.position.set(-15, 2.2, 5); // Starts at eye level
 scene.add(beam);
 
-// Detected Objects
-const objGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-const objMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
-const objects = [];
+// Ships (Approaching Objects)
+const shipGeometry = new THREE.ConeGeometry(0.5, 1.5, 8);
+const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
+const ships = [];
 let detectionCount = 0;
-for (let i = 0; i < 8; i++) {
-    const obj = new THREE.Mesh(objGeometry, objMaterial.clone());
-    obj.position.set(
-        (Math.random() - 0.5) * 20 + 5,
+for (let i = 0; i < 6; i++) {
+    const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+    ship.position.set(
+        20 + Math.random() * 10, // Start from the right
         (Math.random() - 0.5) * 15,
         (Math.random() - 0.5) * 10
     );
-    obj.userData = { isFalse: Math.random() > 0.7, detected: false };
-    scene.add(obj);
-    objects.push(obj);
+    ship.rotation.x = Math.PI / 2;
+    ship.userData = { detected: false, speed: 0.02 + Math.random() * 0.03 };
+    scene.add(ship);
+    ships.push(ship);
 
-    // Warning Label
+    // Detection Label
     const canvas = document.createElement('canvas');
     canvas.width = 128;
     canvas.height = 32;
     const ctx = canvas.getContext('2d');
     ctx.font = '16px Orbitron';
-    ctx.fillStyle = obj.userData.isFalse ? '#ff4e50' : '#00d4e0';
-    ctx.fillText(obj.userData.isFalse ? 'WARNING' : 'DETECTED', 10, 20);
+    ctx.fillStyle = '#00d4e0';
+    ctx.fillText('SHIP DETECTED', 10, 20);
     const texture = new THREE.CanvasTexture(canvas);
     const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(2, 0.5, 1);
     sprite.position.set(0, 1, 0);
-    obj.add(sprite);
+    ship.add(sprite);
 }
+
+// Detection Count Display (Above Robot)
+const countCanvas = document.createElement('canvas');
+countCanvas.width = 256;
+countCanvas.height = 64;
+const countCtx = countCanvas.getContext('2d');
+countCtx.font = '20px Orbitron';
+countCtx.fillStyle = '#00d4e0';
+const countTexture = new THREE.CanvasTexture(countCanvas);
+const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
+const countSprite = new THREE.Sprite(countSpriteMaterial);
+countSprite.scale.set(4, 1, 1);
+countSprite.position.set(-15, 4, 5);
+scene.add(countSprite);
 
 camera.position.z = 20;
 
@@ -58,34 +93,43 @@ let beamAngle = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Beam Scanning
-    beamAngle += 0.02;
-    beam.position.x = -15 + Math.cos(beamAngle) * 5;
-    beam.rotation.y = Math.sin(beamAngle) * 0.5;
+    // Beam Scanning from Eyes
+    beamAngle += 0.03;
+    beam.position.x = -15 + Math.cos(beamAngle) * 10;
+    beam.rotation.y = Math.sin(beamAngle) * 0.3;
 
-    // Object Animation and Detection
+    // Ship Movement and Detection
     detectionCount = 0;
-    objects.forEach(obj => {
-        obj.rotation.x += 0.003;
-        obj.rotation.y += 0.003;
-        obj.position.x += Math.sin(Date.now() * 0.001 + obj.position.z) * 0.01;
+    ships.forEach(ship => {
+        ship.position.x -= ship.userData.speed; // Approach from right
+        if (ship.position.x < -20) {
+            ship.position.x = 20 + Math.random() * 10; // Reset to right
+            ship.userData.detected = false;
+            ship.material.opacity = 0.5;
+            ship.children[0].material.opacity = 0;
+        }
 
-        const distance = Math.abs(obj.position.x - beam.position.x);
-        if (distance < 1 && !obj.userData.detected) {
-            obj.userData.detected = true;
-            obj.material.opacity = 0.8;
-            obj.children[0].material.opacity = 0.8;
+        const distance = Math.abs(ship.position.x - beam.position.x);
+        if (distance < 1 && !ship.userData.detected) {
+            ship.userData.detected = true;
+            ship.material.opacity = 0.8;
+            ship.children[0].material.opacity = 0.8;
             detectionCount++;
             setTimeout(() => {
-                obj.userData.detected = false;
-                obj.material.opacity = 0.5;
-                obj.children[0].material.opacity = 0;
+                if (ship.userData.detected) {
+                    ship.userData.detected = false;
+                    ship.material.opacity = 0.5;
+                    ship.children[0].material.opacity = 0;
+                }
             }, 2000);
         }
     });
 
     // Update Detection Count
-    document.getElementById('detectionCount').textContent = `Objects Detected: ${detectionCount}`;
+    countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
+    countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
+    countCtx.fillText(`SHIPS DETECTED: ${detectionCount}`, 10, 40);
+    countTexture.needsUpdate = true;
 
     renderer.render(scene, camera);
 }
