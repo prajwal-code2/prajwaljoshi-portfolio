@@ -4,65 +4,105 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Bounding Boxes (Object Detection)
+// Robot Eye
+const eyeGroup = new THREE.Group();
+const eyeGeometry = new THREE.SphereGeometry(1, 32, 32);
+const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x6b48ff, wireframe: true });
+const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+eye.position.set(0, 5, 10);
+eyeGroup.add(eye);
+
+// Iris (Glowing Center)
+const irisGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+const irisMaterial = new THREE.MeshBasicMaterial({ color: 0x00ddeb });
+const iris = new THREE.Mesh(irisGeometry, irisMaterial);
+iris.position.set(0, 0, 0.8);
+eye.add(iris);
+
+// Scanning Beam
+const beamGeometry = new THREE.PlaneGeometry(20, 0.2);
+const beamMaterial = new THREE.MeshBasicMaterial({ color: 0x00ddeb, transparent: true, opacity: 0.5 });
+const beam = new THREE.Mesh(beamGeometry, beamMaterial);
+beam.position.set(0, 0, 0);
+eyeGroup.add(beam);
+scene.add(eyeGroup);
+
+// Tracked Objects (Bounding Boxes)
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ddeb, wireframe: true });
+const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff4e50, wireframe: true });
 const boxes = [];
 for (let i = 0; i < 5; i++) {
-    const box = new THREE.Mesh(boxGeometry, boxMaterial);
+    const box = new THREE.Mesh(boxGeometry, boxMaterial.clone());
     box.position.set(
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 15,
+        (Math.random() - 0.5) * 10 - 5,
         (Math.random() - 0.5) * 10
     );
+    box.userData = { detected: false, glow: 0 };
     scene.add(box);
     boxes.push(box);
 }
 
-// Neural Nodes and Connections
-const nodeGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0xff4e50 });
-const nodes = [];
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff4e50, transparent: true, opacity: 0.5 });
-for (let i = 0; i < 10; i++) {
-    const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
-    node.position.set(
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10
-    );
-    scene.add(node);
-    nodes.push(node);
-}
+// Tracking Lines
+const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00ddeb, transparent: true, opacity: 0.7 });
+const trackingLines = [];
 
-// Create connections between nodes
-const lines = [];
-for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-        if (Math.random() > 0.7) {
-            const geometry = new THREE.BufferGeometry().setFromPoints([
-                nodes[i].position,
-                nodes[j].position
-            ]);
-            const line = new THREE.Line(geometry, lineMaterial);
-            scene.add(line);
-            lines.push(line);
-        }
-    }
-}
-
-camera.position.z = 15;
+camera.position.z = 20;
 
 // Animation Loop
+let beamAngle = 0;
 function animate() {
     requestAnimationFrame(animate);
+
+    // Eye Movement
+    eyeGroup.rotation.y = Math.sin(Date.now() * 0.001) * 0.2;
+    eyeGroup.rotation.x = Math.cos(Date.now() * 0.001) * 0.1;
+
+    // Beam Scanning
+    beamAngle += 0.05;
+    beam.position.y = Math.sin(beamAngle) * 10 - 5;
+
+    // Box Animation and Detection
     boxes.forEach(box => {
         box.rotation.x += 0.01;
         box.rotation.y += 0.01;
+        box.position.x += Math.sin(Date.now() * 0.001 + box.position.z) * 0.02;
+
+        // Detection Check
+        const distance = Math.abs(box.position.y - beam.position.y);
+        if (distance < 1 && !box.userData.detected) {
+            box.userData.detected = true;
+            box.material.color.setHex(0x00ddeb); // Highlight when detected
+            box.userData.glow = 1;
+
+            // Add Tracking Line
+            const geometry = new THREE.BufferGeometry().setFromPoints([
+                eye.position,
+                box.position
+            ]);
+            const line = new THREE.Line(geometry, lineMaterial);
+            scene.add(line);
+            trackingLines.push(line);
+        }
+
+        // Glow Fade
+        if (box.userData.glow > 0) {
+            box.userData.glow -= 0.02;
+            box.material.opacity = 0.5 + box.userData.glow * 0.5;
+            if (box.userData.glow <= 0) {
+                box.userData.detected = false;
+                box.material.color.setHex(0xff4e50);
+                box.material.opacity = 1;
+            }
+        }
     });
-    nodes.forEach(node => {
-        node.position.y += Math.sin(Date.now() * 0.001 + node.position.x) * 0.02;
+
+    // Update Tracking Lines
+    trackingLines.forEach((line, index) => {
+        const box = boxes[Math.floor(index / boxes.length * boxes.length)];
+        line.geometry.setFromPoints([eye.position, box.position]);
     });
+
     renderer.render(scene, camera);
 }
 animate();
@@ -71,9 +111,8 @@ animate();
 document.addEventListener('mousemove', (event) => {
     const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
     const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-    camera.position.x = mouseX * 5;
-    camera.position.y = mouseY * 5;
-    camera.lookAt(scene.position);
+    eyeGroup.rotation.y += mouseX * 0.005;
+    eyeGroup.rotation.x += mouseY * 0.005;
 });
 
 // Resize Handler
