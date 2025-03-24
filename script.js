@@ -4,7 +4,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Robot (Simple Sci-Fi Design)
+// Robot
 const robotGroup = new THREE.Group();
 const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
 const headMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.9 });
@@ -28,7 +28,7 @@ scene.add(robotGroup);
 
 // V-Shaped Scanner
 const vShapeGeometry = new THREE.BufferGeometry();
-const vAngle = Math.PI / 12; // 15° half-angle
+const vAngle = Math.PI / 12;
 const vLength = 25;
 const vertices = new Float32Array([
     0, 0, 0,
@@ -73,15 +73,15 @@ for (let i = 0; i < 8; i++) {
 
 // Detection Count Display
 const countCanvas = document.createElement('canvas');
-countCanvas.width = 256;
-countCanvas.height = 64;
+countCanvas.width = 512; // Increased size
+countCanvas.height = 128;
 const countCtx = countCanvas.getContext('2d');
-countCtx.font = '20px Exo 2';
-countCtx.fillStyle = '#00eaff';
+countCtx.font = '40px Exo 2'; // Larger font
+countCtx.fillStyle = '#ffffff'; // White for visibility
 const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(4, 1, 1);
+countSprite.scale.set(8, 2, 1); // Larger scale
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
@@ -89,9 +89,9 @@ scene.add(countSprite);
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 768;
-typewriterCanvas.height = 80;
+typewriterCanvas.height = 100; // Increased height
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '28px Exo 2';
+typewriterCtx.font = '36px Exo 2'; // Larger font
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -106,10 +106,10 @@ function typeWriter() {
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
     const h1 = document.querySelector('.hero h1');
     const h1Rect = h1.getBoundingClientRect();
-    const offsetX = (window.innerWidth - h1Rect.width) / 2; // Align with h1 left edge
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 50);
+    const offsetX = h1Rect.left; // Align with left edge of "Prajwal"
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 60); // Adjusted Y position
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 25, 2, 30);
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 30, 2, 40);
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -149,7 +149,7 @@ function animate() {
             ship.position.y = 2 + (Math.random() - 0.5) * 10;
             ship.position.z = 5.5 + (Math.random() - 0.5) * 10;
             ship.material.opacity = 0.7;
-            ship.userData.detected = false; // Reset detection
+            ship.userData.detected = false;
         }
 
         if (!ship.userData.detected) {
@@ -162,28 +162,13 @@ function animate() {
                 ship.userData.detectionTime = Date.now();
                 totalDetections++;
 
-                const boxGroup = new THREE.Group();
-                const boxMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.8 });
-                const boxGeometry = new THREE.BoxGeometry(2, 1, 1);
-                const edges = new THREE.EdgesGeometry(boxGeometry);
-                const boundingBox = new THREE.LineSegments(edges, boxMaterial);
-                boundingBox.position.copy(ship.position);
-                boxGroup.add(boundingBox);
-
-                const cornerGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-                const cornerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9 });
-                const corners = [
-                    [1, 0.5, 0.5], [-1, 0.5, 0.5], [1, -0.5, 0.5], [-1, -0.5, 0.5],
-                    [1, 0.5, -0.5], [-1, 0.5, -0.5], [1, -0.5, -0.5], [-1, -0.5, -0.5]
-                ];
-                corners.forEach(pos => {
-                    const corner = new THREE.Mesh(cornerGeometry, cornerMaterial);
-                    corner.position.set(pos[0], pos[1], pos[2]);
-                    boxGroup.add(corner);
-                });
-
-                scene.add(boxGroup);
-                ship.userData.detectBox = boxGroup;
+                // Dots instead of boxes
+                const dotGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const dotMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9 });
+                const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+                dot.position.copy(ship.position);
+                scene.add(dot);
+                ship.userData.detectDot = dot;
 
                 const detectCanvas = document.createElement('canvas');
                 detectCanvas.width = 128;
@@ -205,7 +190,7 @@ function animate() {
         if (ship.userData.detected && ship.userData.detectionTime) {
             const elapsed = Date.now() - ship.userData.detectionTime;
             if (elapsed >= 3000) {
-                scene.remove(ship.userData.detectBox);
+                scene.remove(ship.userData.detectDot);
                 scene.remove(ship.userData.detectSprite);
                 scene.remove(ship);
                 ships.splice(index, 1);
@@ -224,15 +209,15 @@ function animate() {
                 newShip.add(glow);
                 ships.push(newShip);
             } else {
-                ship.userData.detectBox.position.copy(ship.position);
+                ship.userData.detectDot.position.copy(ship.position);
                 ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
             }
         }
     });
 
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-    countCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
-    countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 10, 40);
+    countCtx.fillStyle = '#ffffff'; // White for visibility
+    countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 20, 80); // Adjusted position
     countTexture.needsUpdate = true;
 
     renderer.render(scene, camera);

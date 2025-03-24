@@ -1,5 +1,5 @@
 body {
-    font-family: 'Exo 2', sans-serif; /* New bold font */
+    font-family: 'Exo 2', sans-serif;
     margin: 0;
     padding: 0;
     transition: background 0.3s, color 0.3s;
@@ -21,15 +21,15 @@ body {
 
 /* Dark Mode (default) */
 body.dark {
-    background: rgba(0, 0, 0, 0.7); /* Darker overlay for contrast */
-    color: #00eaff; /* Neon cyan */
+    background: rgba(0, 0, 0, 0.7);
+    color: #00eaff;
 }
 body.dark .text-content {
-    color: #ffffff; /* White for readability */
-    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8); /* Stronger glow */
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 body.dark .navbar {
-    background: rgba(0, 0, 0, 0.9); /* Solid black */
+    background: rgba(0, 0, 0, 0.9);
 }
 body.dark .navbar.shrink {
     background: rgba(0, 0, 0, 0.95);
@@ -41,8 +41,8 @@ body.dark .gradient-bg {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8));
 }
 body.dark .btn-gradient {
-    background: linear-gradient(90deg, #00eaff, #ff00ff); /* Cyan to magenta */
-    color: #000; /* Black text for contrast */
+    background: linear-gradient(90deg, #00eaff, #ff00ff);
+    color: #000;
 }
 body.dark .gradient-text {
     background: linear-gradient(90deg, #00eaff, #ff00ff);
@@ -53,7 +53,7 @@ body.dark .gradient-text {
 
 /* Light Mode */
 body.light {
-    background: rgba(255, 255, 255, 0.7); /* Lighter overlay */
+    background: rgba(255, 255, 255, 0.7);
     color: #1a1a3a;
 }
 body.light .text-content {
@@ -93,7 +93,7 @@ body.light .gradient-text {
     padding: 0.5rem 2rem;
 }
 .navbar-brand, .nav-link {
-    color: #00eaff !important; /* Neon cyan */
+    color: #00eaff !important;
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
     text-transform: uppercase;
@@ -103,7 +103,7 @@ body.light .navbar-brand, body.light .nav-link {
     color: #1a1a3a !important;
 }
 .nav-link:hover {
-    color: #ff00ff !important; /* Magenta hover */
+    color: #ff00ff !important;
 }
 body.light .nav-link:hover {
     color: #00a4b0 !important;
@@ -130,19 +130,19 @@ body.light .nav-link:hover {
 .hero h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 5rem;
-    text-shadow: 0 0 12px rgba(0, 234, 255, 0.8); /* Stronger glow */
+    text-shadow: 0 0 12px rgba(0, 234, 255, 0.8);
     z-index: 2;
     position: relative;
 }
 .futuristic-text {
-    font-family: 'Exo 2', sans-serif; /* New font */
-    font-size: 1.8rem; /* Slightly larger */
+    font-family: 'Exo 2', sans-serif;
+    font-size: 2.2rem; /* Increased size */
     letter-spacing: 4px;
     text-transform: uppercase;
     z-index: 2;
     position: relative;
-    text-align: left; /* Align with h1 left */
-    color: #ffffff; /* White for visibility */
+    text-align: left;
+    color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 #threeCanvas {
@@ -157,7 +157,7 @@ body.light .nav-link:hover {
 
 /* Projects */
 .project-card {
-    background: rgba(0, 0, 20, 0.85); /* Darker blue-black */
+    background: rgba(0, 0, 20, 0.85);
     border: none;
     border-radius: 10px;
     overflow: hidden;
@@ -181,7 +181,7 @@ body.light .project-card {
 }
 .card-body {
     padding: 1.5rem;
-    color: #ffffff; /* White text */
+    color: #ffffff;
 }
 body.light .card-body {
     color: #1a1a3a;
@@ -211,27 +211,27 @@ body.light .btn-outline-light:hover {
     font-weight: 700;
 }
 
-/* Gradient Background */
-.gradient-bg {
-    transition: background 0.3s ease;
-}
-
 /* About & Contact */
 #about, #contact {
     padding: 5rem 0;
 }
 .text-gradient {
-    color: #00eaff;
+    color: #ff00ff; /* Magenta for contrast */
     transition: color 0.3s ease;
 }
 body.light .text-gradient {
-    color: #00a4b0;
+    color: #4a3ecc;
 }
 .text-gradient:hover {
-    color: #ff00ff;
+    color: #00eaff;
 }
 body.light .text-gradient:hover {
-    color: #4a3ecc;
+    color: #00a4b0;
+}
+
+/* Footer */
+footer {
+    text-align: center; /* Center-aligned */
 }
 
 /* Modal */
