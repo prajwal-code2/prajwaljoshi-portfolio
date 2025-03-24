@@ -38,7 +38,7 @@ body.dark .hero {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8));
 }
 body.dark .gradient-bg {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8));
+    background: rgba(0, 0, 0, 0.7); /* Simplified for consistency */
 }
 body.dark .btn-gradient {
     background: linear-gradient(90deg, #00eaff, #ff00ff);
@@ -70,7 +70,7 @@ body.light .hero {
     background: linear-gradient(135deg, rgba(240, 240, 255, 0.8), rgba(255, 255, 255, 0.8));
 }
 body.light .gradient-bg {
-    background: linear-gradient(135deg, rgba(240, 240, 255, 0.8), rgba(255, 255, 255, 0.8));
+    background: rgba(240, 240, 255, 0.7); /* Simplified for consistency */
 }
 body.light .btn-gradient {
     background: linear-gradient(90deg, #00a4b0, #4a3ecc);
@@ -141,7 +141,7 @@ body.light .nav-link:hover {
     text-transform: uppercase;
     z-index: 2;
     position: relative;
-    text-align: left;
+    text-align: center; /* Center typewriter text */
     color: #ffffff;
     text-shadow: 0 0 10px rgba(0, 234, 255, 1);
 }
@@ -167,9 +167,11 @@ body.light .nav-link:hover {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
     padding: 0.5rem 1rem;
-    background-color: rgba(0, 0, 0, 0.7); /* Black translucent background */
+    background-color: rgba(0, 0, 0, 0.7); /* Only header background */
     display: inline-block;
     border-radius: 5px;
+    text-align: center; /* Explicitly centered */
+    margin: 0 auto; /* Center horizontally */
 }
 body.light #projects h2 {
     background: linear-gradient(90deg, #00a4b0, #4a3ecc);
@@ -236,7 +238,10 @@ body.light .btn-outline-light:hover {
 /* Common Section Styling */
 #about, #contact, footer {
     padding: 5rem 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.7); /* Consistent translucent black */
+}
+body.light #about, body.light #contact, body.light footer {
+    background: rgba(240, 240, 255, 0.7); /* Light mode consistency */
 }
 
 /* About */
@@ -291,7 +296,7 @@ body.light #contact p {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 #contact .contact-details {
-    font-size: 0.9375rem; /* Smaller than 1.125rem for email, GitHub, etc. */
+    font-size: 0.9375rem; /* Smaller for email, GitHub, etc. */
 }
 
 /* Footer */
@@ -300,7 +305,7 @@ footer {
     padding: 2rem 0;
 }
 footer p {
-    font-size: 0.875rem; /* Smaller than everything else */
+    font-size: 0.875rem; /* Smaller than others */
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }

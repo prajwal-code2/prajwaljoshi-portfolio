@@ -113,22 +113,22 @@ const countCanvas = document.createElement('canvas');
 countCanvas.width = 1024;
 countCanvas.height = 256;
 const countCtx = countCanvas.getContext('2d');
-countCtx.font = '80px Exo 2'; // Increased from 60px to 80px
+countCtx.font = '80px Exo 2';
 countCtx.fillStyle = '#ffcc00';
 const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(16, 4, 1); // Increased scale for visibility
-countSprite.position.set(-15, 5, 5); // Moved above robot (y from 4 to 5)
+countSprite.scale.set(16, 4, 1);
+countSprite.position.set(-15, 5, 5);
 scene.add(countSprite);
 
-// Typewriter Effect - Smaller cursor, matching text height
+// Typewriter Effect - Fixed position and size
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 1024;
 typewriterCanvas.height = 160;
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '64px Exo 2'; // Text height matches cursor
+typewriterCtx.font = '64px Exo 2';
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -143,10 +143,10 @@ function typeWriter() {
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
     const h1 = document.querySelector('.hero h1');
     const h1Rect = h1.getBoundingClientRect();
-    const offsetX = h1Rect.left + 150;
+    const offsetX = (window.innerWidth - typewriterCtx.measureText(currentText).width) / 2; // Center horizontally
     typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 2, 64); // Cursor height 64px (smaller from 60, matches text)
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 36, 2, 64); // Cursor matches text height
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
