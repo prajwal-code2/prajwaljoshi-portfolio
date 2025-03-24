@@ -194,6 +194,10 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.3 });
 
+const marker = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+marker.position.set(-14.7, 2, 5.5);
+scene.add(marker);
+
 document.querySelectorAll('#projects .project-card, #about, #contact').forEach(el => {
     el.style.opacity = 0;
     el.style.transform = 'translateY(20px)';
