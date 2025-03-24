@@ -35,7 +35,7 @@ const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius:
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
 visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = Math.PI / 2; // Base points right
+visionCone.rotation.z = Math.PI / 2; // Base points right (apex at origin)
 scene.add(visionCone);
 
 // Debug Marker (to confirm apex position)
@@ -54,9 +54,9 @@ let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
-        -10 + Math.random() * 10, // Start within cone (x: -10 to 0)
-        (Math.random() - 0.5) * 2, // Tighter y-range
-        (Math.random() - 0.5) * 2  // Tighter z-range
+        -14 + Math.random() * 10, // Start within cone (x: -14 to -4)
+        2 + (Math.random() - 0.5) * 2, // Near eye y (2 ± 1)
+        5.5 + (Math.random() - 0.5) * 2 // Near eye z (5.5 ± 1)
     );
     ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
     scene.add(ship);
@@ -103,9 +103,9 @@ function animate() {
         if (!ship.userData.detected) {
             ship.position.x -= ship.userData.speed; // Move left
             if (ship.position.x < -20) {
-                ship.position.x = -10 + Math.random() * 10; // Reset within cone (x: -10 to 0)
-                ship.position.y = (Math.random() - 0.5) * 2; // Reset y
-                ship.position.z = (Math.random() - 0.5) * 2; // Reset z
+                ship.position.x = -14 + Math.random() * 10; // Reset within cone (x: -14 to -4)
+                ship.position.y = 2 + (Math.random() - 0.5) * 2; // Reset y
+                ship.position.z = 5.5 + (Math.random() - 0.5) * 2; // Reset z
                 ship.material.opacity = 0.5;
                 ship.children[0].material.opacity = 0;
             }
@@ -116,8 +116,9 @@ function animate() {
             const angle = relativePos.angleTo(coneDirection);
             const distance = relativePos.length();
             const halfAngle = Math.atan2(3, 15); // Cone's half-angle (≈11.3°)
+            console.log('Ship Check:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
             if (angle < halfAngle && distance <= 15 && !ship.userData.detected) {
-                console.log('Detected:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
+                console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
                 ship.userData.detected = true;
                 ship.material.opacity = 0.8;
                 ship.children[0].material.opacity = 0.8;
@@ -128,9 +129,9 @@ function animate() {
                     // Spawn a new ship
                     const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
                     newShip.position.set(
-                        -10 + Math.random() * 10,
-                        (Math.random() - 0.5) * 2,
-                        (Math.random() - 0.5) * 2
+                        -14 + Math.random() * 10,
+                        2 + (Math.random() - 0.5) * 2,
+                        5.5 + (Math.random() - 0.5) * 2
                     );
                     newShip.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
                     scene.add(newShip);
