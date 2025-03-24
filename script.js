@@ -30,18 +30,13 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// Red Line Scanner (Small Angle, Moves Up and Down)
-const lineGeometry = new THREE.BufferGeometry();
-const lineLength = 25; // Length of the line
-const vertices = new Float32Array([
-    0, 0, 0, // Start at eye
-    lineLength, 0, 0 // End point (straight right)
-]);
-lineGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.8 });
-const scannerLine = new THREE.Line(lineGeometry, lineMaterial);
-scannerLine.position.set(-14.7, 2, 5.5); // Apex at eye
-scene.add(scannerLine);
+// Scanner Field (Wide Area, Moves Up and Down)
+const scannerGeometry = new THREE.PlaneGeometry(25, 5); // Width 25, Height 5 - Area effect
+const scannerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+const scannerField = new THREE.Mesh(scannerGeometry, scannerMaterial);
+scannerField.position.set(-14.7 + 12.5, 2, 5.5); // Center of plane shifted right by half its width
+scannerField.rotation.z = Math.PI / 2; // Align base at eye, extend right
+scene.add(scannerField);
 
 // Debug Marker (to confirm apex position)
 const marker = new THREE.Mesh(
@@ -92,7 +87,7 @@ const titleText = "Computer Vision Expert";
 const taglineText = "Transforming Pixels into Actionable Insights";
 const fullText = `${titleText} | ${taglineText}`;
 const typewriterCanvas = document.createElement('canvas');
-typewriterCanvas.width = 768; // Wider for full text
+typewriterCanvas.width = 768;
 typewriterCanvas.height = 64;
 const typewriterCtx = typewriterCanvas.getContext('2d');
 typewriterCtx.font = '18px Orbitron';
@@ -100,25 +95,23 @@ typewriterCtx.fillStyle = '#00d4e0';
 const typewriterTexture = new THREE.CanvasTexture(typewriterCanvas);
 const typewriterSpriteMaterial = new THREE.SpriteMaterial({ map: typewriterTexture, transparent: true });
 const typewriterSprite = new THREE.Sprite(typewriterSpriteMaterial);
-typewriterSprite.scale.set(8, 0.75, 1); // Adjusted scale for wider text
+typewriterSprite.scale.set(8, 0.75, 1);
 typewriterSprite.position.set(0, 8, 5); // Top center
 scene.add(typewriterSprite);
 
 // Typewriter Effect
 let currentIndex = 0;
-const typeSpeed = 100; // Milliseconds per character
+const typeSpeed = 100;
 function typeWriter() {
     if (currentIndex <= fullText.length) {
         typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
         typewriterCtx.fillText(fullText.slice(0, currentIndex), 10, 40);
-        // Draw cursor (straight line)
         const textWidth = typewriterCtx.measureText(fullText.slice(0, currentIndex)).width;
-        typewriterCtx.fillRect(10 + textWidth, 20, 2, 24); // Thin vertical line
+        typewriterCtx.fillRect(10 + textWidth, 20, 2, 24);
         typewriterTexture.needsUpdate = true;
         currentIndex++;
         setTimeout(typeWriter, typeSpeed);
     } else {
-        // Stop cursor after typing
         typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
         typewriterCtx.fillText(fullText, 10, 40);
         typewriterTexture.needsUpdate = true;
@@ -133,9 +126,9 @@ let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Oscillate Scanner Line (Up and Down)
+    // Oscillate Scanner Field (Up and Down)
     time += 0.05;
-    scannerLine.rotation.x = Math.sin(time) * Math.PI / 4; // ±45° swing
+    scannerField.rotation.x = Math.sin(time) * Math.PI / 4; // ±45° swing
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
@@ -148,13 +141,15 @@ function animate() {
                 ship.material.opacity = 0.7;
             }
 
-            // Check if ship is within scanner line (small angle)
-            const relativePos = new THREE.Vector3().subVectors(ship.position, scannerLine.position);
-            const lineDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerLine.quaternion); // Adjust for rotation
-            const angle = relativePos.angleTo(lineDirection);
+            // Check if ship is within scanner field
+            const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
+            const scannerDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion); // Adjust for rotation
+            const angle = relativePos.angleTo(scannerDirection);
             const distance = relativePos.length();
-            const detectionAngle = Math.PI / 36; // 5° half-angle (10° total)
-            if (angle < detectionAngle && distance <= lineLength && !ship.userData.detected) {
+            const detectionWidth = 5; // Height of scanner field
+            const detectionLength = 25; // Length of scanner field
+            const projectedY = Math.abs(relativePos.dot(new THREE.Vector3(0, 1, 0).applyQuaternion(scannerField.quaternion)));
+            if (angle < Math.PI / 6 && distance <= detectionLength && projectedY < detectionWidth / 2 && !ship.userData.detected) { // 60° total angle, within area
                 console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z });
                 ship.userData.detected = true;
                 totalDetections++;
