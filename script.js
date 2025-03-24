@@ -35,11 +35,19 @@ const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius:
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
 visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = -Math.PI / 2; // Base points right (corrected)
+visionCone.rotation.z = -Math.PI / 2; // Base points right (apex at origin, base along +x)
 scene.add(visionCone);
 
+// Debug Marker (to confirm eye position)
+const marker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1),
+    new THREE.MeshBasicMaterial({ color: 0xff0000 })
+);
+marker.position.set(-14.7, 2, 5.5);
+scene.add(marker);
+
 // Ships (Approaching from Right, No Rotation)
-const shipGeometry = new THREE.BoxGeometry(1, 0.5, 0.5); // Simpler shape for clarity
+const shipGeometry = new THREE.BoxGeometry(1, 0.5, 0.5);
 const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
 const ships = [];
 let totalDetections = 0; // Persistent count
@@ -107,8 +115,9 @@ function animate() {
         const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < Math.PI / 12 && distance <= 15 && !ship.userData.detected) { // 15-degree half-angle, 15 units
-            console.log('Detected:', { angle: angle * 180 / Math.PI, distance });
+        const halfAngle = Math.PI / 12; // 15-degree half-angle (30° total)
+        if (angle < halfAngle && distance <= 15 && !ship.userData.detected) {
+            console.log('Detected:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
@@ -195,7 +204,6 @@ const observer = new IntersectionObserver((entries) => {
         }
     });
 }, { threshold: 0.3 });
-
 
 document.querySelectorAll('#projects .project-card, #about, #contact').forEach(el => {
     el.style.opacity = 0;
