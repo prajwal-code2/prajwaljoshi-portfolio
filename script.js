@@ -30,7 +30,7 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Scanner (Stable Apex, Tilts Up and Down)
+// V-Shaped Scanner (Stable Apex, Tilts Up and Down on Y-Axis)
 const vShapeGeometry = new THREE.BufferGeometry();
 const vAngle = Math.PI / 12; // 15° half-angle (30° total)
 const vLength = 25; // Length of V arms
@@ -61,7 +61,7 @@ const ships = [];
 let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-    ship.rotation.z = Math.PI / 2; // Rotate 90° clockwise to point right (tip at positive x)
+    ship.rotation.z = Math.PI / 2; // Point right (tip at positive x)
     ship.position.set(
         20 + Math.random() * 5, // Extreme right (x: 20 to 25)
         2 + (Math.random() - 0.5) * 10, // Wider y-range
@@ -106,12 +106,13 @@ let currentIndex = 0;
 let isErasing = false;
 const typeSpeed = 100;
 const delayBetween = 1000; // 1s delay between cycles
+const xOffset = 10; // Fine-tune to align with "P"
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), 0, 50); // Start at x: 0 to align with h1
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), xOffset, 50); // Adjusted x to align with "P"
     const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(textWidth, 25, 2, 30); // Cursor after text
+    typewriterCtx.fillRect(xOffset + textWidth, 25, 2, 30); // Cursor after text
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -141,9 +142,9 @@ let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Tilt Scanner Field Up and Down (Stable Apex)
+    // Tilt Scanner Field Up and Down (Y-Axis)
     time += 0.05;
-    scannerField.rotation.x = Math.sin(time) * Math.PI / 6; // ±30° tilt
+    scannerField.rotation.y = Math.sin(time) * Math.PI / 6; // ±30° tilt on y-axis
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
@@ -166,44 +167,51 @@ function animate() {
                 ship.userData.detected = true;
                 totalDetections++;
 
-                // Add Detection Marker (Pulsing Sphere)
-                const detectMarker = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.5, 16, 16),
-                    new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.8 })
+                // Surround with Mesh (Wireframe Sphere)
+                const detectMesh = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, 16, 16),
+                    new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, transparent: true, opacity: 0.8 })
                 );
-                detectMarker.position.copy(ship.position);
-                scene.add(detectMarker);
+                detectMesh.position.copy(ship.position);
+                scene.add(detectMesh);
 
-                // Animate Marker (Pulse and Fade)
-                let scale = 0.5;
-                const pulse = setInterval(() => {
-                    scale += 0.1;
-                    detectMarker.scale.set(scale, scale, scale);
-                    detectMarker.material.opacity -= 0.1;
-                    if (detectMarker.material.opacity <= 0) {
-                        clearInterval(pulse);
-                        scene.remove(detectMarker);
-                    }
-                }, 50);
+                // Add "DETECTED" Text
+                const detectCanvas = document.createElement('canvas');
+                detectCanvas.width = 128;
+                detectCanvas.height = 32;
+                const detectCtx = detectCanvas.getContext('2d');
+                detectCtx.font = '20px Orbitron';
+                detectCtx.fillStyle = '#00ff00';
+                detectCtx.fillText('DETECTED', 10, 20);
+                const detectTexture = new THREE.CanvasTexture(detectCanvas);
+                const detectSpriteMaterial = new THREE.SpriteMaterial({ map: detectTexture, transparent: true });
+                const detectSprite = new THREE.Sprite(detectSpriteMaterial);
+                detectSprite.scale.set(2, 0.5, 1);
+                detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
+                scene.add(detectSprite);
 
-                // Remove Ship Immediately
-                scene.remove(ship);
-                ships.splice(index, 1);
+                // Wait 1 Second, Then Remove
+                setTimeout(() => {
+                    scene.remove(detectMesh);
+                    scene.remove(detectSprite);
+                    scene.remove(ship);
+                    ships.splice(index, 1);
 
-                // Spawn a New Ship
-                const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                newShip.rotation.z = Math.PI / 2; // Horizontal, pointing right
-                newShip.position.set(
-                    20 + Math.random() * 5,
-                    2 + (Math.random() - 0.5) * 10,
-                    5.5 + (Math.random() - 0.5) * 10
-                );
-                newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
-                scene.add(newShip);
-                const glow = new THREE.PointLight(0x5a4eff, 0.5, 5);
-                glow.position.set(0, 0, 0);
-                newShip.add(glow);
-                ships.push(newShip);
+                    // Spawn a New Ship
+                    const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                    newShip.rotation.z = Math.PI / 2; // Point right
+                    newShip.position.set(
+                        20 + Math.random() * 5,
+                        2 + (Math.random() - 0.5) * 10,
+                        5.5 + (Math.random() - 0.5) * 10
+                    );
+                    newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
+                    scene.add(newShip);
+                    const glow = new THREE.PointLight(0x5a4eff, 0.5, 5);
+                    glow.position.set(0, 0, 0);
+                    newShip.add(glow);
+                    ships.push(newShip);
+                }, 1000); // 1-second delay
             }
         }
     });
