@@ -30,20 +30,20 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// Conical Vision Field (Apex at Eye, Base Toward Right)
+// Conical Vision Field (Apex Moved Right, Base Toward Right)
 const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius: 3, height: 15
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = Math.PI / 2; // Base points right (apex at origin)
+visionCone.position.set(-12.7, 2, 5.5); // Apex shifted right from -14.7 to -12.7
+visionCone.rotation.z = Math.PI / 2; // Base points right
 scene.add(visionCone);
 
-// Debug Marker (to confirm eye position)
+// Debug Marker (to confirm apex position)
 const marker = new THREE.Mesh(
     new THREE.SphereGeometry(0.1),
     new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
-marker.position.set(-14.7, 2, 5.5);
+marker.position.set(-12.7, 2, 5.5); // Matches new apex
 scene.add(marker);
 
 // Ships (Approaching from Right, No Rotation)
@@ -54,7 +54,7 @@ let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
-        -5 + Math.random() * 10, // Start within/near cone (x: -5 to 5)
+        -2 + Math.random() * 10, // Start within/near cone (x: -2 to 8)
         (Math.random() - 0.5) * 2, // Tighter y-range
         (Math.random() - 0.5) * 2  // Tighter z-range
     );
@@ -99,34 +99,58 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Ship Movement (Straight Left, No Rotation)
-    ships.forEach(ship => {
-        ship.position.x -= ship.userData.speed; // Move left
-        if (ship.position.x < -20) {
-            ship.position.x = -5 + Math.random() * 10; // Reset to right (within/near cone)
-            ship.position.y = (Math.random() - 0.5) * 2; // Reset y
-            ship.position.z = (Math.random() - 0.5) * 2; // Reset z
-            ship.userData.detected = false;
-            ship.material.opacity = 0.5;
-            ship.children[0].material.opacity = 0;
-        }
-
-        // Check if ship is within conical vision
-        const relativePos = new THREE.Vector3().subVectors(ship.position, eye.position);
-        const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
-        const angle = relativePos.angleTo(coneDirection);
-        const distance = relativePos.length();
-        const halfAngle = Math.atan2(3, 15); // Cone's half-angle (≈11.3°)
-        if (angle < halfAngle && distance <= 15 && !ship.userData.detected) {
-            console.log('Detected:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
-            ship.userData.detected = true;
-            ship.material.opacity = 0.8;
-            ship.children[0].material.opacity = 0.8;
-            totalDetections++;
-            setTimeout(() => {
-                ship.userData.detected = false;
+    ships.forEach((ship, index) => {
+        if (!ship.userData.detected) {
+            ship.position.x -= ship.userData.speed; // Move left
+            if (ship.position.x < -20) {
+                ship.position.x = -2 + Math.random() * 10; // Reset to right (within/near cone)
+                ship.position.y = (Math.random() - 0.5) * 2; // Reset y
+                ship.position.z = (Math.random() - 0.5) * 2; // Reset z
                 ship.material.opacity = 0.5;
                 ship.children[0].material.opacity = 0;
-            }, 2000);
+            }
+
+            // Check if ship is within conical vision
+            const relativePos = new THREE.Vector3().subVectors(ship.position, visionCone.position);
+            const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
+            const angle = relativePos.angleTo(coneDirection);
+            const distance = relativePos.length();
+            const halfAngle = Math.atan2(3, 15); // Cone's half-angle (≈11.3°)
+            if (angle < halfAngle && distance <= 15 && !ship.userData.detected) {
+                console.log('Detected:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
+                ship.userData.detected = true;
+                ship.material.opacity = 0.8;
+                ship.children[0].material.opacity = 0.8;
+                totalDetections++;
+                // Disappear after detection
+                setTimeout(() => {
+                    scene.remove(ship);
+                    ships.splice(index, 1); // Remove from array
+                    // Spawn a new ship to maintain count
+                    const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                    newShip.position.set(
+                        -2 + Math.random() * 10,
+                        (Math.random() - 0.5) * 2,
+                        (Math.random() - 0.5) * 2
+                    );
+                    newShip.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
+                    scene.add(newShip);
+                    const newCanvas = document.createElement('canvas');
+                    newCanvas.width = 128;
+                    newCanvas.height = 32;
+                    const newCtx = newCanvas.getContext('2d');
+                    newCtx.font = '16px Orbitron';
+                    newCtx.fillStyle = '#00d4e0';
+                    newCtx.fillText('SHIP DETECTED', 10, 20);
+                    const newTexture = new THREE.CanvasTexture(newCanvas);
+                    const newSpriteMaterial = new THREE.SpriteMaterial({ map: newTexture, transparent: true, opacity: 0 });
+                    const newSprite = new THREE.Sprite(newSpriteMaterial);
+                    newSprite.scale.set(2, 0.5, 1);
+                    newSprite.position.set(0, 1, 0);
+                    newShip.add(newSprite);
+                    ships.push(newShip);
+                }, 500); // Disappear after 0.5s
+            }
         }
     });
 
