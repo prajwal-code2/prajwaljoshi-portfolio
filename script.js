@@ -35,7 +35,7 @@ const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius:
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
 visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = Math.PI / 2; // Rotate 90° clockwise (apex at eye, base right)
+visionCone.rotation.z = Math.PI / 2; // Base points right (apex at origin)
 scene.add(visionCone);
 
 // Debug Marker (to confirm eye position)
@@ -54,7 +54,7 @@ let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
-        5 + Math.random() * 10, // Start closer to cone (x: 5 to 15)
+        -5 + Math.random() * 10, // Start within/near cone (x: -5 to 5)
         (Math.random() - 0.5) * 2, // Tighter y-range
         (Math.random() - 0.5) * 2  // Tighter z-range
     );
@@ -102,7 +102,7 @@ function animate() {
     ships.forEach(ship => {
         ship.position.x -= ship.userData.speed; // Move left
         if (ship.position.x < -20) {
-            ship.position.x = 5 + Math.random() * 10; // Reset to right (closer)
+            ship.position.x = -5 + Math.random() * 10; // Reset to right (within/near cone)
             ship.position.y = (Math.random() - 0.5) * 2; // Reset y
             ship.position.z = (Math.random() - 0.5) * 2; // Reset z
             ship.userData.detected = false;
@@ -115,7 +115,7 @@ function animate() {
         const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        const halfAngle = Math.atan2(3, 15); // Cone's half-angle (atan(radius/height) ≈ 11.3°)
+        const halfAngle = Math.atan2(3, 15); // Cone's half-angle (≈11.3°)
         if (angle < halfAngle && distance <= 15 && !ship.userData.detected) {
             console.log('Detected:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
             ship.userData.detected = true;
