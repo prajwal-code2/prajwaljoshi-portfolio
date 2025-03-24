@@ -13,7 +13,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(0, 10, 10);
 scene.add(directionalLight);
 
-// Local GLTF Model
+// Load Local GLTF Model
 const loader = new THREE.GLTFLoader();
 let robotModel;
 loader.load(
@@ -21,10 +21,10 @@ loader.load(
     (gltf) => {
         robotModel = gltf.scene;
         robotModel.scale.set(1, 1, 1); // Adjust scale as needed (start with 1)
-        robotModel.position.set(-15, 0, 5); // Matches previous robot position
-        robotModel.rotation.y = Math.PI / 2; // Adjust rotation if needed
+        robotModel.position.set(-15, 0, 5); // Match previous robot position
+        robotModel.rotation.y = Math.PI / 2; // Rotate to face right (adjust as needed)
         scene.add(robotModel);
-        console.log('Model loaded successfully:', robotModel);
+        console.log('Model loaded successfully');
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
