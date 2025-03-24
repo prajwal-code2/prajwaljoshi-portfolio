@@ -30,10 +30,10 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Vision Field (Apex at Eye, Oscillating Like Radar)
+// V-Shaped Vision Field (Larger and Lengthier, Oscillating Like Radar)
 const vShapeGeometry = new THREE.BufferGeometry();
-const vAngle = Math.PI / 12; // 15-degree half-angle (30° total)
-const vLength = 15; // Length of V arms
+const vAngle = Math.PI / 6; // 30-degree half-angle (60° total) - Wider
+const vLength = 25; // Longer arms (from 15 to 25)
 const vertices = new Float32Array([
     0, 0, 0, // Apex
     vLength * Math.cos(vAngle), vLength * Math.sin(vAngle), 0, // Top arm
@@ -54,14 +54,14 @@ const marker = new THREE.Mesh(
 marker.position.set(-14.7, 2, 5.5); // Matches eye
 scene.add(marker);
 
-// Enhanced Ships (Sci-Fi Design)
+// Enhanced Ships (Sci-Fi Design, No Rotation)
 const shipGeometry = new THREE.ConeGeometry(0.3, 1.5, 8); // Tapered, sleek shape
 const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.7 });
 const ships = [];
 let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-    ship.rotation.x = Math.PI / 2; // Point forward (along x-axis)
+    // No rotation - stays upright, facing forward naturally
     ship.position.set(
         20 + Math.random() * 5, // Extreme right (x: 20 to 25)
         2 + (Math.random() - 0.5) * 10, // Wider y-range
@@ -102,7 +102,7 @@ taglineCtx.fillText('Transforming Pixels into Actionable Insights', 10, 40);
 const taglineTexture = new THREE.CanvasTexture(taglineCanvas);
 const taglineSpriteMaterial = new THREE.SpriteMaterial({ map: taglineTexture, transparent: true });
 const taglineSprite = new THREE.Sprite(taglineSpriteMaterial);
-taglineSprite.scale.set(6, 0.75, 1); // Slightly larger for readability
+taglineSprite.scale.set(6, 0.75, 1);
 taglineSprite.position.set(-15, 5, 5); // Above count
 scene.add(taglineSprite);
 
@@ -164,7 +164,7 @@ function animate() {
 
                 // Spawn a New Ship
                 const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                newShip.rotation.x = Math.PI / 2;
+                // No rotation - stays upright
                 newShip.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
