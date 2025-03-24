@@ -50,7 +50,7 @@ for (let i = 0; i < 8; i++) {
         (Math.random() - 0.5) * 3, // Within cone
         (Math.random() - 0.5) * 3
     );
-    ship.rotation.x = Math.PI / 2; // Fixed orientation
+    // No initial rotation—keep straight
     ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
     scene.add(ship);
     ships.push(ship);
@@ -96,6 +96,8 @@ function animate() {
         ship.position.x -= ship.userData.speed; // Move left
         if (ship.position.x < -20) {
             ship.position.x = 20 + Math.random() * 15; // Reset to right
+            ship.position.y = (Math.random() - 0.5) * 3; // Reset y
+            ship.position.z = (Math.random() - 0.5) * 3; // Reset z
             ship.userData.detected = false;
             ship.material.opacity = 0.5;
             ship.children[0].material.opacity = 0;
@@ -106,8 +108,7 @@ function animate() {
         const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        const maxAngle = Math.atan2(3, 15); // Cone's half-angle (arctan(radius/height))
-        if (angle < maxAngle && distance < 15 && !ship.userData.detected) { // Within cone
+        if (angle < Math.PI / 12 && distance < 15 && !ship.userData.detected) { // 15-degree half-angle, 15 units
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
