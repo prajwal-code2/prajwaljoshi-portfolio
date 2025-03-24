@@ -87,20 +87,44 @@ countSprite.scale.set(4, 1, 1);
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
-// Tagline Display ("Transforming Pixels into Actionable Insights")
-const taglineCanvas = document.createElement('canvas');
-taglineCanvas.width = 512;
-taglineCanvas.height = 64;
-const taglineCtx = taglineCanvas.getContext('2d');
-taglineCtx.font = '18px Orbitron';
-taglineCtx.fillStyle = '#00d4e0';
-taglineCtx.fillText('Transforming Pixels into Actionable Insights', 10, 40);
-const taglineTexture = new THREE.CanvasTexture(taglineCanvas);
-const taglineSpriteMaterial = new THREE.SpriteMaterial({ map: taglineTexture, transparent: true });
-const taglineSprite = new THREE.Sprite(taglineSpriteMaterial);
-taglineSprite.scale.set(6, 0.75, 1);
-taglineSprite.position.set(0, 8, 5); // Top center of canvas
-scene.add(taglineSprite);
+// Typewriter Title and Tagline Display
+const titleText = "Computer Vision Expert";
+const taglineText = "Transforming Pixels into Actionable Insights";
+const fullText = `${titleText} | ${taglineText}`;
+const typewriterCanvas = document.createElement('canvas');
+typewriterCanvas.width = 768; // Wider for full text
+typewriterCanvas.height = 64;
+const typewriterCtx = typewriterCanvas.getContext('2d');
+typewriterCtx.font = '18px Orbitron';
+typewriterCtx.fillStyle = '#00d4e0';
+const typewriterTexture = new THREE.CanvasTexture(typewriterCanvas);
+const typewriterSpriteMaterial = new THREE.SpriteMaterial({ map: typewriterTexture, transparent: true });
+const typewriterSprite = new THREE.Sprite(typewriterSpriteMaterial);
+typewriterSprite.scale.set(8, 0.75, 1); // Adjusted scale for wider text
+typewriterSprite.position.set(0, 8, 5); // Top center
+scene.add(typewriterSprite);
+
+// Typewriter Effect
+let currentIndex = 0;
+const typeSpeed = 100; // Milliseconds per character
+function typeWriter() {
+    if (currentIndex <= fullText.length) {
+        typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
+        typewriterCtx.fillText(fullText.slice(0, currentIndex), 10, 40);
+        // Draw cursor (straight line)
+        const textWidth = typewriterCtx.measureText(fullText.slice(0, currentIndex)).width;
+        typewriterCtx.fillRect(10 + textWidth, 20, 2, 24); // Thin vertical line
+        typewriterTexture.needsUpdate = true;
+        currentIndex++;
+        setTimeout(typeWriter, typeSpeed);
+    } else {
+        // Stop cursor after typing
+        typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
+        typewriterCtx.fillText(fullText, 10, 40);
+        typewriterTexture.needsUpdate = true;
+    }
+}
+typeWriter();
 
 camera.position.z = 20;
 
