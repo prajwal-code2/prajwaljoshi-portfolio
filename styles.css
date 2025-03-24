@@ -211,48 +211,77 @@ body.light .btn-outline-light:hover {
     font-weight: 700;
 }
 
-/* About & Contact */
-#about, #contact {
-    padding: 5rem 0;
+/* Common Section Styling */
+#about, #contact, footer {
+    padding: 5rem 0; /* Consistent padding */
+    background: rgba(0, 0, 0, 0.7); /* Translucent black background for all */
 }
 
-/* About - Smaller text */
-#about p {
-    font-size: 1rem; /* Smaller text */
-    line-height: 1.5;
+/* About */
+#about h2 {
+    font-size: 2rem; /* Consistent headline size */
+    background: linear-gradient(90deg, #00eaff, #ff00ff); /* Gradient from dark mode */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-
-/* Contact - Smaller text, better visibility */
-#contact h2 {
-    font-size: 1.75rem; /* Reduced size */
-    color: #ffcc00; /* Bright yellow for contrast */
-    text-shadow: 0 0 8px rgba(255, 204, 0, 0.8); /* Glow for readability */
-}
-#contact p {
-    font-size: 1rem; /* Reduced size */
-    color: #ffffff; /* White for contrast */
-    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8); /* Glow for readability */
-}
-body.light #contact h2 {
-    color: #4a3ecc; /* Darker purple for light mode */
-    text-shadow: 0 0 5px rgba(74, 62, 204, 0.8);
-}
-body.light #contact p {
-    color: #1a1a3a; /* Dark text for light mode */
+body.light #about h2 {
+    background: linear-gradient(90deg, #00a4b0, #4a3ecc); /* Gradient from light mode */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
-#contact {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 255, 255, 0.3)); /* Adjusted gradient */
+#about p {
+    font-size: 1rem; /* Smallest text size */
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+}
+body.light #about p {
+    color: #1a1a3a;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
-/* Footer - Smaller text */
+/* Contact */
+#contact h2 {
+    font-size: 2rem; /* Consistent headline size */
+    background: linear-gradient(90deg, #00eaff, #ff00ff); /* Same gradient as About */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+}
+body.light #contact h2 {
+    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+#contact p {
+    font-size: 1.125rem; /* Slightly larger than About, smaller than previous */
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+}
+body.light #contact p {
+    color: #1a1a3a;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+/* Footer */
 footer {
     text-align: center;
+    padding: 2rem 0; /* Adjusted padding for footer */
 }
 footer p {
-    font-size: 0.875rem; /* Smaller text */
-    margin: 0;
-    padding: 1rem 0;
+    font-size: 1.0625rem; /* Slightly larger than About (1rem), smaller than previous (0.875rem) */
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+}
+body.light footer p {
+    color: #1a1a3a;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 /* Modal */
@@ -275,17 +304,17 @@ body.light .modal-header {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    #about h2, #contact h2 {
+        font-size: 1.75rem;
+    }
     #about p {
         font-size: 0.875rem;
     }
-    #contact h2 {
-        font-size: 1.5rem;
-    }
     #contact p {
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
     footer p {
-        font-size: 0.75rem;
+        font-size: 0.9375rem;
     }
     .hero h1 {
         font-size: 3rem;
