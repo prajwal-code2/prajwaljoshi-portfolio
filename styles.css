@@ -1,235 +1,101 @@
-body {
-    font-family: 'Roboto Mono', monospace;
-    margin: 0;
-    padding: 0;
-    transition: background 0.3s, color 0.3s;
-    overflow-x: hidden;
-}
-
-/* Dark Mode (default) */
+/* Base Styles */
 body.dark {
-    background: #0a0a1a;
-    color: #c0c0e0;
-}
-body.dark .text-content {
-    color: #c0c0e0;
-}
-body.dark .navbar {
-    background: linear-gradient(90deg, #1a1a3a, #2a2a5a);
-}
-body.dark .navbar.shrink {
-    background: linear-gradient(90deg, #0a0a2a, #1a1a4a);
-}
-body.dark .hero {
-    background: linear-gradient(135deg, #0a0a2a, #2a2a5a);
-}
-body.dark .gradient-bg {
-    background: linear-gradient(135deg, #0a0a2a, #1a1a3a);
-}
-body.dark .btn-gradient {
-    background: linear-gradient(90deg, #00d4e0, #5a4eff);
-}
-body.dark .gradient-text {
-    background: linear-gradient(90deg, #00d4e0, #5a4eff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(45deg, #1a1a3d, #2a2a5a);
+    color: #e0e0ff;
 }
 
-/* Light Mode */
 body.light {
-    background: #e8eaf6;
-    color: #1a1a3a;
+    background: linear-gradient(45deg, #f0f0ff, #d0d0ff);
+    color: #333366;
 }
-body.light .text-content {
-    color: #1a1a3a;
+
+/* Text Adjustments */
+.futuristic-text {
+    font-family: 'Orbitron', sans-serif;
 }
-body.light .navbar {
-    background: linear-gradient(90deg, #d8daf6, #e8eaf6);
+
+.text-content {
+    font-family: 'Roboto Mono', monospace;
 }
-body.light .navbar.shrink {
-    background: linear-gradient(90deg, #c8caf6, #d8daf6);
+
+body.dark .text-content,
+body.dark .futuristic-text,
+body.dark .navbar-brand,
+body.dark .nav-link,
+body.dark .card-title,
+body.dark .card-text {
+    color: #e0e0ff; /* Bright cyan-white for dark mode */
 }
-body.light .hero {
-    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
+
+body.light .text-content,
+body.light .futuristic-text,
+body.light .navbar-brand,
+body.light .nav-link,
+body.light .card-title,
+body.light .card-text {
+    color: #333366; /* Deep blue for light mode */
 }
-body.light .gradient-bg {
-    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
-}
-body.light .btn-gradient {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
-}
-body.light .gradient-text {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
+
+.gradient-text {
+    background: linear-gradient(45deg, #00d4e0, #5a4eff);
     -webkit-background-clip: text;
     background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Gradient Background */
+.gradient-bg {
+    transition: background 0.5s ease;
 }
 
 /* Navbar */
 .navbar {
-    padding: 1rem 2rem;
-    transition: padding 0.3s ease, background 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-}
-.navbar.shrink {
-    padding: 0.5rem 2rem;
-}
-.navbar-brand, .nav-link {
-    color: #fff !important;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    transition: color 0.3s ease;
-}
-body.light .navbar-brand, body.light .nav-link {
-    color: #1a1a3a !important;
-}
-.nav-link:hover {
-    color: #00d4e0 !important;
-}
-body.light .nav-link:hover {
-    color: #00a4b0 !important;
-}
-.btn-gradient {
-    color: #fff;
-    border: none;
-    padding: 0.4rem 1rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.btn-gradient:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 12px rgba(0, 212, 224, 0.5);
+    transition: padding 0.3s;
 }
 
-/* Hero with 3D Scene */
+.navbar.shrink {
+    padding: 0.5rem 1rem;
+}
+
+/* Hero Section */
 .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
+    height: 100vh;
     overflow: hidden;
 }
-.hero h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 5rem;
-    text-shadow: 0 0 10px rgba(90, 78, 255, 0.5);
-    z-index: 2;
-    position: relative;
-}
-.futuristic-text {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.5rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    z-index: 2;
-    position: relative;
-}
+
 #threeCanvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-    opacity: 0.7;
 }
 
-/* Projects */
+/* Project Cards */
 .project-card {
-    background: rgba(20, 20, 50, 0.85);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s;
 }
+
+body.dark .project-card {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 body.light .project-card {
-    background: rgba(232, 234, 246, 0.85);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.8);
 }
+
 .project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 0 12px rgba(90, 78, 255, 0.4);
-}
-.card-img-top {
-    height: 180px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-.project-card:hover .card-img-top {
-    transform: scale(1.02);
-}
-.card-body {
-    padding: 1.5rem;
-    color: #c0c0e0; /* Ensure text visibility in dark mode */
-}
-body.light .card-body {
-    color: #1a1a3a; /* Ensure text visibility in light mode */
-}
-.btn-outline-light {
-    color: #c0c0e0;
-    border-color: #c0c0e0;
-}
-body.light .btn-outline-light {
-    color: #1a1a3a;
-    border-color: #1a1a3a;
-    background: rgba(255, 255, 255, 0.1); /* Slight background for visibility */
-}
-.btn-outline-light:hover {
-    color: #fff;
-    background: #00d4e0;
-    border-color: #00d4e0;
-}
-body.light .btn-outline-light:hover {
-    color: #fff;
-    background: #00a4b0;
-    border-color: #00a4b0;
+    transform: translateY(-10px);
 }
 
-/* Gradient Text */
-.gradient-text {
-    font-weight: 700;
-}
-
-/* Gradient Background */
-.gradient-bg {
-    transition: background 0.3s ease;
-}
-
-/* About & Contact */
-#about, #contact {
-    padding: 5rem 0;
-}
-.text-gradient {
-    color: #00d4e0;
-    transition: color 0.3s ease;
-}
-body.light .text-gradient {
-    color: #00a4b0;
-}
-.text-gradient:hover {
-    color: #5a4eff;
-}
-body.light .text-gradient:hover {
-    color: #4a3ecc;
-}
-
-/* Modal */
-.modal-content {
-    background: rgba(20, 20, 50, 0.9);
-    color: #c0c0e0;
-    border: none;
-    border-radius: 10px;
-}
-body.light .modal-content {
-    background: rgba(232, 234, 246, 0.9);
-    color: #1a1a3a;
-}
-.modal-header {
-    border-bottom: 1px solid #00d4e0;
-}
-body.light .modal-header {
-    border-bottom: 1px solid #00a4b0;
+/* Sci-Fi Character Reveal */
+.scifi-reveal {
+    max-width: 200px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    margin-top: 20px;
 }

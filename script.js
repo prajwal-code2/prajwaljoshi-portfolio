@@ -110,9 +110,10 @@ const xOffset = 10; // Fine-tune to align with "P"
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), xOffset, 50); // Adjusted x to align with "P"
+    typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#333366';
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), xOffset, 50);
     const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(xOffset + textWidth, 25, 2, 30); // Cursor after text
+    typewriterCtx.fillRect(xOffset + textWidth, 25, 2, 30);
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -121,14 +122,13 @@ function typeWriter() {
         setTimeout(() => { isErasing = true; typeWriter(); }, delayBetween);
     } else if (isErasing && currentIndex > 0) {
         currentIndex--;
-        setTimeout(typeWriter, typeSpeed / 2); // Faster erase
+        setTimeout(typeWriter, typeSpeed / 2);
     } else if (isErasing && currentIndex === 0) {
         isErasing = false;
         currentText = currentText === titleText ? taglineText : titleText;
         setTimeout(typeWriter, delayBetween);
     }
 
-    // Update HTML canvas
     typewriterContainer.innerHTML = '';
     typewriterContainer.appendChild(typewriterCanvas);
 }
@@ -151,15 +151,15 @@ function animate() {
         if (!ship.userData.detected) {
             ship.position.x -= ship.userData.speed; // Move left
             if (ship.position.x < -20) {
-                ship.position.x = 20 + Math.random() * 5; // Reset to extreme right
-                ship.position.y = 2 + (Math.random() - 0.5) * 10; // Reset y
-                ship.position.z = 5.5 + (Math.random() - 0.5) * 10; // Reset z
+                ship.position.x = 20 + Math.random() * 5;
+                ship.position.y = 2 + (Math.random() - 0.5) * 10;
+                ship.position.z = 5.5 + (Math.random() - 0.5) * 10;
                 ship.material.opacity = 0.7;
             }
 
             // Check if ship is within V-shaped scanner
             const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
-            const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion); // Adjust for tilt
+            const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion);
             const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
             if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
@@ -199,7 +199,7 @@ function animate() {
 
                     // Spawn a New Ship
                     const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                    newShip.rotation.z = Math.PI / 2; // Point right
+                    newShip.rotation.z = Math.PI / 2;
                     newShip.position.set(
                         20 + Math.random() * 5,
                         2 + (Math.random() - 0.5) * 10,
@@ -211,14 +211,14 @@ function animate() {
                     glow.position.set(0, 0, 0);
                     newShip.add(glow);
                     ships.push(newShip);
-                }, 1000); // 1-second delay
+                }, 1000);
             }
         }
     });
 
     // Update Detection Count
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-    countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
+    countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#333366';
     countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 10, 40);
     countTexture.needsUpdate = true;
 
@@ -242,14 +242,23 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Navbar shrink on scroll
+// Navbar Shrink and Gradient Scroll
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
+    const scrollY = window.scrollY;
+    if (scrollY > 50) {
         navbar.classList.add('shrink');
     } else {
         navbar.classList.remove('shrink');
     }
+
+    // Dynamic Gradient Background
+    const gradientSections = document.querySelectorAll('.gradient-bg');
+    const scrollFraction = scrollY / (document.body.scrollHeight - window.innerHeight);
+    const hue = scrollFraction * 360; // Full color cycle
+    gradientSections.forEach(section => {
+        section.style.background = `linear-gradient(45deg, hsl(${hue}, 50%, 20%), hsl(${hue + 90}, 50%, 30%))`;
+    });
 });
 
 // Dark/Light Mode Toggle
@@ -281,17 +290,21 @@ function showDemo(demoId) {
     modal.show();
 }
 
-// Scroll-triggered animations
+// Scroll-Triggered Animations
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = 1;
             entry.target.style.transform = 'translateY(0)';
+            if (entry.target.id === 'scifi-character') {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+            }
         }
     });
 }, { threshold: 0.3 });
 
-document.querySelectorAll('#projects .project-card, #about, #contact').forEach(el => {
+document.querySelectorAll('#projects .project-card, #about, #contact, #scifi-character').forEach(el => {
     el.style.opacity = 0;
     el.style.transform = 'translateY(20px)';
     el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
