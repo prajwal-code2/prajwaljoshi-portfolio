@@ -4,7 +4,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Ambient Light (for GLTF model visibility)
+// Ambient Light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
@@ -17,20 +17,27 @@ scene.add(directionalLight);
 const loader = new THREE.GLTFLoader();
 let robotModel;
 loader.load(
-    './model/scene.gltf', // Path to your local GLTF file
+    '/prajwaljoshi-porfolio/model/scene.gltf', // Adjusted for GitHub Pages
     (gltf) => {
         robotModel = gltf.scene;
-        robotModel.scale.set(1, 1, 1); // Adjust scale as needed (start with 1)
-        robotModel.position.set(-15, 0, 5); // Match previous robot position
-        robotModel.rotation.y = Math.PI / 2; // Rotate to face right (adjust as needed)
+        robotModel.scale.set(1, 1, 1); // Start with scale 1
+        robotModel.position.set(-15, 0, 5); // Center of scene
+        robotModel.rotation.y = Math.PI / 2; // Face right
         scene.add(robotModel);
-        console.log('Model loaded successfully');
+        console.log('Model loaded successfully:', robotModel);
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     },
     (error) => {
         console.error('Error loading GLTF model:', error);
+        // Fallback: Add a red cube to confirm rendering
+        const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.set(-15, 0, 5);
+        scene.add(cube);
+        console.log('Fallback cube added');
     }
 );
 
@@ -38,7 +45,7 @@ loader.load(
 const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00eaff });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(-14.7, 2, 5.5); // Adjust based on model’s head
+eye.position.set(-14.7, 2, 5.5);
 scene.add(eye);
 
 // V-Shaped Scanner
@@ -54,7 +61,7 @@ vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 vShapeGeometry.setIndex([0, 1, 2]);
 const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
 const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-scannerField.position.set(-14.7, 2, 5.5); // Matches eye
+scannerField.position.set(-14.7, 2, 5.5);
 scene.add(scannerField);
 
 const marker = new THREE.Mesh(
@@ -157,9 +164,8 @@ function animate() {
     const dynamicTilt = Math.sin(time) * Math.PI / 6;
     scannerField.rotation.y = dynamicTilt;
 
-    // Rotate GLTF model (optional)
     if (robotModel) {
-        robotModel.rotation.y += 0.01; // Slow rotation for effect
+        robotModel.rotation.y += 0.01; // Slow rotation
     }
 
     ships.forEach((ship, index) => {
