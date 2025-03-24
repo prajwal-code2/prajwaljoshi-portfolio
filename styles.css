@@ -13,10 +13,9 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('assets/scifi-background.jpg') no-repeat center center fixed;
+    background: url('assets/scifi-robot.png') no-repeat center top fixed;
     background-size: cover;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: background-position 0.5s ease; /* Smooth transition */
     z-index: -1;
 }
 
@@ -142,7 +141,7 @@ body.light .nav-link:hover {
     text-transform: uppercase;
     z-index: 2;
     position: relative;
-    text-align: center; /* Ensure typewriter aligns with h1 */
+    text-align: center;
 }
 #threeCanvas {
     position: absolute;
@@ -249,13 +248,4 @@ body.light .modal-content {
 }
 body.light .modal-header {
     border-bottom: 1px solid #00a4b0;
-}
-
-/* Sci-Fi Character Reveal */
-.scifi-reveal {
-    max-width: 200px;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    margin-top: 20px;
 }

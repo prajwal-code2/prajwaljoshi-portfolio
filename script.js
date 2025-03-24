@@ -281,10 +281,11 @@ window.addEventListener('scroll', () => {
         navbar.classList.remove('shrink');
     }
 
-    // Background Image Reveal
+    // Smooth Background Image Reveal
     const backgroundImage = document.getElementById('background-image');
     const scrollFraction = scrollY / (document.body.scrollHeight - window.innerHeight);
-    backgroundImage.style.opacity = Math.min(scrollFraction * 2, 1); // Fully visible at 50% scroll
+    const yPosition = scrollFraction * 100; // Move from top (0%) to bottom (100%)
+    backgroundImage.style.backgroundPosition = `center ${yPosition}%`;
 });
 
 // Dark/Light Mode Toggle
@@ -322,15 +323,11 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = 1;
             entry.target.style.transform = 'translateY(0)';
-            if (entry.target.id === 'scifi-character') {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-            }
         }
     });
 }, { threshold: 0.3 });
 
-document.querySelectorAll('#projects .project-card, #about, #contact, #scifi-character').forEach(el => {
+document.querySelectorAll('#projects .project-card, #about, #contact').forEach(el => {
     el.style.opacity = 0;
     el.style.transform = 'translateY(20px)';
     el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
