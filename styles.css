@@ -25,7 +25,7 @@ body.dark {
     color: #00eaff;
 }
 body.dark .text-content {
-    color: #ffffff;
+    color: #ffffff; /* White for general text */
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 body.dark .navbar {
@@ -136,14 +136,14 @@ body.light .nav-link:hover {
 }
 .futuristic-text {
     font-family: 'Exo 2', sans-serif;
-    font-size: 2.2rem; /* Increased size */
+    font-size: 3rem; /* Increased size */
     letter-spacing: 4px;
     text-transform: uppercase;
     z-index: 2;
     position: relative;
     text-align: left;
     color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+    text-shadow: 0 0 10px rgba(0, 234, 255, 1); /* Stronger glow */
 }
 #threeCanvas {
     position: absolute;
@@ -215,15 +215,19 @@ body.light .btn-outline-light:hover {
 #about, #contact {
     padding: 5rem 0;
 }
+#contact .text-content {
+    color: #ffcc00; /* Bright yellow for contrast */
+    text-shadow: 0 0 8px rgba(255, 204, 0, 0.8);
+}
 .text-gradient {
-    color: #ff00ff; /* Magenta for contrast */
+    color: #ffcc00; /* Bright yellow for links */
     transition: color 0.3s ease;
 }
 body.light .text-gradient {
     color: #4a3ecc;
 }
 .text-gradient:hover {
-    color: #00eaff;
+    color: #ffffff; /* White on hover */
 }
 body.light .text-gradient:hover {
     color: #00a4b0;
@@ -231,7 +235,12 @@ body.light .text-gradient:hover {
 
 /* Footer */
 footer {
-    text-align: center; /* Center-aligned */
+    text-align: center;
+}
+footer .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Modal */

@@ -73,15 +73,15 @@ for (let i = 0; i < 8; i++) {
 
 // Detection Count Display
 const countCanvas = document.createElement('canvas');
-countCanvas.width = 512; // Increased size
-countCanvas.height = 128;
+countCanvas.width = 1024; // Doubled again
+countCanvas.height = 256;
 const countCtx = countCanvas.getContext('2d');
-countCtx.font = '40px Exo 2'; // Larger font
-countCtx.fillStyle = '#ffffff'; // White for visibility
+countCtx.font = '60px Exo 2'; // Larger font
+countCtx.fillStyle = '#ffcc00'; // Bright yellow
 const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(8, 2, 1); // Larger scale
+countSprite.scale.set(12, 3, 1); // Larger scale
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
@@ -89,9 +89,9 @@ scene.add(countSprite);
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 768;
-typewriterCanvas.height = 100; // Increased height
+typewriterCanvas.height = 120; // Increased height
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '36px Exo 2'; // Larger font
+typewriterCtx.font = '48px Exo 2'; // Much larger font
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -106,10 +106,10 @@ function typeWriter() {
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
     const h1 = document.querySelector('.hero h1');
     const h1Rect = h1.getBoundingClientRect();
-    const offsetX = h1Rect.left; // Align with left edge of "Prajwal"
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 60); // Adjusted Y position
+    const offsetX = h1Rect.left + 10; // Slight right shift from left edge
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 80); // Adjusted Y position
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 30, 2, 40);
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 2, 50);
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -162,7 +162,6 @@ function animate() {
                 ship.userData.detectionTime = Date.now();
                 totalDetections++;
 
-                // Dots instead of boxes
                 const dotGeometry = new THREE.SphereGeometry(0.1, 8, 8);
                 const dotMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9 });
                 const dot = new THREE.Mesh(dotGeometry, dotMaterial);
@@ -171,16 +170,16 @@ function animate() {
                 ship.userData.detectDot = dot;
 
                 const detectCanvas = document.createElement('canvas');
-                detectCanvas.width = 128;
-                detectCanvas.height = 32;
+                detectCanvas.width = 256; // Increased size
+                detectCanvas.height = 64;
                 const detectCtx = detectCanvas.getContext('2d');
-                detectCtx.font = '20px Exo 2';
+                detectCtx.font = '36px Exo 2'; // Larger font
                 detectCtx.fillStyle = '#00ff00';
-                detectCtx.fillText('DETECTED', 10, 20);
+                detectCtx.fillText('DETECTED', 20, 40);
                 const detectTexture = new THREE.CanvasTexture(detectCanvas);
                 const detectSpriteMaterial = new THREE.SpriteMaterial({ map: detectTexture, transparent: true });
                 const detectSprite = new THREE.Sprite(detectSpriteMaterial);
-                detectSprite.scale.set(2, 0.5, 1);
+                detectSprite.scale.set(4, 1, 1); // Larger scale
                 detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                 scene.add(detectSprite);
                 ship.userData.detectSprite = detectSprite;
@@ -216,8 +215,8 @@ function animate() {
     });
 
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-    countCtx.fillStyle = '#ffffff'; // White for visibility
-    countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 20, 80); // Adjusted position
+    countCtx.fillStyle = '#ffcc00'; // Bright yellow
+    countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160); // Adjusted position
     countTexture.needsUpdate = true;
 
     renderer.render(scene, camera);
