@@ -109,10 +109,12 @@ const delayBetween = 1000; // 1s delay between cycles
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#333366';
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), 0, 50); // Aligned with h1
-    const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(textWidth, 25, 2, 30);
+    typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
+    const textWidth = typewriterCtx.measureText("Prajwal Joshi").width;
+    const offsetX = (typewriterCanvas.width - textWidth) / 2; // Center align with h1
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 50);
+    const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 25, 2, 30);
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -229,7 +231,7 @@ function animate() {
 
     // Update Detection Count
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-    countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#333366';
+    countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
     countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 10, 40);
     countTexture.needsUpdate = true;
 
@@ -253,7 +255,7 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Navbar Shrink, Gradient Scroll, and Background Reveal
+// Navbar Shrink and Background Reveal
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     const scrollY = window.scrollY;
@@ -263,16 +265,9 @@ window.addEventListener('scroll', () => {
         navbar.classList.remove('shrink');
     }
 
-    // Dynamic Gradient Background
-    const gradientSections = document.querySelectorAll('.gradient-bg');
-    const scrollFraction = scrollY / (document.body.scrollHeight - window.innerHeight);
-    const hue = scrollFraction * 360; // Full color cycle
-    gradientSections.forEach(section => {
-        section.style.background = `linear-gradient(45deg, hsl(${hue}, 50%, 20%), hsl(${hue + 90}, 50%, 30%))`;
-    });
-
     // Background Image Reveal
     const backgroundImage = document.getElementById('background-image');
+    const scrollFraction = scrollY / (document.body.scrollHeight - window.innerHeight);
     backgroundImage.style.opacity = Math.min(scrollFraction * 2, 1); // Fully visible at 50% scroll
 });
 

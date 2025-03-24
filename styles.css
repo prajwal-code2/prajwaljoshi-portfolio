@@ -6,13 +6,28 @@ body {
     overflow-x: hidden;
 }
 
+/* Background Image */
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('assets/scifi-background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+}
+
 /* Dark Mode (default) */
 body.dark {
-    background: #0a0a1a;
+    background: rgba(10, 10, 26, 0.7); /* Semi-transparent overlay */
     color: #c0c0e0;
 }
 body.dark .text-content {
     color: #c0c0e0;
+    text-shadow: 0 0 5px rgba(0, 212, 224, 0.5); /* Glow for visibility */
 }
 body.dark .navbar {
     background: linear-gradient(90deg, #1a1a3a, #2a2a5a);
@@ -21,10 +36,10 @@ body.dark .navbar.shrink {
     background: linear-gradient(90deg, #0a0a2a, #1a1a4a);
 }
 body.dark .hero {
-    background: linear-gradient(135deg, #0a0a2a, #2a2a5a);
+    background: linear-gradient(135deg, rgba(10, 10, 42, 0.8), rgba(42, 42, 90, 0.8));
 }
 body.dark .gradient-bg {
-    background: linear-gradient(135deg, #0a0a2a, #1a1a3a);
+    background: linear-gradient(135deg, rgba(10, 10, 42, 0.8), rgba(26, 26, 58, 0.8));
 }
 body.dark .btn-gradient {
     background: linear-gradient(90deg, #00d4e0, #5a4eff);
@@ -38,11 +53,12 @@ body.dark .gradient-text {
 
 /* Light Mode */
 body.light {
-    background: #e8eaf6;
+    background: rgba(232, 234, 246, 0.7); /* Semi-transparent overlay */
     color: #1a1a3a;
 }
 body.light .text-content {
     color: #1a1a3a;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 body.light .navbar {
     background: linear-gradient(90deg, #d8daf6, #e8eaf6);
@@ -51,10 +67,10 @@ body.light .navbar.shrink {
     background: linear-gradient(90deg, #c8caf6, #d8daf6);
 }
 body.light .hero {
-    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
+    background: linear-gradient(135deg, rgba(216, 218, 246, 0.8), rgba(232, 234, 246, 0.8));
 }
 body.light .gradient-bg {
-    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
+    background: linear-gradient(135deg, rgba(216, 218, 246, 0.8), rgba(232, 234, 246, 0.8));
 }
 body.light .btn-gradient {
     background: linear-gradient(90deg, #00a4b0, #4a3ecc);
@@ -126,6 +142,7 @@ body.light .nav-link:hover {
     text-transform: uppercase;
     z-index: 2;
     position: relative;
+    text-align: center; /* Ensure typewriter aligns with h1 */
 }
 #threeCanvas {
     position: absolute;
@@ -163,10 +180,10 @@ body.light .project-card {
 }
 .card-body {
     padding: 1.5rem;
-    color: #c0c0e0; /* Ensure text visibility in dark mode */
+    color: #c0c0e0;
 }
 body.light .card-body {
-    color: #1a1a3a; /* Ensure text visibility in light mode */
+    color: #1a1a3a;
 }
 .btn-outline-light {
     color: #c0c0e0;
@@ -175,7 +192,7 @@ body.light .card-body {
 body.light .btn-outline-light {
     color: #1a1a3a;
     border-color: #1a1a3a;
-    background: rgba(255, 255, 255, 0.1); /* Slight background for visibility */
+    background: rgba(255, 255, 255, 0.1);
 }
 .btn-outline-light:hover {
     color: #fff;
@@ -232,4 +249,13 @@ body.light .modal-content {
 }
 body.light .modal-header {
     border-bottom: 1px solid #00a4b0;
+}
+
+/* Sci-Fi Character Reveal */
+.scifi-reveal {
+    max-width: 200px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    margin-top: 20px;
 }
