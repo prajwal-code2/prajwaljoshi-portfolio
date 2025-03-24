@@ -4,7 +4,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Ambient Light (for Sketchfab model visibility)
+// Ambient Light (for GLTF model visibility)
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
@@ -13,31 +13,32 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(0, 10, 10);
 scene.add(directionalLight);
 
-// Sketchfab Model (Sci-Fi Robot)
+// Local GLTF Model
 const loader = new THREE.GLTFLoader();
 let robotModel;
 loader.load(
-    'https://sketchfab.com/models/0e9b8e6f8e8f4e8e9b8e6f8e9b8e6f8e/download', // Replace with your model's GLB URL
+    './model/scene.gltf', // Path to your local GLTF file
     (gltf) => {
         robotModel = gltf.scene;
-        robotModel.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
-        robotModel.position.set(-15, 0, 5); // Adjusted to match previous robot position
-        robotModel.rotation.y = Math.PI / 2; // Rotate if needed
+        robotModel.scale.set(1, 1, 1); // Adjust scale as needed (start with 1)
+        robotModel.position.set(-15, 0, 5); // Matches previous robot position
+        robotModel.rotation.y = Math.PI / 2; // Adjust rotation if needed
         scene.add(robotModel);
+        console.log('Model loaded successfully:', robotModel);
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     },
     (error) => {
-        console.error('Error loading Sketchfab model:', error);
+        console.error('Error loading GLTF model:', error);
     }
 );
 
-// Eye (Scanner Source) - Positioned relative to model once loaded
+// Eye (Scanner Source)
 const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00eaff });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(-14.7, 2, 5.5); // Adjust based on model
+eye.position.set(-14.7, 2, 5.5); // Adjust based on model’s head
 scene.add(eye);
 
 // V-Shaped Scanner
@@ -156,7 +157,7 @@ function animate() {
     const dynamicTilt = Math.sin(time) * Math.PI / 6;
     scannerField.rotation.y = dynamicTilt;
 
-    // Rotate Sketchfab model (optional)
+    // Rotate GLTF model (optional)
     if (robotModel) {
         robotModel.rotation.y += 0.01; // Slow rotation for effect
     }
