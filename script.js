@@ -4,27 +4,41 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Robot
-const robotGroup = new THREE.Group();
-const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-const headMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.9 });
-const head = new THREE.Mesh(headGeometry, headMaterial);
-head.position.set(-15, 2, 5);
-robotGroup.add(head);
+// Ambient Light (for Sketchfab model visibility)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
 
+// Directional Light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(0, 10, 10);
+scene.add(directionalLight);
+
+// Sketchfab Model (Sci-Fi Robot)
+const loader = new THREE.GLTFLoader();
+let robotModel;
+loader.load(
+    'https://sketchfab.com/models/0e9b8e6f8e8f4e8e9b8e6f8e9b8e6f8e/download', // Replace with your model's GLB URL
+    (gltf) => {
+        robotModel = gltf.scene;
+        robotModel.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
+        robotModel.position.set(-15, 0, 5); // Adjusted to match previous robot position
+        robotModel.rotation.y = Math.PI / 2; // Rotate if needed
+        scene.add(robotModel);
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    (error) => {
+        console.error('Error loading Sketchfab model:', error);
+    }
+);
+
+// Eye (Scanner Source) - Positioned relative to model once loaded
 const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00eaff });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(-14.7, 2, 5.5);
-robotGroup.add(eye);
-
-const bodyGeometry = new THREE.CylinderGeometry(0.8, 1, 2.5, 32);
-const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
-const robotBody = new THREE.Mesh(bodyGeometry, bodyMaterial);
-robotBody.position.set(-15, 0.5, 5);
-robotGroup.add(robotBody);
-
-scene.add(robotGroup);
+eye.position.set(-14.7, 2, 5.5); // Adjust based on model
+scene.add(eye);
 
 // V-Shaped Scanner
 const vShapeGeometry = new THREE.BufferGeometry();
@@ -39,7 +53,7 @@ vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 vShapeGeometry.setIndex([0, 1, 2]);
 const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
 const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-scannerField.position.set(-14.7, 2, 5.5);
+scannerField.position.set(-14.7, 2, 5.5); // Matches eye
 scene.add(scannerField);
 
 const marker = new THREE.Mesh(
@@ -73,15 +87,15 @@ for (let i = 0; i < 8; i++) {
 
 // Detection Count Display
 const countCanvas = document.createElement('canvas');
-countCanvas.width = 1024; // Doubled again
+countCanvas.width = 1024;
 countCanvas.height = 256;
 const countCtx = countCanvas.getContext('2d');
-countCtx.font = '60px Exo 2'; // Larger font
-countCtx.fillStyle = '#ffcc00'; // Bright yellow
+countCtx.font = '60px Exo 2';
+countCtx.fillStyle = '#ffcc00';
 const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(12, 3, 1); // Larger scale
+countSprite.scale.set(12, 3, 1);
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
@@ -89,9 +103,9 @@ scene.add(countSprite);
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 768;
-typewriterCanvas.height = 120; // Increased height
+typewriterCanvas.height = 120;
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '48px Exo 2'; // Much larger font
+typewriterCtx.font = '48px Exo 2';
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -106,8 +120,8 @@ function typeWriter() {
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
     const h1 = document.querySelector('.hero h1');
     const h1Rect = h1.getBoundingClientRect();
-    const offsetX = h1Rect.left + 10; // Slight right shift from left edge
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 80); // Adjusted Y position
+    const offsetX = h1Rect.left + 10;
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 80);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
     typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 2, 50);
 
@@ -142,6 +156,11 @@ function animate() {
     const dynamicTilt = Math.sin(time) * Math.PI / 6;
     scannerField.rotation.y = dynamicTilt;
 
+    // Rotate Sketchfab model (optional)
+    if (robotModel) {
+        robotModel.rotation.y += 0.01; // Slow rotation for effect
+    }
+
     ships.forEach((ship, index) => {
         ship.position.x -= ship.userData.speed;
         if (ship.position.x < -20 && !ship.userData.detected) {
@@ -170,16 +189,16 @@ function animate() {
                 ship.userData.detectDot = dot;
 
                 const detectCanvas = document.createElement('canvas');
-                detectCanvas.width = 256; // Increased size
+                detectCanvas.width = 256;
                 detectCanvas.height = 64;
                 const detectCtx = detectCanvas.getContext('2d');
-                detectCtx.font = '36px Exo 2'; // Larger font
+                detectCtx.font = '36px Exo 2';
                 detectCtx.fillStyle = '#00ff00';
                 detectCtx.fillText('DETECTED', 20, 40);
                 const detectTexture = new THREE.CanvasTexture(detectCanvas);
                 const detectSpriteMaterial = new THREE.SpriteMaterial({ map: detectTexture, transparent: true });
                 const detectSprite = new THREE.Sprite(detectSpriteMaterial);
-                detectSprite.scale.set(4, 1, 1); // Larger scale
+                detectSprite.scale.set(4, 1, 1);
                 detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                 scene.add(detectSprite);
                 ship.userData.detectSprite = detectSprite;
@@ -215,8 +234,8 @@ function animate() {
     });
 
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-    countCtx.fillStyle = '#ffcc00'; // Bright yellow
-    countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160); // Adjusted position
+    countCtx.fillStyle = '#ffcc00';
+    countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160);
     countTexture.needsUpdate = true;
 
     renderer.render(scene, camera);
