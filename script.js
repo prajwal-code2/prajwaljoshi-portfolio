@@ -17,27 +17,31 @@ scene.add(directionalLight);
 const loader = new THREE.GLTFLoader();
 let robotModel;
 loader.load(
-    '/prajwaljoshi-porfolio/model/scene.gltf', // Adjusted for GitHub Pages
+    '/prajwaljoshi-portfolio/model/scene.gltf', // Corrected repo name
     (gltf) => {
         robotModel = gltf.scene;
-        robotModel.scale.set(1, 1, 1); // Start with scale 1
-        robotModel.position.set(-15, 0, 5); // Center of scene
-        robotModel.rotation.y = Math.PI / 2; // Face right
+        robotModel.scale.set(1, 1, 1);
+        robotModel.position.set(-15, 0, 5);
+        robotModel.rotation.y = Math.PI / 2;
         scene.add(robotModel);
         console.log('Model loaded successfully:', robotModel);
     },
     (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        if (xhr.total > 0) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        } else {
+            console.log('Loading model... (size unknown)');
+        }
     },
     (error) => {
         console.error('Error loading GLTF model:', error);
-        // Fallback: Add a red cube to confirm rendering
+        // Fallback: Add a red cube
         const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
         const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.position.set(-15, 0, 5);
         scene.add(cube);
-        console.log('Fallback cube added');
+        console.log('Fallback cube added due to loading failure');
     }
 );
 
@@ -165,7 +169,7 @@ function animate() {
     scannerField.rotation.y = dynamicTilt;
 
     if (robotModel) {
-        robotModel.rotation.y += 0.01; // Slow rotation
+        robotModel.rotation.y += 0.01;
     }
 
     ships.forEach((ship, index) => {
