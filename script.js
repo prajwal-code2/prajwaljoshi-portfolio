@@ -30,12 +30,12 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// Expanding V-Shaped Vision Cone
-const coneGeometry = new THREE.ConeGeometry(0.1, 0.1, 32, 1, true); // Start small
+// V-Shaped Vision Cone (Apex at Eye, Base Toward Ships)
+const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true); // Base radius: 10, height: 20
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-14.7, 2, 5.5); // Aligned with eye
-visionCone.rotation.z = -Math.PI / 2; // Pointing right
+visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
+visionCone.rotation.z = -Math.PI / 2; // Base points right
 scene.add(visionCone);
 
 // Ships (Approaching from Right)
@@ -88,21 +88,11 @@ scene.add(countSprite);
 camera.position.z = 20;
 
 // Animation Loop
-let coneSize = 0.1;
-let expanding = true;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Expand Vision Cone
-    if (expanding) {
-        coneSize += 0.05;
-        if (coneSize >= 20) expanding = false;
-    } else {
-        coneSize -= 0.05;
-        if (coneSize <= 5) expanding = true;
-    }
-    visionCone.geometry.dispose();
-    visionCone.geometry = new THREE.ConeGeometry(coneSize / 2, coneSize, 32, 1, true);
+    // Subtle Robot Movement
+    head.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
 
     // Ship Movement and Detection
     ships.forEach(ship => {
@@ -120,7 +110,7 @@ function animate() {
         const coneDirection = new THREE.Vector3(1, 0, 0); // Cone points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < Math.PI / 6 && distance < coneSize && !ship.userData.detected) { // 30-degree cone
+        if (angle < Math.PI / 6 && distance < 20 && !ship.userData.detected) { // 30-degree cone, 20 units long
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
