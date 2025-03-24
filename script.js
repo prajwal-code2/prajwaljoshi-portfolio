@@ -108,7 +108,7 @@ for (let i = 0; i < 8; i++) {
     ship.add(glow);
 }
 
-// Detection Count Display - Larger and above robot
+// Detection Count Display - Larger and closer
 const countCanvas = document.createElement('canvas');
 countCanvas.width = 1024;
 countCanvas.height = 256;
@@ -119,16 +119,16 @@ const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
 countSprite.scale.set(16, 4, 1);
-countSprite.position.set(-15, 5, 5);
+countSprite.position.set(-15, 5, 10); // Moved closer (z = 10 from 5)
 scene.add(countSprite);
 
-// Typewriter Effect - Fixed position and size
+// Typewriter Effect - Smaller and centered
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 1024;
-typewriterCanvas.height = 160;
+typewriterCanvas.height = 120; // Matches index.html height
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '64px Exo 2';
+typewriterCtx.font = '48px Exo 2'; // Smaller text
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -141,12 +141,11 @@ const delayBetween = 1000;
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
-    const h1 = document.querySelector('.hero h1');
-    const h1Rect = h1.getBoundingClientRect();
-    const offsetX = (window.innerWidth - typewriterCtx.measureText(currentText).width) / 2; // Center horizontally
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100);
+    const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
+    const offsetX = (typewriterCanvas.width - textWidth) / 2; // Center text
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 80);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 36, 2, 64); // Cursor matches text height
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 32, 2, 48); // Smaller cursor matching text
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
