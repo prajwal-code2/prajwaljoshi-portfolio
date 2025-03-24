@@ -4,77 +4,104 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Robot Eye
-const eyeGroup = new THREE.Group();
-const eyeGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, wireframe: true });
-const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(0, 8, 10);
-eyeGroup.add(eye);
+// Holographic Scanning Plane
+const planeGeometry = new THREE.PlaneGeometry(30, 0.2);
+const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.4 });
+const scanPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+scanPlane.position.set(0, 0, -5);
+scene.add(scanPlane);
 
-// Iris (Subtle Glow)
-const irisGeometry = new THREE.SphereGeometry(0.4, 16, 16);
-const irisMaterial = new THREE.MeshBasicMaterial({ color: 0x00c4cc });
-const iris = new THREE.Mesh(irisGeometry, irisMaterial);
-iris.position.set(0, 0, 1);
-eye.add(iris);
-
-// Scanning Beam (Minimalist)
-const beamGeometry = new THREE.PlaneGeometry(30, 0.1);
-const beamMaterial = new THREE.MeshBasicMaterial({ color: 0x00c4cc, transparent: true, opacity: 0.3 });
-const beam = new THREE.Mesh(beamGeometry, beamMaterial);
-beam.position.set(0, 0, 0);
-eyeGroup.add(beam);
-scene.add(eyeGroup);
-
-// Tracked Objects (Subtle Boxes)
-const boxGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x7a4eff, wireframe: true, transparent: true, opacity: 0.5 });
-const boxes = [];
-for (let i = 0; i < 4; i++) {
-    const box = new THREE.Mesh(boxGeometry, boxMaterial.clone());
-    box.position.set(
+// Detected Objects (Cubes)
+const cubeGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.3 });
+const cubes = [];
+for (let i = 0; i < 6; i++) {
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial.clone());
+    cube.position.set(
         (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 10 - 5,
+        (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 10
     );
-    scene.add(box);
-    boxes.push(box);
+    cube.userData = { detected: false };
+    scene.add(cube);
+    cubes.push(cube);
+
+    // Detection Label (Text Sprite)
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '20px Orbitron';
+    ctx.fillStyle = '#00d4e0';
+    ctx.fillText('DETECTED', 10, 20);
+    const texture = new THREE.CanvasTexture(canvas);
+    const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(2, 0.5, 1);
+    sprite.position.set(0, 1, 0);
+    cube.add(sprite);
 }
 
-camera.position.z = 20;
+// Subtle Particle Background
+const particleGeometry = new THREE.BufferGeometry();
+const particleCount = 50;
+const positions = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount * 3; i += 3) {
+    positions[i] = (Math.random() - 0.5) * 40;
+    positions[i + 1] = (Math.random() - 0.5) * 20;
+    positions[i + 2] = (Math.random() - 0.5) * 20;
+}
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particleMaterial = new THREE.PointsMaterial({ color: 0x5a4eff, size: 0.1, transparent: true, opacity: 0.5 });
+const particles = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particles);
+
+camera.position.z = 15;
 
 // Animation Loop
-let beamAngle = 0;
+let scanAngle = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Eye Movement (Subtle)
-    eyeGroup.rotation.y = Math.sin(Date.now() * 0.0005) * 0.1;
-    eyeGroup.rotation.x = Math.cos(Date.now() * 0.0005) * 0.05;
+    // Scanning Plane Animation
+    scanAngle += 0.02;
+    scanPlane.position.y = Math.sin(scanAngle) * 8;
 
-    // Beam Scanning (Smooth and Minimal)
-    beamAngle += 0.02;
-    beam.position.y = Math.sin(beamAngle) * 8 - 5;
+    // Cube Animation and Detection
+    cubes.forEach(cube => {
+        cube.rotation.x += 0.003;
+        cube.rotation.y += 0.003;
+        cube.position.z += Math.sin(Date.now() * 0.001 + cube.position.x) * 0.01;
 
-    // Box Animation (Elegant Movement)
-    boxes.forEach(box => {
-        box.rotation.x += 0.005;
-        box.rotation.y += 0.005;
-        box.position.y += Math.sin(Date.now() * 0.001 + box.position.x) * 0.01;
-
-        // Subtle Detection Highlight
-        const distance = Math.abs(box.position.y - beam.position.y);
+        const distance = Math.abs(cube.position.y - scanPlane.position.y);
         if (distance < 0.5) {
-            box.material.opacity = 0.8;
+            cube.material.opacity = 0.8;
+            cube.children[0].material.opacity = 0.8; // Show "DETECTED" label
         } else {
-            box.material.opacity = 0.5;
+            cube.material.opacity = 0.3;
+            cube.children[0].material.opacity = 0; // Hide label
         }
     });
+
+    // Particle Animation
+    const particlePositions = particles.geometry.attributes.position.array;
+    for (let i = 1; i < particleCount * 3; i += 3) {
+        particlePositions[i] += Math.sin(Date.now() * 0.001 + particlePositions[i - 1]) * 0.005;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
 }
 animate();
+
+// Mouse Interaction
+document.addEventListener('mousemove', (event) => {
+    const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    camera.position.x = mouseX * 5;
+    camera.position.y = mouseY * 3;
+    camera.lookAt(scene.position);
+});
 
 // Resize Handler
 window.addEventListener('resize', () => {
@@ -111,7 +138,7 @@ toggleButton.addEventListener('click', () => {
 
 // Show live demo in modal
 function showDemo(demoId) {
-    const demoFrame = document.getElementById('threeCanvas');
+    const demoFrame = document.getElementById('demoFrame'); // Fixed ID reference
     const demoUrls = {
         'demo1': 'https://your-demo-url-1.com', // Replace with your live demo URLs
         'demo2': 'https://your-demo-url-2.com',
@@ -122,7 +149,7 @@ function showDemo(demoId) {
     modal.show();
 }
 
-// Scroll-triggered animations (removed animate.css for simplicity)
+// Scroll-triggered animations
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {

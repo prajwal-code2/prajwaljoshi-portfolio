@@ -1,5 +1,5 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Mono', monospace;
     margin: 0;
     padding: 0;
     transition: background 0.3s, color 0.3s;
@@ -9,15 +9,15 @@ body {
 /* Dark Mode (default) */
 body.dark {
     background: #0a0a1a;
-    color: #d0d0f0;
+    color: #c0c0e0;
 }
 body.dark .text-content {
-    color: #d0d0f0;
+    color: #c0c0e0;
 }
 
 /* Light Mode */
 body.light {
-    background: #f0f2ff;
+    background: #e8eaf6;
     color: #1a1a3a;
 }
 body.light .text-content {
@@ -26,15 +26,15 @@ body.light .text-content {
 
 /* Navbar */
 .navbar {
-    background: linear-gradient(90deg, #1a1a3a, #3a3a6a);
-    padding: 1rem 1.5rem;
+    background: linear-gradient(90deg, #1a1a3a, #2a2a5a);
+    padding: 1rem 2rem;
     transition: padding 0.3s ease, background 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000;
 }
 .navbar.shrink {
-    padding: 0.5rem 1.5rem;
-    background: linear-gradient(90deg, #0a0a2a, #2a2a5a);
+    padding: 0.5rem 2rem;
+    background: linear-gradient(90deg, #0a0a2a, #1a1a4a);
 }
 .navbar-brand, .nav-link {
     color: #fff !important;
@@ -44,23 +44,23 @@ body.light .text-content {
     transition: color 0.3s ease;
 }
 .nav-link:hover {
-    color: #00c4cc !important;
+    color: #00d4e0 !important;
 }
 .btn-gradient {
-    background: linear-gradient(90deg, #00c4cc, #7a4eff);
+    background: linear-gradient(90deg, #00d4e0, #5a4eff);
     color: #fff;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 1rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .btn-gradient:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(0, 196, 204, 0.5);
+    box-shadow: 0 0 12px rgba(0, 212, 224, 0.5);
 }
 
-/* Hero with 3D Canvas */
+/* Hero with 3D Scene */
 .hero {
-    background: linear-gradient(135deg, #0a0a2a, #3a3a6a);
+    background: linear-gradient(135deg, #0a0a2a, #2a2a5a);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -70,15 +70,15 @@ body.light .text-content {
 }
 .hero h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 4.5rem;
-    text-shadow: 0 0 15px rgba(58, 58, 106, 0.8);
+    font-size: 5rem;
+    text-shadow: 0 0 10px rgba(90, 78, 255, 0.5);
     z-index: 2;
     position: relative;
 }
 .futuristic-text {
     font-family: 'Orbitron', sans-serif;
     font-size: 1.5rem;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     z-index: 2;
     position: relative;
@@ -90,32 +90,32 @@ body.light .text-content {
     width: 100%;
     height: 100%;
     z-index: 1;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 /* Projects */
 .project-card {
-    background: rgba(20, 20, 50, 0.9);
+    background: rgba(20, 20, 50, 0.85);
     border: none;
-    border-radius: 15px;
+    border-radius: 10px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 body.light .project-card {
-    background: rgba(240, 242, 255, 0.9);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: rgba(232, 234, 246, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .project-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 15px rgba(58, 58, 106, 0.5);
+    transform: translateY(-8px);
+    box-shadow: 0 0 12px rgba(90, 78, 255, 0.4);
 }
 .card-img-top {
-    height: 200px;
+    height: 180px;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 .project-card:hover .card-img-top {
-    transform: scale(1.03);
+    transform: scale(1.02);
 }
 .card-body {
     padding: 1.5rem;
@@ -123,7 +123,7 @@ body.light .project-card {
 
 /* Gradient Text */
 .gradient-text {
-    background: linear-gradient(90deg, #00c4cc, #7a4eff);
+    background: linear-gradient(90deg, #00d4e0, #5a4eff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -133,7 +133,7 @@ body.light .project-card {
     background: linear-gradient(135deg, #0a0a2a, #1a1a3a);
 }
 body.light .gradient-bg {
-    background: linear-gradient(135deg, #e0e2ff, #f0f2ff);
+    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
 }
 
 /* About & Contact */
@@ -141,24 +141,24 @@ body.light .gradient-bg {
     padding: 5rem 0;
 }
 .text-gradient {
-    color: #00c4cc;
+    color: #00d4e0;
     transition: color 0.3s ease;
 }
 .text-gradient:hover {
-    color: #7a4eff;
+    color: #5a4eff;
 }
 
 /* Modal */
 .modal-content {
-    background: rgba(20, 20, 50, 0.95);
-    color: #d0d0f0;
+    background: rgba(20, 20, 50, 0.9);
+    color: #c0c0e0;
     border: none;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 body.light .modal-content {
-    background: rgba(240, 242, 255, 0.95);
+    background: rgba(232, 234, 246, 0.9);
     color: #1a1a3a;
 }
 .modal-header {
-    border-bottom: 1px solid #00c4cc;
+    border-bottom: 1px solid #00d4e0;
 }
