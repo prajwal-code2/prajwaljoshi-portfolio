@@ -36,3 +36,16 @@ function showDemo(demoId) {
     const modal = new bootstrap.Modal(document.getElementById('demoModal'));
     modal.show();
 }
+
+// Scroll-triggered animations (basic implementation)
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+        }
+    });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('#projects .project-card, #about, #contact').forEach(el => {
+    observer.observe(el);
+});
