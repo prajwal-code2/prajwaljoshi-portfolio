@@ -91,6 +91,21 @@ countSprite.scale.set(4, 1, 1);
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
+// Tagline Display ("Transforming Pixels into Actionable Insights")
+const taglineCanvas = document.createElement('canvas');
+taglineCanvas.width = 512;
+taglineCanvas.height = 64;
+const taglineCtx = taglineCanvas.getContext('2d');
+taglineCtx.font = '18px Orbitron';
+taglineCtx.fillStyle = '#00d4e0';
+taglineCtx.fillText('Transforming Pixels into Actionable Insights', 10, 40);
+const taglineTexture = new THREE.CanvasTexture(taglineCanvas);
+const taglineSpriteMaterial = new THREE.SpriteMaterial({ map: taglineTexture, transparent: true });
+const taglineSprite = new THREE.Sprite(taglineSpriteMaterial);
+taglineSprite.scale.set(6, 0.75, 1); // Slightly larger for readability
+taglineSprite.position.set(-15, 5, 5); // Above count
+scene.add(taglineSprite);
+
 camera.position.z = 20;
 
 // Animation Loop
