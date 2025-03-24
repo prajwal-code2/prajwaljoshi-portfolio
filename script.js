@@ -171,14 +171,30 @@ function animate() {
                 ship.userData.detectionTime = Date.now();
                 totalDetections++;
 
-                // Surround with Mesh (Wireframe Sphere)
-                const detectMesh = new THREE.Mesh(
-                    new THREE.SphereGeometry(1, 16, 16),
-                    new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, transparent: true, opacity: 0.8 })
-                );
-                detectMesh.position.copy(ship.position);
-                scene.add(detectMesh);
-                ship.userData.detectMesh = detectMesh;
+                // Sci-Fi Bounding Box
+                const boxGroup = new THREE.Group();
+                const boxMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.8 });
+                const boxGeometry = new THREE.BoxGeometry(2, 1, 1); // Slightly larger than ship
+                const edges = new THREE.EdgesGeometry(boxGeometry);
+                const boundingBox = new THREE.LineSegments(edges, boxMaterial);
+                boundingBox.position.copy(ship.position);
+                boxGroup.add(boundingBox);
+
+                // Add Corner Accents (Sci-Fi Glow)
+                const cornerGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const cornerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9 });
+                const corners = [
+                    [1, 0.5, 0.5], [-1, 0.5, 0.5], [1, -0.5, 0.5], [-1, -0.5, 0.5],
+                    [1, 0.5, -0.5], [-1, 0.5, -0.5], [1, -0.5, -0.5], [-1, -0.5, -0.5]
+                ];
+                corners.forEach(pos => {
+                    const corner = new THREE.Mesh(cornerGeometry, cornerMaterial);
+                    corner.position.set(pos[0], pos[1], pos[2]);
+                    boxGroup.add(corner);
+                });
+
+                scene.add(boxGroup);
+                ship.userData.detectBox = boxGroup;
 
                 // Add "DETECTED" Text
                 const detectCanvas = document.createElement('canvas');
@@ -198,11 +214,11 @@ function animate() {
             }
         }
 
-        // Update detected ship visuals and remove after 1 second
+        // Update detected ship visuals and remove after 3 seconds
         if (ship.userData.detected && ship.userData.detectionTime) {
             const elapsed = Date.now() - ship.userData.detectionTime;
-            if (elapsed >= 1000) { // 1 second
-                scene.remove(ship.userData.detectMesh);
+            if (elapsed >= 3000) { // 3 seconds
+                scene.remove(ship.userData.detectBox);
                 scene.remove(ship.userData.detectSprite);
                 scene.remove(ship);
                 ships.splice(index, 1);
@@ -222,8 +238,8 @@ function animate() {
                 newShip.add(glow);
                 ships.push(newShip);
             } else {
-                // Update mesh and sprite position as ship moves
-                ship.userData.detectMesh.position.copy(ship.position);
+                // Update box and sprite position as ship moves
+                ship.userData.detectBox.position.copy(ship.position);
                 ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
             }
         }
