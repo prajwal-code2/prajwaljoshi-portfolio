@@ -34,9 +34,8 @@ scene.add(robotGroup);
 const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true); // Base radius: 10, height: 20
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-14.7 - 20, 2, 5.5); // Move origin left by cone length
-visionCone.rotation.z = Math.PI / 2; // Apex at eye, base right
-visionCone.position.x += 20; // Adjust so apex aligns with eye
+visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
+visionCone.rotation.z = -Math.PI / 2; // Base points right (corrected orientation)
 scene.add(visionCone);
 
 // Ships (Approaching from Right, No Rotation)
