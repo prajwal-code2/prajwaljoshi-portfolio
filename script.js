@@ -30,11 +30,11 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// Conical Vision Field (Apex Moved Right, Base Toward Right)
+// Conical Vision Field (Apex at Eye, Base Toward Right)
 const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius: 3, height: 15
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-12.7, 2, 5.5); // Apex shifted right from -14.7 to -12.7
+visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
 visionCone.rotation.z = Math.PI / 2; // Base points right
 scene.add(visionCone);
 
@@ -43,7 +43,7 @@ const marker = new THREE.Mesh(
     new THREE.SphereGeometry(0.1),
     new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
-marker.position.set(-12.7, 2, 5.5); // Matches new apex
+marker.position.set(-14.7, 2, 5.5); // Matches cone apex and eye
 scene.add(marker);
 
 // Ships (Approaching from Right, No Rotation)
@@ -54,7 +54,7 @@ let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
-        -2 + Math.random() * 10, // Start within/near cone (x: -2 to 8)
+        -10 + Math.random() * 10, // Start within cone (x: -10 to 0)
         (Math.random() - 0.5) * 2, // Tighter y-range
         (Math.random() - 0.5) * 2  // Tighter z-range
     );
@@ -78,7 +78,7 @@ for (let i = 0; i < 8; i++) {
     ship.add(sprite);
 }
 
-// Detection Count Display (Above Robot)
+// Detection Count Display
 const countCanvas = document.createElement('canvas');
 countCanvas.width = 256;
 countCanvas.height = 64;
@@ -103,7 +103,7 @@ function animate() {
         if (!ship.userData.detected) {
             ship.position.x -= ship.userData.speed; // Move left
             if (ship.position.x < -20) {
-                ship.position.x = -2 + Math.random() * 10; // Reset to right (within/near cone)
+                ship.position.x = -10 + Math.random() * 10; // Reset within cone (x: -10 to 0)
                 ship.position.y = (Math.random() - 0.5) * 2; // Reset y
                 ship.position.z = (Math.random() - 0.5) * 2; // Reset z
                 ship.material.opacity = 0.5;
@@ -122,14 +122,13 @@ function animate() {
                 ship.material.opacity = 0.8;
                 ship.children[0].material.opacity = 0.8;
                 totalDetections++;
-                // Disappear after detection
                 setTimeout(() => {
                     scene.remove(ship);
                     ships.splice(index, 1); // Remove from array
-                    // Spawn a new ship to maintain count
+                    // Spawn a new ship
                     const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
                     newShip.position.set(
-                        -2 + Math.random() * 10,
+                        -10 + Math.random() * 10,
                         (Math.random() - 0.5) * 2,
                         (Math.random() - 0.5) * 2
                     );
