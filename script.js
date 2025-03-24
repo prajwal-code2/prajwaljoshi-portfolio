@@ -54,36 +54,27 @@ const marker = new THREE.Mesh(
 marker.position.set(-14.7, 2, 5.5); // Matches eye
 scene.add(marker);
 
-// Ships (From Extreme Right, No Rotation)
-const shipGeometry = new THREE.BoxGeometry(1, 0.5, 0.5);
-const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
+// Enhanced Ships (Sci-Fi Design)
+const shipGeometry = new THREE.ConeGeometry(0.3, 1.5, 8); // Tapered, sleek shape
+const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.7 });
 const ships = [];
 let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+    ship.rotation.x = Math.PI / 2; // Point forward (along x-axis)
     ship.position.set(
         20 + Math.random() * 5, // Extreme right (x: 20 to 25)
-        2 + (Math.random() - 0.5) * 10, // Wider y-range for radar sweep
+        2 + (Math.random() - 0.5) * 10, // Wider y-range
         5.5 + (Math.random() - 0.5) * 10 // Wider z-range
     );
     ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
     scene.add(ship);
     ships.push(ship);
 
-    // Detection Label
-    const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    ctx.font = '16px Orbitron';
-    ctx.fillStyle = '#00d4e0';
-    ctx.fillText('SHIP DETECTED', 10, 20);
-    const texture = new THREE.CanvasTexture(canvas);
-    const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
-    const sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(2, 0.5, 1);
-    sprite.position.set(0, 1, 0);
-    ship.add(sprite);
+    // Glowing Effect (Point Light)
+    const glow = new THREE.PointLight(0x5a4eff, 0.5, 5);
+    glow.position.set(0, 0, 0);
+    ship.add(glow);
 }
 
 // Detection Count Display
@@ -111,7 +102,7 @@ function animate() {
     time += 0.05;
     visionField.rotation.x = Math.sin(time) * Math.PI / 6; // ±30° swing
 
-    // Ship Movement (From Right to Left)
+    // Ship Movement and Detection
     ships.forEach((ship, index) => {
         if (!ship.userData.detected) {
             ship.position.x -= ship.userData.speed; // Move left
@@ -119,8 +110,7 @@ function animate() {
                 ship.position.x = 20 + Math.random() * 5; // Reset to extreme right
                 ship.position.y = 2 + (Math.random() - 0.5) * 10; // Reset y
                 ship.position.z = 5.5 + (Math.random() - 0.5) * 10; // Reset z
-                ship.material.opacity = 0.5;
-                ship.children[0].material.opacity = 0;
+                ship.material.opacity = 0.7;
             }
 
             // Check if ship is within V-shaped vision
@@ -129,16 +119,37 @@ function animate() {
             const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
             if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
-                console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
+                console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z });
                 ship.userData.detected = true;
-                ship.material.opacity = 0.8;
-                ship.children[0].material.opacity = 0.8;
                 totalDetections++;
-                // Disappear immediately
+
+                // Add Detection Marker (Pulsing Sphere)
+                const detectMarker = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.5, 16, 16),
+                    new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.8 })
+                );
+                detectMarker.position.copy(ship.position);
+                scene.add(detectMarker);
+
+                // Animate Marker (Pulse and Fade)
+                let scale = 0.5;
+                const pulse = setInterval(() => {
+                    scale += 0.1;
+                    detectMarker.scale.set(scale, scale, scale);
+                    detectMarker.material.opacity -= 0.1;
+                    if (detectMarker.material.opacity <= 0) {
+                        clearInterval(pulse);
+                        scene.remove(detectMarker);
+                    }
+                }, 50);
+
+                // Remove Ship Immediately
                 scene.remove(ship);
                 ships.splice(index, 1);
-                // Spawn a new ship
+
+                // Spawn a New Ship
                 const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                newShip.rotation.x = Math.PI / 2;
                 newShip.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
@@ -146,19 +157,9 @@ function animate() {
                 );
                 newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
                 scene.add(newShip);
-                const newCanvas = document.createElement('canvas');
-                newCanvas.width = 128;
-                newCanvas.height = 32;
-                const newCtx = newCanvas.getContext('2d');
-                newCtx.font = '16px Orbitron';
-                newCtx.fillStyle = '#00d4e0';
-                newCtx.fillText('SHIP DETECTED', 10, 20);
-                const newTexture = new THREE.CanvasTexture(newCanvas);
-                const newSpriteMaterial = new THREE.SpriteMaterial({ map: newTexture, transparent: true, opacity: 0 });
-                const newSprite = new THREE.Sprite(newSpriteMaterial);
-                newSprite.scale.set(2, 0.5, 1);
-                newSprite.position.set(0, 1, 0);
-                newShip.add(newSprite);
+                const glow = new THREE.PointLight(0x5a4eff, 0.5, 5);
+                glow.position.set(0, 0, 0);
+                newShip.add(glow);
                 ships.push(newShip);
             }
         }
