@@ -106,14 +106,13 @@ let currentIndex = 0;
 let isErasing = false;
 const typeSpeed = 100;
 const delayBetween = 1000; // 1s delay between cycles
-const xOffset = 10; // Fine-tune to align with "P"
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#333366';
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), xOffset, 50);
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), 0, 50); // Aligned with h1
     const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(xOffset + textWidth, 25, 2, 30);
+    typewriterCtx.fillRect(textWidth, 25, 2, 30);
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -149,7 +148,7 @@ function animate() {
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
-        // Always move ships, even if detected
+        // Always move ships
         ship.position.x -= ship.userData.speed;
         if (ship.position.x < -20 && !ship.userData.detected) {
             ship.position.x = 20 + Math.random() * 5;
@@ -254,7 +253,7 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Navbar Shrink and Gradient Scroll
+// Navbar Shrink, Gradient Scroll, and Background Reveal
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     const scrollY = window.scrollY;
@@ -271,6 +270,10 @@ window.addEventListener('scroll', () => {
     gradientSections.forEach(section => {
         section.style.background = `linear-gradient(45deg, hsl(${hue}, 50%, 20%), hsl(${hue + 90}, 50%, 30%))`;
     });
+
+    // Background Image Reveal
+    const backgroundImage = document.getElementById('background-image');
+    backgroundImage.style.opacity = Math.min(scrollFraction * 2, 1); // Fully visible at 50% scroll
 });
 
 // Dark/Light Mode Toggle
