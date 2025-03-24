@@ -54,13 +54,14 @@ const marker = new THREE.Mesh(
 marker.position.set(-14.7, 2, 5.5); // Matches eye
 scene.add(marker);
 
-// Enhanced Ships (Sci-Fi Design, No Rotation)
+// Enhanced Ships (Sci-Fi Design, Horizontal)
 const shipGeometry = new THREE.ConeGeometry(0.3, 1.5, 8); // Tapered, sleek shape
 const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.7 });
 const ships = [];
 let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+    ship.rotation.z = -Math.PI / 2; // Rotate 90° counterclockwise to lie horizontal (tip points left)
     ship.position.set(
         20 + Math.random() * 5, // Extreme right (x: 20 to 25)
         2 + (Math.random() - 0.5) * 10, // Wider y-range
@@ -191,6 +192,7 @@ function animate() {
 
                 // Spawn a New Ship
                 const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                newShip.rotation.z = -Math.PI / 2; // Horizontal (tip points left)
                 newShip.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
