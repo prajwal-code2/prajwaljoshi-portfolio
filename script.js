@@ -30,12 +30,20 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// Scanner Field (Wide Area, Moves Up and Down)
-const scannerGeometry = new THREE.PlaneGeometry(25, 5); // Width 25, Height 5 - Area effect
-const scannerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
-const scannerField = new THREE.Mesh(scannerGeometry, scannerMaterial);
-scannerField.position.set(-14.7 + 12.5, 2, 5.5); // Center of plane shifted right by half its width
-scannerField.rotation.z = Math.PI / 2; // Align base at eye, extend right
+// V-Shaped Scanner (From Eye, Moves Up and Down)
+const vShapeGeometry = new THREE.BufferGeometry();
+const vAngle = Math.PI / 12; // 15° half-angle (30° total)
+const vLength = 25; // Length of V arms
+const vertices = new Float32Array([
+    0, 0, 0, // Apex
+    vLength * Math.cos(vAngle), vLength * Math.sin(vAngle), 0, // Top arm
+    vLength * Math.cos(-vAngle), vLength * Math.sin(-vAngle), 0 // Bottom arm
+]);
+vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+vShapeGeometry.setIndex([0, 1, 2]);
+const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
+scannerField.position.set(-14.7, 2, 5.5); // Apex at eye
 scene.add(scannerField);
 
 // Debug Marker (to confirm apex position)
@@ -82,41 +90,47 @@ countSprite.scale.set(4, 1, 1);
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
-// Typewriter Title and Tagline Display
-const titleText = "Computer Vision Expert";
-const taglineText = "Transforming Pixels into Actionable Insights";
-const fullText = `${titleText} | ${taglineText}`;
+// Typewriter Effect (HTML-Based)
+const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 768;
 typewriterCanvas.height = 64;
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '18px Orbitron';
+typewriterCtx.font = '24px Orbitron'; // Larger for visibility
 typewriterCtx.fillStyle = '#00d4e0';
-const typewriterTexture = new THREE.CanvasTexture(typewriterCanvas);
-const typewriterSpriteMaterial = new THREE.SpriteMaterial({ map: typewriterTexture, transparent: true });
-const typewriterSprite = new THREE.Sprite(typewriterSpriteMaterial);
-typewriterSprite.scale.set(8, 0.75, 1);
-typewriterSprite.position.set(0, 8, 5); // Top center
-scene.add(typewriterSprite);
-
-// Typewriter Effect
+const titleText = "Computer Vision Specialist";
+const taglineText = "Transforming Pixels into Actionable Insights";
+let currentText = titleText;
 let currentIndex = 0;
+let isErasing = false;
 const typeSpeed = 100;
+const delayBetween = 1000; // 1s delay between cycles
+
 function typeWriter() {
-    if (currentIndex <= fullText.length) {
-        typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-        typewriterCtx.fillText(fullText.slice(0, currentIndex), 10, 40);
-        const textWidth = typewriterCtx.measureText(fullText.slice(0, currentIndex)).width;
-        typewriterCtx.fillRect(10 + textWidth, 20, 2, 24);
-        typewriterTexture.needsUpdate = true;
+    typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), 10, 40);
+    const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
+    typewriterCtx.fillRect(10 + textWidth, 20, 2, 24);
+
+    if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
         setTimeout(typeWriter, typeSpeed);
-    } else {
-        typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-        typewriterCtx.fillText(fullText, 10, 40);
-        typewriterTexture.needsUpdate = true;
+    } else if (!isErasing && currentIndex === currentText.length) {
+        setTimeout(() => { isErasing = true; typeWriter(); }, delayBetween);
+    } else if (isErasing && currentIndex > 0) {
+        currentIndex--;
+        setTimeout(typeWriter, typeSpeed / 2); // Faster erase
+    } else if (isErasing && currentIndex === 0) {
+        isErasing = false;
+        currentText = currentText === titleText ? taglineText : titleText;
+        setTimeout(typeWriter, delayBetween);
     }
+
+    // Update HTML canvas
+    typewriterContainer.innerHTML = '';
+    typewriterContainer.appendChild(typewriterCanvas);
 }
+
 typeWriter();
 
 camera.position.z = 20;
@@ -141,15 +155,12 @@ function animate() {
                 ship.material.opacity = 0.7;
             }
 
-            // Check if ship is within scanner field
+            // Check if ship is within V-shaped scanner
             const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
-            const scannerDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion); // Adjust for rotation
-            const angle = relativePos.angleTo(scannerDirection);
+            const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion);
+            const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
-            const detectionWidth = 5; // Height of scanner field
-            const detectionLength = 25; // Length of scanner field
-            const projectedY = Math.abs(relativePos.dot(new THREE.Vector3(0, 1, 0).applyQuaternion(scannerField.quaternion)));
-            if (angle < Math.PI / 6 && distance <= detectionLength && projectedY < detectionWidth / 2 && !ship.userData.detected) { // 60° total angle, within area
+            if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
                 console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z });
                 ship.userData.detected = true;
                 totalDetections++;
