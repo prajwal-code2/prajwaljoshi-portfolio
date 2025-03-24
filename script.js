@@ -30,9 +30,9 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Scanner (Stable Apex, Tilts Up and Down on Y-Axis)
+// V-Shaped Scanner (Stable Apex, Perspective Shift via Tilt)
 const vShapeGeometry = new THREE.BufferGeometry();
-const vAngle = Math.PI / 12; // 15° half-angle (30° total)
+const vAngle = Math.PI / 12; // Base 15° half-angle (30° total)
 const vLength = 25; // Length of V arms
 const vertices = new Float32Array([
     0, 0, 0, // Apex
@@ -67,7 +67,7 @@ for (let i = 0; i < 8; i++) {
         2 + (Math.random() - 0.5) * 10, // Wider y-range
         5.5 + (Math.random() - 0.5) * 10 // Wider z-range
     );
-    ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
+    ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
     scene.add(ship);
     ships.push(ship);
 
@@ -142,29 +142,32 @@ let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Tilt Scanner Field Up and Down (Y-Axis)
+    // Perspective Shift for Scanner (Tilt Adjustment)
     time += 0.05;
-    scannerField.rotation.y = Math.sin(time) * Math.PI / 6; // ±30° tilt on y-axis
+    const dynamicTilt = Math.sin(time) * Math.PI / 6; // ±30° tilt range
+    scannerField.rotation.y = dynamicTilt; // Adjust tilt for perspective
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
-        if (!ship.userData.detected) {
-            ship.position.x -= ship.userData.speed; // Move left
-            if (ship.position.x < -20) {
-                ship.position.x = 20 + Math.random() * 5;
-                ship.position.y = 2 + (Math.random() - 0.5) * 10;
-                ship.position.z = 5.5 + (Math.random() - 0.5) * 10;
-                ship.material.opacity = 0.7;
-            }
+        // Always move ships, even if detected
+        ship.position.x -= ship.userData.speed;
+        if (ship.position.x < -20 && !ship.userData.detected) {
+            ship.position.x = 20 + Math.random() * 5;
+            ship.position.y = 2 + (Math.random() - 0.5) * 10;
+            ship.position.z = 5.5 + (Math.random() - 0.5) * 10;
+            ship.material.opacity = 0.7;
+        }
 
-            // Check if ship is within V-shaped scanner
+        // Check for detection
+        if (!ship.userData.detected) {
             const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
             const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion);
             const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
-            if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
+            if (angle < vAngle && distance <= vLength) {
                 console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z });
                 ship.userData.detected = true;
+                ship.userData.detectionTime = Date.now();
                 totalDetections++;
 
                 // Surround with Mesh (Wireframe Sphere)
@@ -174,6 +177,7 @@ function animate() {
                 );
                 detectMesh.position.copy(ship.position);
                 scene.add(detectMesh);
+                ship.userData.detectMesh = detectMesh;
 
                 // Add "DETECTED" Text
                 const detectCanvas = document.createElement('canvas');
@@ -189,29 +193,37 @@ function animate() {
                 detectSprite.scale.set(2, 0.5, 1);
                 detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                 scene.add(detectSprite);
+                ship.userData.detectSprite = detectSprite;
+            }
+        }
 
-                // Wait 1 Second, Then Remove
-                setTimeout(() => {
-                    scene.remove(detectMesh);
-                    scene.remove(detectSprite);
-                    scene.remove(ship);
-                    ships.splice(index, 1);
+        // Update detected ship visuals and remove after 1 second
+        if (ship.userData.detected && ship.userData.detectionTime) {
+            const elapsed = Date.now() - ship.userData.detectionTime;
+            if (elapsed >= 1000) { // 1 second
+                scene.remove(ship.userData.detectMesh);
+                scene.remove(ship.userData.detectSprite);
+                scene.remove(ship);
+                ships.splice(index, 1);
 
-                    // Spawn a New Ship
-                    const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                    newShip.rotation.z = Math.PI / 2;
-                    newShip.position.set(
-                        20 + Math.random() * 5,
-                        2 + (Math.random() - 0.5) * 10,
-                        5.5 + (Math.random() - 0.5) * 10
-                    );
-                    newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
-                    scene.add(newShip);
-                    const glow = new THREE.PointLight(0x5a4eff, 0.5, 5);
-                    glow.position.set(0, 0, 0);
-                    newShip.add(glow);
-                    ships.push(newShip);
-                }, 1000);
+                // Spawn a new ship
+                const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                newShip.rotation.z = Math.PI / 2;
+                newShip.position.set(
+                    20 + Math.random() * 5,
+                    2 + (Math.random() - 0.5) * 10,
+                    5.5 + (Math.random() - 0.5) * 10
+                );
+                newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
+                scene.add(newShip);
+                const glow = new THREE.PointLight(0x5a4eff, 0.5, 5);
+                glow.position.set(0, 0, 0);
+                newShip.add(glow);
+                ships.push(newShip);
+            } else {
+                // Update mesh and sprite position as ship moves
+                ship.userData.detectMesh.position.copy(ship.position);
+                ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
             }
         }
     });
