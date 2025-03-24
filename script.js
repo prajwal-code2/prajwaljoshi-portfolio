@@ -17,14 +17,26 @@ scene.add(directionalLight);
 const loader = new THREE.GLTFLoader();
 let robotModel;
 loader.load(
-    '/prajwaljoshi-portfolio/model/scene.gltf', // Corrected repo name
+    '/prajwaljoshi-portfolio/model/scene.gltf', // Correct path
     (gltf) => {
         robotModel = gltf.scene;
-        robotModel.scale.set(1, 1, 1);
-        robotModel.position.set(-15, 0, 5);
-        robotModel.rotation.y = Math.PI / 2;
+        robotModel.scale.set(1, 1, 1); // Adjust scale if needed
+        robotModel.position.set(-15, 0, 5); // Stable position
+        robotModel.rotation.y = Math.PI / 2; // Set initial rotation, no animation
         scene.add(robotModel);
         console.log('Model loaded successfully:', robotModel);
+
+        // Log materials and textures to debug color issue
+        robotModel.traverse((child) => {
+            if (child.isMesh) {
+                console.log('Mesh:', child.name, 'Material:', child.material);
+                if (child.material.map) {
+                    console.log('Texture:', child.material.map.source);
+                } else {
+                    console.log('No texture found for this mesh');
+                }
+            }
+        });
     },
     (xhr) => {
         if (xhr.total > 0) {
@@ -35,7 +47,6 @@ loader.load(
     },
     (error) => {
         console.error('Error loading GLTF model:', error);
-        // Fallback: Add a red cube
         const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
         const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
@@ -168,9 +179,7 @@ function animate() {
     const dynamicTilt = Math.sin(time) * Math.PI / 6;
     scannerField.rotation.y = dynamicTilt;
 
-    if (robotModel) {
-        robotModel.rotation.y += 0.01;
-    }
+    // Removed rotation for robotModel to keep it stable
 
     ships.forEach((ship, index) => {
         ship.position.x -= ship.userData.speed;
