@@ -14,6 +14,26 @@ body.dark {
 body.dark .text-content {
     color: #c0c0e0;
 }
+body.dark .navbar {
+    background: linear-gradient(90deg, #1a1a3a, #2a2a5a);
+}
+body.dark .navbar.shrink {
+    background: linear-gradient(90deg, #0a0a2a, #1a1a4a);
+}
+body.dark .hero {
+    background: linear-gradient(135deg, #0a0a2a, #2a2a5a);
+}
+body.dark .gradient-bg {
+    background: linear-gradient(135deg, #0a0a2a, #1a1a3a);
+}
+body.dark .btn-gradient {
+    background: linear-gradient(90deg, #00d4e0, #5a4eff);
+}
+body.dark .gradient-text {
+    background: linear-gradient(90deg, #00d4e0, #5a4eff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 /* Light Mode */
 body.light {
@@ -23,10 +43,29 @@ body.light {
 body.light .text-content {
     color: #1a1a3a;
 }
+body.light .navbar {
+    background: linear-gradient(90deg, #d8daf6, #e8eaf6);
+}
+body.light .navbar.shrink {
+    background: linear-gradient(90deg, #c8caf6, #d8daf6);
+}
+body.light .hero {
+    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
+}
+body.light .gradient-bg {
+    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
+}
+body.light .btn-gradient {
+    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
+}
+body.light .gradient-text {
+    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 /* Navbar */
 .navbar {
-    background: linear-gradient(90deg, #1a1a3a, #2a2a5a);
     padding: 1rem 2rem;
     transition: padding 0.3s ease, background 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -34,7 +73,6 @@ body.light .text-content {
 }
 .navbar.shrink {
     padding: 0.5rem 2rem;
-    background: linear-gradient(90deg, #0a0a2a, #1a1a4a);
 }
 .navbar-brand, .nav-link {
     color: #fff !important;
@@ -43,11 +81,16 @@ body.light .text-content {
     text-transform: uppercase;
     transition: color 0.3s ease;
 }
+body.light .navbar-brand, body.light .nav-link {
+    color: #1a1a3a !important;
+}
 .nav-link:hover {
     color: #00d4e0 !important;
 }
+body.light .nav-link:hover {
+    color: #00a4b0 !important;
+}
 .btn-gradient {
-    background: linear-gradient(90deg, #00d4e0, #5a4eff);
     color: #fff;
     border: none;
     padding: 0.4rem 1rem;
@@ -60,7 +103,6 @@ body.light .text-content {
 
 /* Hero with 3D Scene */
 .hero {
-    background: linear-gradient(135deg, #0a0a2a, #2a2a5a);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -91,6 +133,15 @@ body.light .text-content {
     height: 100%;
     z-index: 1;
     opacity: 0.7;
+}
+#detectionCount {
+    font-size: 1.2rem;
+    color: #00d4e0;
+    z-index: 2;
+    position: relative;
+}
+body.light #detectionCount {
+    color: #00a4b0;
 }
 
 /* Projects */
@@ -123,17 +174,12 @@ body.light .project-card {
 
 /* Gradient Text */
 .gradient-text {
-    background: linear-gradient(90deg, #00d4e0, #5a4eff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-weight: 700;
 }
 
 /* Gradient Background */
 .gradient-bg {
-    background: linear-gradient(135deg, #0a0a2a, #1a1a3a);
-}
-body.light .gradient-bg {
-    background: linear-gradient(135deg, #d8daf6, #e8eaf6);
+    transition: background 0.3s ease;
 }
 
 /* About & Contact */
@@ -144,8 +190,14 @@ body.light .gradient-bg {
     color: #00d4e0;
     transition: color 0.3s ease;
 }
+body.light .text-gradient {
+    color: #00a4b0;
+}
 .text-gradient:hover {
     color: #5a4eff;
+}
+body.light .text-gradient:hover {
+    color: #4a3ecc;
 }
 
 /* Modal */
@@ -161,4 +213,7 @@ body.light .modal-content {
 }
 .modal-header {
     border-bottom: 1px solid #00d4e0;
+}
+body.light .modal-header {
+    border-bottom: 1px solid #00a4b0;
 }

@@ -4,91 +4,88 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Holographic Scanning Plane
-const planeGeometry = new THREE.PlaneGeometry(30, 0.2);
-const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.4 });
-const scanPlane = new THREE.Mesh(planeGeometry, planeMaterial);
-scanPlane.position.set(0, 0, -5);
-scene.add(scanPlane);
+// Camera (Left Side)
+const camGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32);
+const camMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.8 });
+const cam = new THREE.Mesh(camGeometry, camMaterial);
+cam.position.set(-15, 0, 5);
+cam.rotation.z = Math.PI / 2;
+scene.add(cam);
 
-// Detected Objects (Cubes)
-const cubeGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.3 });
-const cubes = [];
-for (let i = 0; i < 6; i++) {
-    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial.clone());
-    cube.position.set(
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 10,
+// Scanning Beam
+const beamGeometry = new THREE.PlaneGeometry(0.2, 20);
+const beamMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.5 });
+const beam = new THREE.Mesh(beamGeometry, beamMaterial);
+beam.position.set(-15, 0, 5);
+scene.add(beam);
+
+// Detected Objects
+const objGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const objMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
+const objects = [];
+let detectionCount = 0;
+for (let i = 0; i < 8; i++) {
+    const obj = new THREE.Mesh(objGeometry, objMaterial.clone());
+    obj.position.set(
+        (Math.random() - 0.5) * 20 + 5,
+        (Math.random() - 0.5) * 15,
         (Math.random() - 0.5) * 10
     );
-    cube.userData = { detected: false };
-    scene.add(cube);
-    cubes.push(cube);
+    obj.userData = { isFalse: Math.random() > 0.7, detected: false };
+    scene.add(obj);
+    objects.push(obj);
 
-    // Detection Label (Text Sprite)
+    // Warning Label
     const canvas = document.createElement('canvas');
     canvas.width = 128;
     canvas.height = 32;
     const ctx = canvas.getContext('2d');
-    ctx.font = '20px Orbitron';
-    ctx.fillStyle = '#00d4e0';
-    ctx.fillText('DETECTED', 10, 20);
+    ctx.font = '16px Orbitron';
+    ctx.fillStyle = obj.userData.isFalse ? '#ff4e50' : '#00d4e0';
+    ctx.fillText(obj.userData.isFalse ? 'WARNING' : 'DETECTED', 10, 20);
     const texture = new THREE.CanvasTexture(canvas);
     const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(2, 0.5, 1);
     sprite.position.set(0, 1, 0);
-    cube.add(sprite);
+    obj.add(sprite);
 }
 
-// Subtle Particle Background
-const particleGeometry = new THREE.BufferGeometry();
-const particleCount = 50;
-const positions = new Float32Array(particleCount * 3);
-for (let i = 0; i < particleCount * 3; i += 3) {
-    positions[i] = (Math.random() - 0.5) * 40;
-    positions[i + 1] = (Math.random() - 0.5) * 20;
-    positions[i + 2] = (Math.random() - 0.5) * 20;
-}
-particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const particleMaterial = new THREE.PointsMaterial({ color: 0x5a4eff, size: 0.1, transparent: true, opacity: 0.5 });
-const particles = new THREE.Points(particleGeometry, particleMaterial);
-scene.add(particles);
-
-camera.position.z = 15;
+camera.position.z = 20;
 
 // Animation Loop
-let scanAngle = 0;
+let beamAngle = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Scanning Plane Animation
-    scanAngle += 0.02;
-    scanPlane.position.y = Math.sin(scanAngle) * 8;
+    // Beam Scanning
+    beamAngle += 0.02;
+    beam.position.x = -15 + Math.cos(beamAngle) * 5;
+    beam.rotation.y = Math.sin(beamAngle) * 0.5;
 
-    // Cube Animation and Detection
-    cubes.forEach(cube => {
-        cube.rotation.x += 0.003;
-        cube.rotation.y += 0.003;
-        cube.position.z += Math.sin(Date.now() * 0.001 + cube.position.x) * 0.01;
+    // Object Animation and Detection
+    detectionCount = 0;
+    objects.forEach(obj => {
+        obj.rotation.x += 0.003;
+        obj.rotation.y += 0.003;
+        obj.position.x += Math.sin(Date.now() * 0.001 + obj.position.z) * 0.01;
 
-        const distance = Math.abs(cube.position.y - scanPlane.position.y);
-        if (distance < 0.5) {
-            cube.material.opacity = 0.8;
-            cube.children[0].material.opacity = 0.8; // Show "DETECTED" label
-        } else {
-            cube.material.opacity = 0.3;
-            cube.children[0].material.opacity = 0; // Hide label
+        const distance = Math.abs(obj.position.x - beam.position.x);
+        if (distance < 1 && !obj.userData.detected) {
+            obj.userData.detected = true;
+            obj.material.opacity = 0.8;
+            obj.children[0].material.opacity = 0.8;
+            detectionCount++;
+            setTimeout(() => {
+                obj.userData.detected = false;
+                obj.material.opacity = 0.5;
+                obj.children[0].material.opacity = 0;
+            }, 2000);
         }
     });
 
-    // Particle Animation
-    const particlePositions = particles.geometry.attributes.position.array;
-    for (let i = 1; i < particleCount * 3; i += 3) {
-        particlePositions[i] += Math.sin(Date.now() * 0.001 + particlePositions[i - 1]) * 0.005;
-    }
-    particles.geometry.attributes.position.needsUpdate = true;
+    // Update Detection Count
+    document.getElementById('detectionCount').textContent = `Objects Detected: ${detectionCount}`;
 
     renderer.render(scene, camera);
 }
@@ -138,7 +135,7 @@ toggleButton.addEventListener('click', () => {
 
 // Show live demo in modal
 function showDemo(demoId) {
-    const demoFrame = document.getElementById('demoFrame'); // Fixed ID reference
+    const demoFrame = document.getElementById('demoFrame');
     const demoUrls = {
         'demo1': 'https://your-demo-url-1.com', // Replace with your live demo URLs
         'demo2': 'https://your-demo-url-2.com',
