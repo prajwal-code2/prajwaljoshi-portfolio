@@ -30,21 +30,18 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Vision Field (Larger and Lengthier, Oscillating Like Radar)
-const vShapeGeometry = new THREE.BufferGeometry();
-const vAngle = Math.PI / 6; // 30-degree half-angle (60° total) - Wider
-const vLength = 25; // Longer arms (from 15 to 25)
+// Red Line Scanner (Small Angle, Moves Up and Down)
+const lineGeometry = new THREE.BufferGeometry();
+const lineLength = 25; // Length of the line
 const vertices = new Float32Array([
-    0, 0, 0, // Apex
-    vLength * Math.cos(vAngle), vLength * Math.sin(vAngle), 0, // Top arm
-    vLength * Math.cos(-vAngle), vLength * Math.sin(-vAngle), 0 // Bottom arm
+    0, 0, 0, // Start at eye
+    lineLength, 0, 0 // End point (straight right)
 ]);
-vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-vShapeGeometry.setIndex([0, 1, 2]);
-const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
-const visionField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-visionField.position.set(-14.7, 2, 5.5); // Apex at eye
-scene.add(visionField);
+lineGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.8 });
+const scannerLine = new THREE.Line(lineGeometry, lineMaterial);
+scannerLine.position.set(-14.7, 2, 5.5); // Apex at eye
+scene.add(scannerLine);
 
 // Debug Marker (to confirm apex position)
 const marker = new THREE.Mesh(
@@ -61,7 +58,6 @@ const ships = [];
 let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-    // No rotation - stays upright, facing forward naturally
     ship.position.set(
         20 + Math.random() * 5, // Extreme right (x: 20 to 25)
         2 + (Math.random() - 0.5) * 10, // Wider y-range
@@ -103,7 +99,7 @@ const taglineTexture = new THREE.CanvasTexture(taglineCanvas);
 const taglineSpriteMaterial = new THREE.SpriteMaterial({ map: taglineTexture, transparent: true });
 const taglineSprite = new THREE.Sprite(taglineSpriteMaterial);
 taglineSprite.scale.set(6, 0.75, 1);
-taglineSprite.position.set(-15, 5, 5); // Above count
+taglineSprite.position.set(0, 8, 5); // Top center of canvas
 scene.add(taglineSprite);
 
 camera.position.z = 20;
@@ -113,9 +109,9 @@ let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Oscillate V-Shape Like Radar (Up and Down)
+    // Oscillate Scanner Line (Up and Down)
     time += 0.05;
-    visionField.rotation.x = Math.sin(time) * Math.PI / 6; // ±30° swing
+    scannerLine.rotation.x = Math.sin(time) * Math.PI / 4; // ±45° swing
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
@@ -128,12 +124,13 @@ function animate() {
                 ship.material.opacity = 0.7;
             }
 
-            // Check if ship is within V-shaped vision
-            const relativePos = new THREE.Vector3().subVectors(ship.position, visionField.position);
-            const vDirection = new THREE.Vector3(1, 0, 0); // Base direction (right)
-            const angle = relativePos.angleTo(vDirection);
+            // Check if ship is within scanner line (small angle)
+            const relativePos = new THREE.Vector3().subVectors(ship.position, scannerLine.position);
+            const lineDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerLine.quaternion); // Adjust for rotation
+            const angle = relativePos.angleTo(lineDirection);
             const distance = relativePos.length();
-            if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
+            const detectionAngle = Math.PI / 36; // 5° half-angle (10° total)
+            if (angle < detectionAngle && distance <= lineLength && !ship.userData.detected) {
                 console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z });
                 ship.userData.detected = true;
                 totalDetections++;
@@ -164,7 +161,6 @@ function animate() {
 
                 // Spawn a New Ship
                 const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                // No rotation - stays upright
                 newShip.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
