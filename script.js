@@ -37,7 +37,7 @@ function showDemo(demoId) {
     modal.show();
 }
 
-// Scroll-triggered animations (basic implementation)
+// Scroll-triggered animations
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
