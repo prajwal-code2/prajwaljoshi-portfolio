@@ -23,12 +23,12 @@ const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
 rightEye.position.set(-14.7, 2.2, 5.4);
 robotGroup.add(leftEye, rightEye);
 
-// Body
+// Body (Renamed to robotBody)
 const bodyGeometry = new THREE.BoxGeometry(1.5, 2, 1);
 const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.6 });
-const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-body.position.set(-15, 0.5, 5);
-robotGroup.add(body);
+const robotBody = new THREE.Mesh(bodyGeometry, bodyMaterial); // Changed from 'body' to 'robotBody'
+robotBody.position.set(-15, 0.5, 5);
+robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
@@ -163,16 +163,16 @@ window.addEventListener('scroll', () => {
 
 // Dark/Light Mode Toggle
 const toggleButton = document.getElementById('themeToggle');
-const body = document.body;
+const docBody = document.body; // Renamed to 'docBody' to avoid conflict
 const currentTheme = localStorage.getItem('theme') || 'dark';
-body.classList.add(currentTheme);
+docBody.classList.add(currentTheme);
 
 toggleButton.addEventListener('click', () => {
-    if (body.classList.contains('dark')) {
-        body.classList.replace('dark', 'light');
+    if (docBody.classList.contains('dark')) {
+        docBody.classList.replace('dark', 'light');
         localStorage.setItem('theme', 'light');
     } else {
-        body.classList.replace('light', 'dark');
+        docBody.classList.replace('light', 'dark');
         localStorage.setItem('theme', 'dark');
     }
 });
