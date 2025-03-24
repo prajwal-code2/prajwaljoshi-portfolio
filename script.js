@@ -30,23 +30,31 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// Conical Vision Field (Apex at Eye, Base Toward Right)
-const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius: 3, height: 15
-const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
-const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = Math.PI / 2; // Base points right (apex at origin)
-scene.add(visionCone);
+// V-Shaped Vision Field (Apex at Eye, Oscillating Like Radar)
+const vShapeGeometry = new THREE.BufferGeometry();
+const vAngle = Math.PI / 12; // 15-degree half-angle (30° total)
+const vLength = 15; // Length of V arms
+const vertices = new Float32Array([
+    0, 0, 0, // Apex
+    vLength * Math.cos(vAngle), vLength * Math.sin(vAngle), 0, // Top arm
+    vLength * Math.cos(-vAngle), vLength * Math.sin(-vAngle), 0 // Bottom arm
+]);
+vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+vShapeGeometry.setIndex([0, 1, 2]);
+const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
+const visionField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
+visionField.position.set(-14.7, 2, 5.5); // Apex at eye
+scene.add(visionField);
 
 // Debug Marker (to confirm apex position)
 const marker = new THREE.Mesh(
     new THREE.SphereGeometry(0.1),
     new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
-marker.position.set(-14.7, 2, 5.5); // Matches cone apex and eye
+marker.position.set(-14.7, 2, 5.5); // Matches eye
 scene.add(marker);
 
-// Ships (Approaching from Right, No Rotation)
+// Ships (From Extreme Right, No Rotation)
 const shipGeometry = new THREE.BoxGeometry(1, 0.5, 0.5);
 const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
 const ships = [];
@@ -54,11 +62,11 @@ let totalDetections = 0; // Persistent count
 for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
-        -14 + Math.random() * 10, // Start within cone (x: -14 to -4)
-        2 + (Math.random() - 0.5) * 2, // Near eye y (2 ± 1)
-        5.5 + (Math.random() - 0.5) * 2 // Near eye z (5.5 ± 1)
+        20 + Math.random() * 5, // Extreme right (x: 20 to 25)
+        2 + (Math.random() - 0.5) * 10, // Wider y-range for radar sweep
+        5.5 + (Math.random() - 0.5) * 10 // Wider z-range
     );
-    ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
+    ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
     scene.add(ship);
     ships.push(ship);
 
@@ -95,61 +103,63 @@ scene.add(countSprite);
 camera.position.z = 20;
 
 // Animation Loop
+let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Ship Movement (Straight Left, No Rotation)
+    // Oscillate V-Shape Like Radar (Up and Down)
+    time += 0.05;
+    visionField.rotation.x = Math.sin(time) * Math.PI / 6; // ±30° swing
+
+    // Ship Movement (From Right to Left)
     ships.forEach((ship, index) => {
         if (!ship.userData.detected) {
             ship.position.x -= ship.userData.speed; // Move left
             if (ship.position.x < -20) {
-                ship.position.x = -14 + Math.random() * 10; // Reset within cone (x: -14 to -4)
-                ship.position.y = 2 + (Math.random() - 0.5) * 2; // Reset y
-                ship.position.z = 5.5 + (Math.random() - 0.5) * 2; // Reset z
+                ship.position.x = 20 + Math.random() * 5; // Reset to extreme right
+                ship.position.y = 2 + (Math.random() - 0.5) * 10; // Reset y
+                ship.position.z = 5.5 + (Math.random() - 0.5) * 10; // Reset z
                 ship.material.opacity = 0.5;
                 ship.children[0].material.opacity = 0;
             }
 
-            // Check if ship is within conical vision
-            const relativePos = new THREE.Vector3().subVectors(ship.position, visionCone.position);
-            const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
-            const angle = relativePos.angleTo(coneDirection);
+            // Check if ship is within V-shaped vision
+            const relativePos = new THREE.Vector3().subVectors(ship.position, visionField.position);
+            const vDirection = new THREE.Vector3(1, 0, 0); // Base direction (right)
+            const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
-            const halfAngle = Math.atan2(3, 15); // Cone's half-angle (≈11.3°)
-            console.log('Ship Check:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
-            if (angle < halfAngle && distance <= 15 && !ship.userData.detected) {
+            if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
                 console.log('DETECTED:', { x: ship.position.x, y: ship.position.y, z: ship.position.z, angle: angle * 180 / Math.PI, distance });
                 ship.userData.detected = true;
                 ship.material.opacity = 0.8;
                 ship.children[0].material.opacity = 0.8;
                 totalDetections++;
-                setTimeout(() => {
-                    scene.remove(ship);
-                    ships.splice(index, 1); // Remove from array
-                    // Spawn a new ship
-                    const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-                    newShip.position.set(
-                        -14 + Math.random() * 10,
-                        2 + (Math.random() - 0.5) * 2,
-                        5.5 + (Math.random() - 0.5) * 2
-                    );
-                    newShip.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
-                    scene.add(newShip);
-                    const newCanvas = document.createElement('canvas');
-                    newCanvas.width = 128;
-                    newCanvas.height = 32;
-                    const newCtx = newCanvas.getContext('2d');
-                    newCtx.font = '16px Orbitron';
-                    newCtx.fillStyle = '#00d4e0';
-                    newCtx.fillText('SHIP DETECTED', 10, 20);
-                    const newTexture = new THREE.CanvasTexture(newCanvas);
-                    const newSpriteMaterial = new THREE.SpriteMaterial({ map: newTexture, transparent: true, opacity: 0 });
-                    const newSprite = new THREE.Sprite(newSpriteMaterial);
-                    newSprite.scale.set(2, 0.5, 1);
-                    newSprite.position.set(0, 1, 0);
-                    newShip.add(newSprite);
-                    ships.push(newShip);
-                }, 500); // Disappear after 0.5s
+                // Disappear immediately
+                scene.remove(ship);
+                ships.splice(index, 1);
+                // Spawn a new ship
+                const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                newShip.position.set(
+                    20 + Math.random() * 5,
+                    2 + (Math.random() - 0.5) * 10,
+                    5.5 + (Math.random() - 0.5) * 10
+                );
+                newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03 };
+                scene.add(newShip);
+                const newCanvas = document.createElement('canvas');
+                newCanvas.width = 128;
+                newCanvas.height = 32;
+                const newCtx = newCanvas.getContext('2d');
+                newCtx.font = '16px Orbitron';
+                newCtx.fillStyle = '#00d4e0';
+                newCtx.fillText('SHIP DETECTED', 10, 20);
+                const newTexture = new THREE.CanvasTexture(newCanvas);
+                const newSpriteMaterial = new THREE.SpriteMaterial({ map: newTexture, transparent: true, opacity: 0 });
+                const newSprite = new THREE.Sprite(newSpriteMaterial);
+                newSprite.scale.set(2, 0.5, 1);
+                newSprite.position.set(0, 1, 0);
+                newShip.add(newSprite);
+                ships.push(newShip);
             }
         }
     });
