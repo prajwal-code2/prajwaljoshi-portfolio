@@ -4,44 +4,33 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Robot (Realistic Humanoid Design)
+// Robot (Detailed Sci-Fi Design on Right Side)
 const robotGroup = new THREE.Group();
 
-// Head (Slightly Angular)
-const headGeometry = new THREE.CylinderGeometry(0.6, 0.8, 1, 32);
+// Head (Metallic Cube)
+const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
 const headMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.9 });
 const head = new THREE.Mesh(headGeometry, headMaterial);
-head.position.set(15, 2, 5); // Moved to right side
+head.position.set(15, 2, 5); // Right side
 robotGroup.add(head);
 
-// Eye (Single Glowing Lens)
-const eyeGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+// Eye (Single Glowing Orb, Facing Left)
+const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0 });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(15.3, 2, 5.5); // Right-facing eye
+eye.position.set(15.3, 2, 5.5); // Positioned to face left
 robotGroup.add(eye);
 
-// Torso (Tapered and Sleek)
-const torsoGeometry = new THREE.CylinderGeometry(0.8, 1, 2.5, 32);
-const torsoMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
-const torso = new THREE.Mesh(torsoGeometry, torsoMaterial);
-torso.position.set(15, 0.5, 5);
-robotGroup.add(torso);
-
-// Arms (Simple but Realistic)
-const armGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1.5, 32);
-const armMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
-const leftArm = new THREE.Mesh(armGeometry, armMaterial);
-leftArm.position.set(14.5, 1.5, 5);
-leftArm.rotation.z = Math.PI / 4;
-const rightArm = new THREE.Mesh(armGeometry, armMaterial);
-rightArm.position.set(15.5, 1.5, 5);
-rightArm.rotation.z = -Math.PI / 4;
-robotGroup.add(leftArm, rightArm);
+// Body (Tapered, Futuristic)
+const bodyGeometry = new THREE.CylinderGeometry(0.8, 1, 2.5, 32);
+const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
+const robotBody = new THREE.Mesh(bodyGeometry, bodyMaterial);
+robotBody.position.set(15, 0.5, 5);
+robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Vision Cone (Pointing Left)
+// V-Shaped Vision Cone (Facing Left)
 const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true); // Open-ended cone
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
@@ -49,21 +38,23 @@ visionCone.position.set(15.3, 2, 5.5); // Aligned with eye
 visionCone.rotation.z = Math.PI / 2; // Pointing left
 scene.add(visionCone);
 
-// Sci-Fi Drones (Approaching from Right)
-const droneGeometry = new THREE.TetrahedronGeometry(0.8, 2);
-const droneMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
-const drones = [];
-let totalDetectionCount = 0; // Persistent count
-for (let i = 0; i < 8; i++) {
-    const drone = new THREE.Mesh(droneGeometry, droneMaterial.clone());
-    drone.position.set(
-        20 + Math.random() * 15, // Start from the right
+// Objects (Boxes and Circles Approaching from Left)
+const boxGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+const circleGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+const objMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
+const objects = [];
+let totalDetectionCount = 0; // Persistent count until reload
+for (let i = 0; i < 10; i++) {
+    const isBox = Math.random() > 0.5;
+    const obj = new THREE.Mesh(isBox ? boxGeometry : circleGeometry, objMaterial.clone());
+    obj.position.set(
+        -20 - Math.random() * 15, // Start from the left
         (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 10
     );
-    drone.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
-    scene.add(drone);
-    drones.push(drone);
+    obj.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
+    scene.add(obj);
+    objects.push(obj);
 
     // Detection Label
     const canvas = document.createElement('canvas');
@@ -72,19 +63,19 @@ for (let i = 0; i < 8; i++) {
     const ctx = canvas.getContext('2d');
     ctx.font = '16px Orbitron';
     ctx.fillStyle = '#00d4e0';
-    ctx.fillText('DRONE DETECTED', 10, 20);
+    ctx.fillText(isBox ? 'BOX DETECTED' : 'CIRCLE DETECTED', 10, 20);
     const texture = new THREE.CanvasTexture(canvas);
     const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(2, 0.5, 1);
     sprite.position.set(0, 1, 0);
-    drone.add(sprite);
+    obj.add(sprite);
 
     // Glowing Outline
     const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0, wireframe: true });
-    const outline = new THREE.Mesh(droneGeometry, outlineMaterial);
+    const outline = new THREE.Mesh(isBox ? boxGeometry : circleGeometry, outlineMaterial);
     outline.scale.set(1.1, 1.1, 1.1);
-    drone.add(outline);
+    obj.add(outline);
 }
 
 // Detection Count Display (Above Robot)
@@ -121,48 +112,39 @@ camera.position.z = 20;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Stable Robot (Subtle Head Movement)
+    // Stable Robot (Slight Head Tilt)
     head.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
 
-    // Drone Movement and Detection
-    let currentDetections = 0;
-    drones.forEach(drone => {
-        drone.position.x -= drone.userData.speed; // Approach from right
-        drone.rotation.x += 0.01;
-        drone.rotation.y += 0.01;
-        if (drone.position.x < -20) {
-            drone.position.x = 20 + Math.random() * 15; // Reset to right
-            drone.material.opacity = 0.5;
-            drone.children[0].material.opacity = 0;
-            drone.children[1].material.opacity = 0;
+    // Object Movement and Detection
+    objects.forEach(obj => {
+        obj.position.x += obj.userData.speed; // Approach from left
+        obj.rotation.x += 0.01;
+        obj.rotation.y += 0.01;
+        if (obj.position.x > 20) {
+            obj.position.x = -20 - Math.random() * 15; // Reset to left
+            obj.material.opacity = 0.5;
+            obj.children[0].material.opacity = 0;
+            obj.children[1].material.opacity = 0;
         }
 
-        // Check if drone is within vision cone (pointing left)
-        const relativePos = new THREE.Vector3().subVectors(drone.position, visionCone.position);
+        // Check if object is within vision cone
+        const relativePos = new THREE.Vector3().subVectors(obj.position, visionCone.position);
         const coneDirection = new THREE.Vector3(-1, 0, 0); // Cone points left
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < Math.PI / 6 && distance < 20) { // 30-degree cone
-            if (!drone.userData.detected) {
-                drone.userData.detected = true;
-                totalDetectionCount++; // Increment persistent count
-            }
-            drone.material.opacity = 0.8;
-            drone.children[0].material.opacity = 0.8; // Label
-            drone.children[1].material.opacity = 0.8; // Outline
-            currentDetections++;
-        } else {
-            drone.userData.detected = false;
-            drone.material.opacity = 0.5;
-            drone.children[0].material.opacity = 0;
-            drone.children[1].material.opacity = 0;
+        if (angle < Math.PI / 6 && distance < 20 && !obj.userData.detected) { // 30-degree cone
+            obj.userData.detected = true;
+            obj.material.opacity = 0.8;
+            obj.children[0].material.opacity = 0.8; // Label
+            obj.children[1].material.opacity = 0.8; // Outline
+            totalDetectionCount++; // Increment total count persistently
         }
     });
 
     // Update Detection Count
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
     countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
-    countCtx.fillText(`TOTAL DRONES DETECTED: ${totalDetectionCount}`, 10, 40);
+    countCtx.fillText(`OBJECTS DETECTED: ${totalDetectionCount}`, 10, 40);
     countTexture.needsUpdate = true;
 
     // Particle Animation
