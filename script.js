@@ -17,23 +17,23 @@ scene.add(directionalLight);
 const loader = new THREE.GLTFLoader();
 let robotModel;
 loader.load(
-    '/prajwaljoshi-portfolio/model/scene.gltf', // Correct path
+    '/prajwaljoshi-portfolio/model/scene.gltf',
     (gltf) => {
         robotModel = gltf.scene;
-        robotModel.scale.set(1, 1, 1); // Adjust scale if needed
-        robotModel.position.set(-15, 0, 5); // Stable position
-        robotModel.rotation.y = Math.PI / 2; // Set initial rotation, no animation
+        robotModel.scale.set(1, 1, 1);
+        robotModel.position.set(-15, 0, 5);
+        robotModel.rotation.y = Math.PI / 2;
         scene.add(robotModel);
         console.log('Model loaded successfully:', robotModel);
 
-        // Log materials and textures to debug color issue
         robotModel.traverse((child) => {
             if (child.isMesh) {
                 console.log('Mesh:', child.name, 'Material:', child.material);
-                if (child.material.map) {
-                    console.log('Texture:', child.material.map.source);
+                if (!child.material.map) {
+                    console.log('No texture found, applying fallback color');
+                    child.material.color.set(0x00eaff);
                 } else {
-                    console.log('No texture found for this mesh');
+                    console.log('Texture:', child.material.map.source);
                 }
             }
         });
@@ -56,14 +56,14 @@ loader.load(
     }
 );
 
-// Eye (Scanner Source)
+// Eye (Scanner Source) - Moved down to align with model's eye
 const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00eaff });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(-14.7, 2, 5.5);
+eye.position.set(-14.7, 1, 5.5); // Adjusted y from 2 to 1
 scene.add(eye);
 
-// V-Shaped Scanner
+// V-Shaped Scanner - Moved down to match eye
 const vShapeGeometry = new THREE.BufferGeometry();
 const vAngle = Math.PI / 12;
 const vLength = 25;
@@ -76,14 +76,14 @@ vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 vShapeGeometry.setIndex([0, 1, 2]);
 const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
 const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-scannerField.position.set(-14.7, 2, 5.5);
+scannerField.position.set(-14.7, 1, 5.5); // Adjusted y from 2 to 1
 scene.add(scannerField);
 
 const marker = new THREE.Mesh(
     new THREE.SphereGeometry(0.1),
     new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
-marker.position.set(-14.7, 2, 5.5);
+marker.position.set(-14.7, 1, 5.5); // Adjusted y from 2 to 1
 scene.add(marker);
 
 // Ships
@@ -122,13 +122,13 @@ countSprite.scale.set(12, 3, 1);
 countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
-// Typewriter Effect
+// Typewriter Effect - Larger text and adjusted alignment
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
-typewriterCanvas.width = 768;
-typewriterCanvas.height = 120;
+typewriterCanvas.width = 1024; // Increased width
+typewriterCanvas.height = 160; // Increased height
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '48px Exo 2';
+typewriterCtx.font = '64px Exo 2'; // Increased from 48px to 64px
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -143,10 +143,10 @@ function typeWriter() {
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
     const h1 = document.querySelector('.hero h1');
     const h1Rect = h1.getBoundingClientRect();
-    const offsetX = h1Rect.left + 10;
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 80);
+    const offsetX = h1Rect.left + 150; // Shifted right from 10 to 150 to align better
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100); // Adjusted y from 80 to 100
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 2, 50);
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 50, 2, 60); // Adjusted cursor position
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -178,8 +178,6 @@ function animate() {
     time += 0.05;
     const dynamicTilt = Math.sin(time) * Math.PI / 6;
     scannerField.rotation.y = dynamicTilt;
-
-    // Removed rotation for robotModel to keep it stable
 
     ships.forEach((ship, index) => {
         ship.position.x -= ship.userData.speed;

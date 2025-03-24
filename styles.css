@@ -25,7 +25,7 @@ body.dark {
     color: #00eaff;
 }
 body.dark .text-content {
-    color: #ffffff; /* White for general text */
+    color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 body.dark .navbar {
@@ -136,14 +136,14 @@ body.light .nav-link:hover {
 }
 .futuristic-text {
     font-family: 'Exo 2', sans-serif;
-    font-size: 3rem; /* Increased size */
+    font-size: 3rem;
     letter-spacing: 4px;
     text-transform: uppercase;
     z-index: 2;
     position: relative;
     text-align: left;
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(0, 234, 255, 1); /* Stronger glow */
+    text-shadow: 0 0 10px rgba(0, 234, 255, 1);
 }
 #threeCanvas {
     position: absolute;
@@ -215,32 +215,44 @@ body.light .btn-outline-light:hover {
 #about, #contact {
     padding: 5rem 0;
 }
-#contact .text-content {
-    color: #ffcc00; /* Bright yellow for contrast */
-    text-shadow: 0 0 8px rgba(255, 204, 0, 0.8);
-}
-.text-gradient {
-    color: #ffcc00; /* Bright yellow for links */
-    transition: color 0.3s ease;
-}
-body.light .text-gradient {
-    color: #4a3ecc;
-}
-.text-gradient:hover {
-    color: #ffffff; /* White on hover */
-}
-body.light .text-gradient:hover {
-    color: #00a4b0;
+
+/* About - Smaller text */
+#about p {
+    font-size: 1rem; /* Smaller text */
+    line-height: 1.5;
 }
 
-/* Footer */
+/* Contact - Smaller text, better visibility */
+#contact h2 {
+    font-size: 1.75rem; /* Reduced size */
+    color: #ffcc00; /* Bright yellow for contrast */
+    text-shadow: 0 0 8px rgba(255, 204, 0, 0.8); /* Glow for readability */
+}
+#contact p {
+    font-size: 1rem; /* Reduced size */
+    color: #ffffff; /* White for contrast */
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8); /* Glow for readability */
+}
+body.light #contact h2 {
+    color: #4a3ecc; /* Darker purple for light mode */
+    text-shadow: 0 0 5px rgba(74, 62, 204, 0.8);
+}
+body.light #contact p {
+    color: #1a1a3a; /* Dark text for light mode */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+#contact {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 255, 255, 0.3)); /* Adjusted gradient */
+}
+
+/* Footer - Smaller text */
 footer {
     text-align: center;
 }
-footer .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+footer p {
+    font-size: 0.875rem; /* Smaller text */
+    margin: 0;
+    padding: 1rem 0;
 }
 
 /* Modal */
@@ -259,4 +271,26 @@ body.light .modal-content {
 }
 body.light .modal-header {
     border-bottom: 1px solid #00a4b0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #about p {
+        font-size: 0.875rem;
+    }
+    #contact h2 {
+        font-size: 1.5rem;
+    }
+    #contact p {
+        font-size: 0.875rem;
+    }
+    footer p {
+        font-size: 0.75rem;
+    }
+    .hero h1 {
+        font-size: 3rem;
+    }
+    .futuristic-text {
+        font-size: 2rem;
+    }
 }
