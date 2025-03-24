@@ -30,7 +30,7 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Scanner (From Eye, Moves Up and Down)
+// V-Shaped Scanner (From Eye, Moves Up and Down - Translation)
 const vShapeGeometry = new THREE.BufferGeometry();
 const vAngle = Math.PI / 12; // 15° half-angle (30° total)
 const vLength = 25; // Length of V arms
@@ -94,9 +94,9 @@ scene.add(countSprite);
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 768;
-typewriterCanvas.height = 64;
+typewriterCanvas.height = 80; // Bigger
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '24px Orbitron'; // Larger for visibility
+typewriterCtx.font = '28px Orbitron'; // Larger font
 typewriterCtx.fillStyle = '#00d4e0';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -108,9 +108,9 @@ const delayBetween = 1000; // 1s delay between cycles
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), 10, 40);
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), 10, 50); // Adjusted y-position for bigger canvas
     const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(10 + textWidth, 20, 2, 24);
+    typewriterCtx.fillRect(10 + textWidth, 25, 2, 30); // Bigger cursor
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -140,9 +140,9 @@ let time = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Oscillate Scanner Field (Up and Down)
+    // Move Scanner Field Up and Down (Translation)
     time += 0.05;
-    scannerField.rotation.x = Math.sin(time) * Math.PI / 4; // ±45° swing
+    scannerField.position.y = 2 + Math.sin(time) * 5; // ±5 units vertical movement
 
     // Ship Movement and Detection
     ships.forEach((ship, index) => {
@@ -157,7 +157,7 @@ function animate() {
 
             // Check if ship is within V-shaped scanner
             const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
-            const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion);
+            const vDirection = new THREE.Vector3(1, 0, 0); // Fixed direction (no rotation)
             const angle = relativePos.angleTo(vDirection);
             const distance = relativePos.length();
             if (angle < vAngle && distance <= vLength && !ship.userData.detected) {
