@@ -30,15 +30,16 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Vision Cone (Apex at Eye, Base Toward Ships)
+// V-Shaped Vision Cone (Apex at Eye, Base Toward Right)
 const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true); // Base radius: 10, height: 20
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = -Math.PI / 2; // Base points right
+visionCone.position.set(-14.7 - 20, 2, 5.5); // Move origin left by cone length
+visionCone.rotation.z = Math.PI / 2; // Apex at eye, base right
+visionCone.position.x += 20; // Adjust so apex aligns with eye
 scene.add(visionCone);
 
-// Ships (Approaching from Right)
+// Ships (Approaching from Right, No Rotation)
 const shipGeometry = new THREE.ConeGeometry(0.5, 1.5, 8);
 const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
 const ships = [];
@@ -50,7 +51,7 @@ for (let i = 0; i < 8; i++) {
         (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 10
     );
-    ship.rotation.x = Math.PI / 2;
+    ship.rotation.x = Math.PI / 2; // Fixed orientation
     ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
     scene.add(ship);
     ships.push(ship);
@@ -91,13 +92,9 @@ camera.position.z = 20;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Subtle Robot Movement
-    head.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
-
-    // Ship Movement and Detection
+    // Ship Movement (Straight Left, No Rotation)
     ships.forEach(ship => {
-        ship.position.x -= ship.userData.speed; // Approach from right
-        ship.rotation.x += 0.01;
+        ship.position.x -= ship.userData.speed; // Move left
         if (ship.position.x < -20) {
             ship.position.x = 20 + Math.random() * 15; // Reset to right
             ship.userData.detected = false;
@@ -106,11 +103,11 @@ function animate() {
         }
 
         // Check if ship is within vision cone
-        const relativePos = new THREE.Vector3().subVectors(ship.position, visionCone.position);
-        const coneDirection = new THREE.Vector3(1, 0, 0); // Cone points right
+        const relativePos = new THREE.Vector3().subVectors(ship.position, eye.position); // Relative to eye
+        const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < Math.PI / 6 && distance < 20 && !ship.userData.detected) { // 30-degree cone, 20 units long
+        if (angle < Math.PI / 6 && distance < 20 && !ship.userData.detected) { // 30-degree cone, 20 units
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
