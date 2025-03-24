@@ -4,83 +4,55 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Robot (Complex Sci-Fi Design on Left Side)
+// Robot (Detailed Sci-Fi Design)
 const robotGroup = new THREE.Group();
 
-// Head (Metallic with Antennae)
+// Head (Metallic Cube with Angled Edges)
 const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
 const headMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.9 });
 const head = new THREE.Mesh(headGeometry, headMaterial);
-head.position.set(-15, 3, 5); // Raised for legs
+head.position.set(-15, 2, 5);
 robotGroup.add(head);
 
-// Antennae
-const antennaGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
-const antennaMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
-const leftAntenna = new THREE.Mesh(antennaGeometry, antennaMaterial);
-leftAntenna.position.set(-15.4, 3.8, 5);
-leftAntenna.rotation.z = Math.PI / 6;
-const rightAntenna = new THREE.Mesh(antennaGeometry, antennaMaterial);
-rightAntenna.position.set(-14.6, 3.8, 5);
-rightAntenna.rotation.z = -Math.PI / 6;
-robotGroup.add(leftAntenna, rightAntenna);
-
-// Eye (Glowing Orb, Facing Right)
+// Eye (Single Glowing Orb)
 const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0 });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(-14.7, 3, 5.5);
+eye.position.set(-14.7, 2, 5.5);
 robotGroup.add(eye);
 
 // Body (Tapered, Futuristic)
-const bodyGeometry = new THREE.CylinderGeometry(0.8, 1, 2, 32);
+const bodyGeometry = new THREE.CylinderGeometry(0.8, 1, 2.5, 32);
 const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
 const robotBody = new THREE.Mesh(bodyGeometry, bodyMaterial);
-robotBody.position.set(-15, 1.5, 5);
+robotBody.position.set(-15, 0.5, 5);
 robotGroup.add(robotBody);
-
-// Legs (Articulated)
-const legGeometry = new THREE.CylinderGeometry(0.3, 0.3, 2, 32);
-const legMaterial = new THREE.MeshBasicMaterial({ color: 0x3a3a6a, transparent: true, opacity: 0.7 });
-const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
-leftLeg.position.set(-15.5, 0.5, 5);
-leftLeg.rotation.z = Math.PI / 12;
-const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
-rightLeg.position.set(-14.5, 0.5, 5);
-rightLeg.rotation.z = -Math.PI / 12;
-robotGroup.add(leftLeg, rightLeg);
 
 scene.add(robotGroup);
 
-// V-Shaped Vision Cone (Facing Right)
-const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true);
+// V-Shaped Vision Cone
+const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true); // Open-ended cone
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
-visionCone.position.set(-14.7, 3, 5.5); // Aligned with eye
+visionCone.position.set(-14.7, 2, 5.5); // Aligned with eye
 visionCone.rotation.z = -Math.PI / 2; // Pointing right
 scene.add(visionCone);
 
-// Ships (Varied Sci-Fi Designs Approaching from Right)
-const shipTypes = [
-    new THREE.ConeGeometry(0.5, 1.5, 8), // Fighter
-    new THREE.BoxGeometry(1.5, 1, 2),     // Freighter
-    new THREE.TetrahedronGeometry(0.8, 2) // Drone
-];
-const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
-const ships = [];
-let totalDetectionCount = 0; // Persistent count until reload
-for (let i = 0; i < 9; i++) {
-    const typeIndex = i % 3; // Cycle through ship types
-    const ship = new THREE.Mesh(shipTypes[typeIndex], shipMaterial.clone());
-    ship.position.set(
+// Sci-Fi Drones (Detected Objects)
+const droneGeometry = new THREE.TetrahedronGeometry(0.8, 2); // Sharp, futuristic shape
+const droneMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
+const drones = [];
+let detectionCount = 0;
+for (let i = 0; i < 8; i++) {
+    const drone = new THREE.Mesh(droneGeometry, droneMaterial.clone());
+    drone.position.set(
         20 + Math.random() * 15, // Start from the right
         (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 10
     );
-    if (typeIndex === 0) ship.rotation.x = Math.PI / 2; // Orient fighter
-    ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02, type: ['FIGHTER', 'FREIGHTER', 'DRONE'][typeIndex] };
-    scene.add(ship);
-    ships.push(ship);
+    drone.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
+    scene.add(drone);
+    drones.push(drone);
 
     // Detection Label
     const canvas = document.createElement('canvas');
@@ -89,19 +61,19 @@ for (let i = 0; i < 9; i++) {
     const ctx = canvas.getContext('2d');
     ctx.font = '16px Orbitron';
     ctx.fillStyle = '#00d4e0';
-    ctx.fillText(`${ship.userData.type} DETECTED`, 10, 20);
+    ctx.fillText('DRONE DETECTED', 10, 20);
     const texture = new THREE.CanvasTexture(canvas);
     const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(2, 0.5, 1);
     sprite.position.set(0, 1, 0);
-    ship.add(sprite);
+    drone.add(sprite);
 
-    // Glowing Outline
+    // Glowing Outline (Detection Highlight)
     const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0, wireframe: true });
-    const outline = new THREE.Mesh(shipTypes[typeIndex], outlineMaterial);
+    const outline = new THREE.Mesh(droneGeometry, outlineMaterial);
     outline.scale.set(1.1, 1.1, 1.1);
-    ship.add(outline);
+    drone.add(outline);
 }
 
 // Detection Count Display (Above Robot)
@@ -115,7 +87,7 @@ const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
 countSprite.scale.set(4, 1, 1);
-countSprite.position.set(-15, 5, 5);
+countSprite.position.set(-15, 4, 5);
 scene.add(countSprite);
 
 // Subtle Particle Background
@@ -132,54 +104,55 @@ const particleMaterial = new THREE.PointsMaterial({ color: 0x5a4eff, size: 0.1, 
 const particles = new THREE.Points(particleGeometry, particleMaterial);
 scene.add(particles);
 
-// Dynamic Spotlight Effect
-const spotLight = new THREE.SpotLight(0x00d4e0, 0.5, 30, Math.PI / 6);
-spotLight.position.set(-14.7, 3, 5.5);
-spotLight.target.position.set(5, 3, 5.5); // Pointing right
-scene.add(spotLight);
-scene.add(spotLight.target);
-
 camera.position.z = 20;
 
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate);
 
-    // Robot Animation (Subtle Head and Leg Movement)
+    // Stable Robot (Slight Head Tilt)
     head.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
-    leftLeg.rotation.z = Math.PI / 12 + Math.sin(Date.now() * 0.002) * 0.05;
-    rightLeg.rotation.z = -Math.PI / 12 - Math.sin(Date.now() * 0.002) * 0.05;
 
-    // Ship Movement and Detection
-    ships.forEach(ship => {
-        ship.position.x -= ship.userData.speed; // Approach from right
-        ship.rotation.x += 0.01;
-        ship.rotation.y += 0.01;
-        if (ship.position.x < -20) {
-            ship.position.x = 20 + Math.random() * 15; // Reset to right
-            ship.material.opacity = 0.5;
-            ship.children[0].material.opacity = 0;
-            ship.children[1].material.opacity = 0;
+    // Drone Movement and Detection
+    detectionCount = 0;
+    drones.forEach(drone => {
+        drone.position.x -= drone.userData.speed; // Approach from right
+        drone.rotation.x += 0.01;
+        drone.rotation.y += 0.01;
+        if (drone.position.x < -20) {
+            drone.position.x = 20 + Math.random() * 15; // Reset to right
+            drone.userData.detected = false;
+            drone.material.opacity = 0.5;
+            drone.children[0].material.opacity = 0;
+            drone.children[1].material.opacity = 0;
         }
 
-        // Check if ship is within vision cone
-        const relativePos = new THREE.Vector3().subVectors(ship.position, visionCone.position);
+        // Check if drone is within vision cone
+        const relativePos = new THREE.Vector3().subVectors(drone.position, visionCone.position);
         const coneDirection = new THREE.Vector3(1, 0, 0); // Cone points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < Math.PI / 6 && distance < 20 && !ship.userData.detected) { // 30-degree cone
-            ship.userData.detected = true;
-            ship.material.opacity = 0.8;
-            ship.children[0].material.opacity = 0.8; // Label
-            ship.children[1].material.opacity = 0.8; // Outline
-            totalDetectionCount++; // Increment total count persistently
+        if (angle < Math.PI / 6 && distance < 20 && !drone.userData.detected) { // 30-degree cone
+            drone.userData.detected = true;
+            drone.material.opacity = 0.8;
+            drone.children[0].material.opacity = 0.8; // Label
+            drone.children[1].material.opacity = 0.8; // Outline
+            detectionCount++;
+            setTimeout(() => {
+                if (drone.userData.detected) {
+                    drone.userData.detected = false;
+                    drone.material.opacity = 0.5;
+                    drone.children[0].material.opacity = 0;
+                    drone.children[1].material.opacity = 0;
+                }
+            }, 2000);
         }
     });
 
     // Update Detection Count
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
     countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
-    countCtx.fillText(`SHIPS DETECTED: ${totalDetectionCount}`, 10, 40);
+    countCtx.fillText(`DRONES DETECTED: ${detectionCount}`, 10, 40);
     countTexture.needsUpdate = true;
 
     // Particle Animation
