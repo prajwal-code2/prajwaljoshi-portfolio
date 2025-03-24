@@ -30,21 +30,13 @@ robotGroup.add(robotBody);
 
 scene.add(robotGroup);
 
-// V-Shaped Vision Field (Apex at Eye, Opens Right)
-const vShapeGeometry = new THREE.BufferGeometry();
-const vAngle = Math.PI / 12; // 15-degree half-angle (30° total)
-const vLength = 15; // Length of V arms
-const vertices = new Float32Array([
-    0, 0, 0, // Apex (at eye)
-    vLength * Math.cos(vAngle), vLength * Math.sin(vAngle), 0, // Top arm
-    vLength * Math.cos(-vAngle), vLength * Math.sin(-vAngle), 0 // Bottom arm
-]);
-vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-vShapeGeometry.setIndex([0, 1, 2]); // Triangle indices
-const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
-const visionField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-visionField.position.set(-14.7, 2, 5.5); // Apex at eye
-scene.add(visionField);
+// Conical Vision Field (Apex at Eye, Base Toward Right)
+const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius: 3, height: 15
+const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
+const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
+visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
+visionCone.rotation.z = -Math.PI / 2; // Base points right
+scene.add(visionCone);
 
 // Ships (Approaching from Right, No Rotation)
 const shipGeometry = new THREE.ConeGeometry(0.5, 1.5, 8);
@@ -55,7 +47,7 @@ for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
         20 + Math.random() * 15, // Start from right
-        (Math.random() - 0.5) * 3, // Within V-shape
+        (Math.random() - 0.5) * 3, // Within cone
         (Math.random() - 0.5) * 3
     );
     ship.rotation.x = Math.PI / 2; // Fixed orientation
@@ -109,12 +101,13 @@ function animate() {
             ship.children[0].material.opacity = 0;
         }
 
-        // Check if ship is within V-shape
+        // Check if ship is within conical vision
         const relativePos = new THREE.Vector3().subVectors(ship.position, eye.position); // Relative to eye
         const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < vAngle && distance < vLength && !ship.userData.detected) { // 30-degree total V, 15 units
+        const maxAngle = Math.atan2(3, 15); // Cone's half-angle (arctan(radius/height))
+        if (angle < maxAngle && distance < 15 && !ship.userData.detected) { // Within cone
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
