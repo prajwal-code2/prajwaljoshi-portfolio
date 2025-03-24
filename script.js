@@ -4,55 +4,54 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Robot (Simplified Humanoid)
+// Robot Head (Realistic Design)
 const robotGroup = new THREE.Group();
 
-// Head
-const headGeometry = new THREE.BoxGeometry(1, 1, 1);
-const headMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.8 });
+// Head (Metallic Base)
+const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1);
+const headMaterial = new THREE.MeshPhongMaterial({ color: 0x3a3a5a, shininess: 100, specular: 0x555555 });
 const head = new THREE.Mesh(headGeometry, headMaterial);
 head.position.set(-15, 2, 5);
 robotGroup.add(head);
 
-// Eyes (Beam Source)
-const eyeGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0 });
-const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-leftEye.position.set(-15.3, 2.2, 5.4);
-const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-rightEye.position.set(-14.7, 2.2, 5.4);
-robotGroup.add(leftEye, rightEye);
+// Eye (Glowing Lens)
+const eyeGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.9 });
+const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+eye.position.set(-14.8, 2, 5.5);
+robotGroup.add(eye);
 
-// Body (Renamed to robotBody)
-const bodyGeometry = new THREE.BoxGeometry(1.5, 2, 1);
-const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.6 });
-const robotBody = new THREE.Mesh(bodyGeometry, bodyMaterial); // Changed from 'body' to 'robotBody'
-robotBody.position.set(-15, 0.5, 5);
-robotGroup.add(robotBody);
+// Add Ambient and Point Light for Realism
+const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+pointLight.position.set(-15, 5, 10);
+scene.add(pointLight);
+
+// V-Shaped Vision Cone
+const coneGeometry = new THREE.ConeGeometry(10, 20, 32, 1, true);
+const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
+const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
+visionCone.position.set(-14.8, 2, 5.5); // Aligned with eye
+visionCone.rotation.z = -Math.PI / 2; // Horizontal orientation
+robotGroup.add(visionCone);
 
 scene.add(robotGroup);
 
-// Scanning Beam from Eyes
-const beamGeometry = new THREE.PlaneGeometry(20, 0.2);
-const beamMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.5 });
-const beam = new THREE.Mesh(beamGeometry, beamMaterial);
-beam.position.set(-15, 2.2, 5); // Starts at eye level
-scene.add(beam);
-
-// Ships (Approaching Objects)
-const shipGeometry = new THREE.ConeGeometry(0.5, 1.5, 8);
-const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x5a4eff, transparent: true, opacity: 0.5 });
+// Ships (Sci-Fi Design)
+const shipGeometry = new THREE.CylinderGeometry(0.3, 0.5, 1.5, 8);
+const shipMaterial = new THREE.MeshPhongMaterial({ color: 0x5a4eff, shininess: 50, specular: 0x333333 });
 const ships = [];
 let detectionCount = 0;
 for (let i = 0; i < 6; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
-        20 + Math.random() * 10, // Start from the right
-        (Math.random() - 0.5) * 15,
+        20 + Math.random() * 10, // Start from right
+        (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 10
     );
     ship.rotation.x = Math.PI / 2;
-    ship.userData = { detected: false, speed: 0.02 + Math.random() * 0.03 };
+    ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02, isUnidentified: Math.random() > 0.8 };
     scene.add(ship);
     ships.push(ship);
 
@@ -62,8 +61,8 @@ for (let i = 0; i < 6; i++) {
     canvas.height = 32;
     const ctx = canvas.getContext('2d');
     ctx.font = '16px Orbitron';
-    ctx.fillStyle = '#00d4e0';
-    ctx.fillText('SHIP DETECTED', 10, 20);
+    ctx.fillStyle = ship.userData.isUnidentified ? '#ff4e50' : '#00d4e0';
+    ctx.fillText(ship.userData.isUnidentified ? 'UNIDENTIFIED' : 'SHIP DETECTED', 10, 20);
     const texture = new THREE.CanvasTexture(canvas);
     const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0 });
     const sprite = new THREE.Sprite(spriteMaterial);
@@ -72,7 +71,7 @@ for (let i = 0; i < 6; i++) {
     ship.add(sprite);
 }
 
-// Detection Count Display (Above Robot)
+// Detection Count HUD (Above Robot)
 const countCanvas = document.createElement('canvas');
 countCanvas.width = 256;
 countCanvas.height = 64;
@@ -83,20 +82,17 @@ const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
 countSprite.scale.set(4, 1, 1);
-countSprite.position.set(-15, 4, 5);
+countSprite.position.set(-15, 4.5, 5);
 scene.add(countSprite);
 
 camera.position.z = 20;
 
 // Animation Loop
-let beamAngle = 0;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Beam Scanning from Eyes
-    beamAngle += 0.03;
-    beam.position.x = -15 + Math.cos(beamAngle) * 10;
-    beam.rotation.y = Math.sin(beamAngle) * 0.3;
+    // Stable Robot (No wobble)
+    robotGroup.position.set(-15, 2, 5);
 
     // Ship Movement and Detection
     detectionCount = 0;
@@ -109,8 +105,13 @@ function animate() {
             ship.children[0].material.opacity = 0;
         }
 
-        const distance = Math.abs(ship.position.x - beam.position.x);
-        if (distance < 1 && !ship.userData.detected) {
+        // V-Cone Detection
+        const distance = Math.sqrt(
+            Math.pow(ship.position.x - visionCone.position.x, 2) +
+            Math.pow(ship.position.y - visionCone.position.y, 2)
+        );
+        const inCone = distance < 10 && ship.position.x > visionCone.position.x;
+        if (inCone && !ship.userData.detected) {
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
@@ -128,7 +129,7 @@ function animate() {
     // Update Detection Count
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
     countCtx.fillStyle = document.body.classList.contains('dark') ? '#00d4e0' : '#00a4b0';
-    countCtx.fillText(`SHIPS DETECTED: ${detectionCount}`, 10, 40);
+    countCtx.fillText(`DETECTIONS: ${detectionCount}`, 10, 40);
     countTexture.needsUpdate = true;
 
     renderer.render(scene, camera);
@@ -163,7 +164,7 @@ window.addEventListener('scroll', () => {
 
 // Dark/Light Mode Toggle
 const toggleButton = document.getElementById('themeToggle');
-const docBody = document.body; // Renamed to 'docBody' to avoid conflict
+const docBody = document.body;
 const currentTheme = localStorage.getItem('theme') || 'dark';
 docBody.classList.add(currentTheme);
 
