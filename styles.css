@@ -156,6 +156,28 @@ body.light .nav-link:hover {
 }
 
 /* Projects */
+#projects {
+    padding: 5rem 0;
+}
+#projects h2 {
+    font-size: 2rem;
+    background: linear-gradient(90deg, #00eaff, #ff00ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.7); /* Black translucent background */
+    display: inline-block;
+    border-radius: 5px;
+}
+body.light #projects h2 {
+    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
 .project-card {
     background: rgba(0, 0, 20, 0.85);
     border: none;
@@ -213,28 +235,28 @@ body.light .btn-outline-light:hover {
 
 /* Common Section Styling */
 #about, #contact, footer {
-    padding: 5rem 0; /* Consistent padding */
-    background: rgba(0, 0, 0, 0.7); /* Translucent black background for all */
+    padding: 5rem 0;
+    background: rgba(0, 0, 0, 0.7);
 }
 
 /* About */
 #about h2 {
-    font-size: 2rem; /* Consistent headline size */
-    background: linear-gradient(90deg, #00eaff, #ff00ff); /* Gradient from dark mode */
+    font-size: 2rem;
+    background: linear-gradient(90deg, #00eaff, #ff00ff);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 body.light #about h2 {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc); /* Gradient from light mode */
+    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 #about p {
-    font-size: 1rem; /* Smallest text size */
+    font-size: 1rem;
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
@@ -245,8 +267,8 @@ body.light #about p {
 
 /* Contact */
 #contact h2 {
-    font-size: 2rem; /* Consistent headline size */
-    background: linear-gradient(90deg, #00eaff, #ff00ff); /* Same gradient as About */
+    font-size: 2rem;
+    background: linear-gradient(90deg, #00eaff, #ff00ff);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -260,7 +282,7 @@ body.light #contact h2 {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 #contact p {
-    font-size: 1.125rem; /* Slightly larger than About, smaller than previous */
+    font-size: 1.125rem;
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
@@ -268,14 +290,17 @@ body.light #contact p {
     color: #1a1a3a;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
+#contact .contact-details {
+    font-size: 0.9375rem; /* Smaller than 1.125rem for email, GitHub, etc. */
+}
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 2rem 0; /* Adjusted padding for footer */
+    padding: 2rem 0;
 }
 footer p {
-    font-size: 1.0625rem; /* Slightly larger than About (1rem), smaller than previous (0.875rem) */
+    font-size: 0.875rem; /* Smaller than everything else */
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
@@ -304,7 +329,7 @@ body.light .modal-header {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    #about h2, #contact h2 {
+    #projects h2, #about h2, #contact h2 {
         font-size: 1.75rem;
     }
     #about p {
@@ -313,8 +338,11 @@ body.light .modal-header {
     #contact p {
         font-size: 1rem;
     }
+    #contact .contact-details {
+        font-size: 0.875rem;
+    }
     footer p {
-        font-size: 0.9375rem;
+        font-size: 0.75rem;
     }
     .hero h1 {
         font-size: 3rem;

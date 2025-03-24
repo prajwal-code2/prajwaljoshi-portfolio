@@ -56,14 +56,14 @@ loader.load(
     }
 );
 
-// Eye (Scanner Source) - Moved down to align with model's eye
+// Eye (Scanner Source)
 const eyeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
 const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x00eaff });
 const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-eye.position.set(-14.7, 1, 5.5); // Adjusted y from 2 to 1
+eye.position.set(-14.7, 1, 5.5);
 scene.add(eye);
 
-// V-Shaped Scanner - Moved down to match eye
+// V-Shaped Scanner
 const vShapeGeometry = new THREE.BufferGeometry();
 const vAngle = Math.PI / 12;
 const vLength = 25;
@@ -76,14 +76,14 @@ vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 vShapeGeometry.setIndex([0, 1, 2]);
 const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
 const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
-scannerField.position.set(-14.7, 1, 5.5); // Adjusted y from 2 to 1
+scannerField.position.set(-14.7, 1, 5.5);
 scene.add(scannerField);
 
 const marker = new THREE.Mesh(
     new THREE.SphereGeometry(0.1),
     new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
-marker.position.set(-14.7, 1, 5.5); // Adjusted y from 2 to 1
+marker.position.set(-14.7, 1, 5.5);
 scene.add(marker);
 
 // Ships
@@ -108,27 +108,27 @@ for (let i = 0; i < 8; i++) {
     ship.add(glow);
 }
 
-// Detection Count Display
+// Detection Count Display - Larger and above robot
 const countCanvas = document.createElement('canvas');
 countCanvas.width = 1024;
 countCanvas.height = 256;
 const countCtx = countCanvas.getContext('2d');
-countCtx.font = '60px Exo 2';
+countCtx.font = '80px Exo 2'; // Increased from 60px to 80px
 countCtx.fillStyle = '#ffcc00';
 const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(12, 3, 1);
-countSprite.position.set(-15, 4, 5);
+countSprite.scale.set(16, 4, 1); // Increased scale for visibility
+countSprite.position.set(-15, 5, 5); // Moved above robot (y from 4 to 5)
 scene.add(countSprite);
 
-// Typewriter Effect - Larger text and adjusted alignment
+// Typewriter Effect - Smaller cursor, matching text height
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
-typewriterCanvas.width = 1024; // Increased width
-typewriterCanvas.height = 160; // Increased height
+typewriterCanvas.width = 1024;
+typewriterCanvas.height = 160;
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '64px Exo 2'; // Increased from 48px to 64px
+typewriterCtx.font = '64px Exo 2'; // Text height matches cursor
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -143,10 +143,10 @@ function typeWriter() {
     typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
     const h1 = document.querySelector('.hero h1');
     const h1Rect = h1.getBoundingClientRect();
-    const offsetX = h1Rect.left + 150; // Shifted right from 10 to 150 to align better
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100); // Adjusted y from 80 to 100
+    const offsetX = h1Rect.left + 150;
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 50, 2, 60); // Adjusted cursor position
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 2, 64); // Cursor height 64px (smaller from 60, matches text)
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -252,7 +252,6 @@ function animate() {
     });
 
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-    countCtx.fillStyle = '#ffcc00';
     countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160);
     countTexture.needsUpdate = true;
 
