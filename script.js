@@ -108,6 +108,7 @@ function animate() {
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
         if (angle < Math.PI / 12 && distance <= 15 && !ship.userData.detected) { // 15-degree half-angle, 15 units
+            console.log('Detected:', { angle: angle * 180 / Math.PI, distance });
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
@@ -194,6 +195,7 @@ const observer = new IntersectionObserver((entries) => {
         }
     });
 }, { threshold: 0.3 });
+
 
 document.querySelectorAll('#projects .project-card, #about, #contact').forEach(el => {
     el.style.opacity = 0;
