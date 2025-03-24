@@ -31,11 +31,11 @@ robotGroup.add(robotBody);
 scene.add(robotGroup);
 
 // V-Shaped Vision Cone (Apex at Eye, Base Toward Right)
-const coneGeometry = new THREE.ConeGeometry(5, 15, 32, 1, true); // Base radius: 5 (smaller), height: 15
+const coneGeometry = new THREE.ConeGeometry(3, 15, 32, 1, true); // Base radius: 3, height: 15
 const coneMaterial = new THREE.MeshBasicMaterial({ color: 0x00d4e0, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
 const visionCone = new THREE.Mesh(coneGeometry, coneMaterial);
 visionCone.position.set(-14.7, 2, 5.5); // Apex at eye
-visionCone.rotation.z = Math.PI / 2; // Base points right (corrected orientation)
+visionCone.rotation.z = -Math.PI / 2; // Base points right
 scene.add(visionCone);
 
 // Ships (Approaching from Right, No Rotation)
@@ -47,8 +47,8 @@ for (let i = 0; i < 8; i++) {
     const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
     ship.position.set(
         20 + Math.random() * 15, // Start from right
-        (Math.random() - 0.5) * 5, // Reduced y-range to fit smaller cone
-        (Math.random() - 0.5) * 5  // Reduced z-range
+        (Math.random() - 0.5) * 3, // Reduced y-range for tighter cone
+        (Math.random() - 0.5) * 3  // Reduced z-range
     );
     ship.rotation.x = Math.PI / 2; // Fixed orientation
     ship.userData = { detected: false, speed: 0.03 + Math.random() * 0.02 };
@@ -101,12 +101,12 @@ function animate() {
             ship.children[0].material.opacity = 0;
         }
 
-        // Check if ship is within vision cone
+        // Check if ship is within vision cone (tighter V-shape)
         const relativePos = new THREE.Vector3().subVectors(ship.position, eye.position); // Relative to eye
         const coneDirection = new THREE.Vector3(1, 0, 0); // Points right
         const angle = relativePos.angleTo(coneDirection);
         const distance = relativePos.length();
-        if (angle < Math.PI / 6 && distance < 15 && !ship.userData.detected) { // 30-degree cone, 15 units
+        if (angle < Math.PI / 12 && distance < 15 && !ship.userData.detected) { // 15-degree cone (tighter V), 15 units
             ship.userData.detected = true;
             ship.material.opacity = 0.8;
             ship.children[0].material.opacity = 0.8;
