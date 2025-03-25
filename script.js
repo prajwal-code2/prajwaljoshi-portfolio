@@ -18,18 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
     directionalLight.position.set(0, 10, 10);
     scene.add(directionalLight);
 
-    // Load Local GLTF Model
+    // Load Robot GLTF Model
     const loader = new THREE.GLTFLoader();
     let robotModel;
     loader.load(
-        '/prajwaljoshi-portfolio/model/scene.gltf', // Verify this path
+        '/prajwaljoshi-portfolio/model/scene.gltf',
         (gltf) => {
             robotModel = gltf.scene;
             robotModel.scale.set(1, 1, 1);
             robotModel.position.set(-15, 0, 5);
             robotModel.rotation.y = Math.PI / 2;
             scene.add(robotModel);
-            console.log('Model loaded successfully:', robotModel);
+            console.log('Robot model loaded successfully:', robotModel);
 
             robotModel.traverse((child) => {
                 if (child.isMesh) {
@@ -45,19 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         (xhr) => {
             if (xhr.total > 0) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                console.log((xhr.loaded / xhr.total * 100) + '% robot loaded');
             } else {
-                console.log('Loading model... (size unknown)');
+                console.log('Loading robot model... (size unknown)');
             }
         },
         (error) => {
-            console.error('Error loading GLTF model:', error);
+            console.error('Error loading robot GLTF model:', error);
             const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
             const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
             const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
             cube.position.set(-15, 0, 5);
             scene.add(cube);
-            console.log('Fallback cube added due to loading failure');
+            console.log('Fallback cube added due to robot loading failure');
         }
     );
 
@@ -91,42 +91,88 @@ document.addEventListener('DOMContentLoaded', () => {
     marker.position.set(-14.7, 1, 5.5);
     scene.add(marker);
 
-    // Ships
-    const shipGeometry = new THREE.ConeGeometry(0.3, 1.5, 8);
-    const shipMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.7 });
+    // Load Plane GLTF Model for Ships
+    let planeModelTemplate;
     const ships = [];
     let totalDetections = 0;
-    for (let i = 0; i < 8; i++) {
-        const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
-        ship.rotation.z = Math.PI / 2;
-        ship.position.set(
-            20 + Math.random() * 5,
-            2 + (Math.random() - 0.5) * 10,
-            5.5 + (Math.random() - 0.5) * 10
-        );
-        ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
-        scene.add(ship);
-        ships.push(ship);
+    loader.load(
+        '/prajwaljoshi-portfolio/model1/scene.gltf', // Path to plane model
+        (gltf) => {
+            planeModelTemplate = gltf.scene;
+            console.log('Plane model loaded successfully:', planeModelTemplate);
 
-        const glow = new THREE.PointLight(0xff00ff, 0.5, 5);
-        glow.position.set(0, 0, 0);
-        ship.add(glow);
-    }
+            // Create 8 ship instances
+            for (let i = 0; i < 8; i++) {
+                const ship = planeModelTemplate.clone(); // Clone the loaded model
+                ship.scale.set(0.5, 0.5, 0.5); // Adjust scale (tweak as needed)
+                ship.rotation.z = Math.PI / 2; // Match cone orientation
+                ship.position.set(
+                    20 + Math.random() * 5,
+                    2 + (Math.random() - 0.5) * 10,
+                    5.5 + (Math.random() - 0.5) * 10
+                );
+                ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
+                scene.add(ship);
+                ships.push(ship);
 
-    // Detection Count Display - Larger and above robot
+                // Apply fallback material if no texture
+                ship.traverse((child) => {
+                    if (child.isMesh && !child.material.map) {
+                        child.material = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.7 });
+                    }
+                });
+
+                const glow = new THREE.PointLight(0xff00ff, 0.5, 5);
+                glow.position.set(0, 0, 0);
+                ship.add(glow);
+            }
+        },
+        (xhr) => {
+            if (xhr.total > 0) {
+                console.log((xhr.loaded / xhr.total * 100) + '% plane loaded');
+            } else {
+                console.log('Loading plane model... (size unknown)');
+            }
+        },
+        (error) => {
+            console.error('Error loading plane GLTF model:', error);
+            // Fallback to cone if plane fails
+            const shipGeometry = new THREE.ConeGeometry(0.3, 1.5, 8);
+            const shipMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.7 });
+            for (let i = 0; i < 8; i++) {
+                const ship = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                ship.rotation.z = Math.PI / 2;
+                ship.position.set(
+                    20 + Math.random() * 5,
+                    2 + (Math.random() - 0.5) * 10,
+                    5.5 + (Math.random() - 0.5) * 10
+                );
+                ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
+                scene.add(ship);
+                ships.push(ship);
+
+                const glow = new THREE.PointLight(0xff00ff, 0.5, 5);
+                glow.position.set(0, 0, 0);
+                ship.add(glow);
+            }
+            console.log('Fallback to cone ships due to plane loading failure');
+        }
+    );
+
+    // Detection Count Display
     const countCanvas = document.createElement('canvas');
     countCanvas.width = 1024;
     countCanvas.height = 256;
     const countCtx = countCanvas.getContext('2d');
     countCtx.font = '100px Exo 2';
-    countCtx.fillStyle = '#ffffff'; // White with glow
+    countCtx.fillStyle = '#ffffff';
     countCtx.shadowColor = '#00eaff';
     countCtx.shadowBlur = 10;
     const countTexture = new THREE.CanvasTexture(countCanvas);
     const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
     const countSprite = new THREE.Sprite(countSpriteMaterial);
-    countSprite.scale.set(60, 15, 5); // Your updated scale
-    countSprite.position.set(5, -2, 0); // Your updated position
+    countSprite.scale.set(60, 15, 5);
+    countSprite.position.set(5, -2, 0);
     countSprite.renderOrder = 1;
     scene.add(countSprite);
     console.log('Counter added at:', countSprite.position);
@@ -180,7 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 ship.position.x = 20 + Math.random() * 5;
                 ship.position.y = 2 + (Math.random() - 0.5) * 10;
                 ship.position.z = 5.5 + (Math.random() - 0.5) * 10;
-                ship.material.opacity = 0.7;
+                ship.traverse((child) => {
+                    if (child.isMesh) child.material.opacity = 0.7;
+                });
                 ship.userData.detected = false;
             }
 
@@ -234,7 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.remove(ship);
                     ships.splice(index, 1);
 
-                    const newShip = new THREE.Mesh(shipGeometry, shipMaterial.clone());
+                    const newShip = planeModelTemplate ? planeModelTemplate.clone() : new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.5, 8), shipMaterial.clone());
+                    newShip.scale.set(0.5, 0.5, 0.5);
                     newShip.rotation.z = Math.PI / 2;
                     newShip.position.set(
                         20 + Math.random() * 5,
@@ -243,6 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     );
                     newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
                     scene.add(newShip);
+                    newShip.traverse((child) => {
+                        if (child.isMesh && !child.material.map) {
+                            child.material = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.7 });
+                        }
+                    });
                     const glow = new THREE.PointLight(0xff00ff, 0.5, 5);
                     glow.position.set(0, 0, 0);
                     newShip.add(glow);
@@ -256,11 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-        countCtx.fillStyle = '#ffffff'; // Keep white with glow
+        countCtx.fillStyle = '#ffffff';
         countCtx.shadowColor = '#00eaff';
         countCtx.shadowBlur = 10;
         countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160);
-        countCtx.shadowBlur = 0; // Reset shadow to avoid affecting other draws
+        countCtx.shadowBlur = 0;
         countTexture.needsUpdate = true;
 
         renderer.render(scene, camera);
