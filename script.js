@@ -136,15 +136,15 @@ let currentText = titleText;
 let currentIndex = 0;
 let isErasing = false;
 const typeSpeed = 100;
-const delayBetween = 1000;
+const delayBetween = 1200;
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
     typewriterCtx.fillStyle = '#00eaff';
-    const offsetX = 150; // Starts roughly at 'P' in "Prajwal Joshi"
+    const offsetX = 210; // Starts roughly at 'P' in "Prajwal Joshi"
     typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 36, 2, 64); // Cursor matches text
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 36, 4, 64); // Cursor matches text
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;

@@ -155,7 +155,6 @@ body {
 }
 
 /* About */
-/* About */
 #about h2 {
     font-size: 2rem;
     background: linear-gradient(90deg, #00eaff, #ff00ff);
@@ -179,23 +178,27 @@ body {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-#contact p {
-    font-size: 1rem;
-    color: #ffffff;
+
+#contact a {
+    font-size: 1.25rem;
+    color: #00eaff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 #contact .contact-details {
-    font-size: 1rem;
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 
 /* Footer */
 .footer-bg {
     background: rgba(0, 0, 0, 0.9);
 }
+
 footer p {
-    font-size: 1rem; /* Matches About exactly */
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+    font-size: 1rem !important; /* Matches About exactly */
+    color: #ffffff !important;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8) !important;
 }
 
 /* Modal */
