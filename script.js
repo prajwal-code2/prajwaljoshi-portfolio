@@ -122,13 +122,15 @@ countSprite.scale.set(20, 5, 1); // Larger scale
 countSprite.position.set(-15, 5, 10); // Exactly above robot
 scene.add(countSprite);
 
+// [Rest of your script.js remains unchanged until the Typewriter section]
+
 // Typewriter Effect - Larger and starts at 'P'
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
-typewriterCanvas.width = 1024;
-typewriterCanvas.height = 150; // Matches index.html
+typewriterCanvas.width = 1280; // Increased width for larger text
+typewriterCanvas.height = 200; // Increased height to fit larger text
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '64px Exo 2'; // Just below h1's 5rem (80px at default)
+typewriterCtx.font = '72px Exo 2'; // Increased to 4.5rem (just below 5rem)
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -140,11 +142,12 @@ const delayBetween = 1200;
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
+    typewriterCtx.font = '72px Exo 2'; // Re-apply font to ensure it sticks
     typewriterCtx.fillStyle = '#00eaff';
     const offsetX = 210; // Starts roughly at 'P' in "Prajwal Joshi"
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100);
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 120); // Adjusted Y for larger text
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 36, 4, 64); // Cursor matches text
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 4, 72); // Cursor matches text size
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -166,6 +169,7 @@ function typeWriter() {
 
 typeWriter();
 
+// [Rest of your script.js remains unchanged]
 camera.position.z = 20;
 
 // Animation Loop

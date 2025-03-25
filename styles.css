@@ -56,6 +56,9 @@ body {
 }
 
 /* Hero with 3D Scene */
+/* [Rest of CSS unchanged until Hero] */
+
+/* Hero with 3D Scene */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -74,7 +77,7 @@ body {
 }
 .futuristic-text {
     font-family: 'Exo 2', sans-serif;
-    font-size: 3rem;
+    font-size: 3rem; /* This won't affect canvas text, but kept for consistency */
     letter-spacing: 4px;
     text-transform: uppercase;
     z-index: 2;
@@ -92,6 +95,15 @@ body {
     z-index: 1;
     opacity: 0.7;
 }
+
+/* Ensure container doesn’t shrink the canvas */
+#typewriter-container {
+    width: 100%;
+    max-width: 1024px; /* Matches canvas width */
+    margin: 0 auto;
+}
+
+/* [Rest of CSS unchanged] */
 
 /* Projects */
 #projects {
