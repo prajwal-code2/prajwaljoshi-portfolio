@@ -79,9 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ]);
     vShapeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     vShapeGeometry.setIndex([0, 1, 2]);
-    const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide });
+    const vShapeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.3, side: THREE.DoubleSide, depthWrite: false }); // Disable depth write
     const scannerField = new THREE.Mesh(vShapeGeometry, vShapeMaterial);
     scannerField.position.set(-14.7, 1, 5.5);
+    scannerField.renderOrder = 0; // Explicitly below bounding boxes
     scene.add(scannerField);
 
     const marker = new THREE.Mesh(
@@ -270,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
                     boundingBox.position.copy(ship.position);
-                    boundingBox.renderOrder = 1; // Ensure visibility over scanner
+                    boundingBox.renderOrder = 1; // Above scanner
                     scene.add(boundingBox);
                     ship.userData.boundingBox = boundingBox;
                     console.log('Bounding box created for ship at:', ship.position);
@@ -280,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (ship.userData.detected && ship.userData.detectionTime) {
                 const elapsed = Date.now() - ship.userData.detectionTime;
                 if (elapsed >= 3000) {
-                    // Remove all associated objects together
                     if (ship.userData.detectDot) scene.remove(ship.userData.detectDot);
                     if (ship.userData.detectSprite) scene.remove(ship.userData.detectSprite);
                     if (ship.userData.boundingBox) scene.remove(ship.userData.boundingBox);
@@ -307,14 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     ships.push(newShip);
                     console.log('Ship and bounding box removed after 3s at:', ship.position);
                 } else {
-                    // Update positions, ensure bounding box persists
                     if (ship.userData.detectDot) ship.userData.detectDot.position.copy(ship.position);
                     if (ship.userData.detectSprite) ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                     if (ship.userData.boundingBox) {
                         ship.userData.boundingBox.position.copy(ship.position);
                         ship.userData.boundingBox.visible = true; // Force visibility
                         ship.userData.boundingBox.renderOrder = 1; // Stay above scanner
-                        console.log('Bounding box updated at:', ship.position, 'Elapsed:', elapsed); // Debug
                     }
                 }
             }
