@@ -103,9 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Create 8 ship instances
             for (let i = 0; i < 8; i++) {
-                const ship = planeModelTemplate.clone(); // Clone the loaded model
-                ship.scale.set(0.5, 0.5, 0.5); // Adjust scale (tweak as needed)
-                ship.rotation.z = Math.PI / 2; // Match cone orientation
+                const ship = planeModelTemplate.clone();
+                ship.scale.set(0.25, 0.25, 0.25); // 2x smaller than 0.5
+                ship.rotation.x = Math.PI / 2; // Horizontal (adjust if needed)
                 ship.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Fallback to cone ships due to plane loading failure');
         }
     );
-
     // Detection Count Display
     const countCanvas = document.createElement('canvas');
     countCanvas.width = 1024;
@@ -215,11 +214,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let time = 0;
     function animate() {
         requestAnimationFrame(animate);
-
+    
         time += 0.05;
         const dynamicTilt = Math.sin(time) * Math.PI / 6;
         scannerField.rotation.y = dynamicTilt;
-
+    
         ships.forEach((ship, index) => {
             ship.position.x -= ship.userData.speed;
             if (ship.position.x < -20 && !ship.userData.detected) {
@@ -231,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 ship.userData.detected = false;
             }
-
+    
             if (!ship.userData.detected) {
                 const relativePos = new THREE.Vector3().subVectors(ship.position, scannerField.position);
                 const vDirection = new THREE.Vector3(1, 0, 0).applyQuaternion(scannerField.quaternion);
@@ -241,14 +240,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     ship.userData.detected = true;
                     ship.userData.detectionTime = Date.now();
                     totalDetections++;
-
+    
                     const dotGeometry = new THREE.SphereGeometry(0.1, 8, 8);
                     const dotMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9 });
                     const dot = new THREE.Mesh(dotGeometry, dotMaterial);
                     dot.position.copy(ship.position);
                     scene.add(dot);
                     ship.userData.detectDot = dot;
-
+    
                     const detectCanvas = document.createElement('canvas');
                     detectCanvas.width = 256;
                     detectCanvas.height = 96;
@@ -263,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                     scene.add(detectSprite);
                     ship.userData.detectSprite = detectSprite;
-
+    
                     const boxGeometry = new THREE.BoxGeometry(2, 0.5, 0.5);
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
@@ -272,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ship.userData.boundingBox = boundingBox;
                 }
             }
-
+    
             if (ship.userData.detected && ship.userData.detectionTime) {
                 const elapsed = Date.now() - ship.userData.detectionTime;
                 if (elapsed >= 3000) {
@@ -281,10 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.remove(ship.userData.boundingBox);
                     scene.remove(ship);
                     ships.splice(index, 1);
-
+    
                     const newShip = planeModelTemplate ? planeModelTemplate.clone() : new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.5, 8), shipMaterial.clone());
-                    newShip.scale.set(0.5, 0.5, 0.5);
-                    newShip.rotation.z = Math.PI / 2;
+                    newShip.scale.set(0.25, 0.25, 0.25); // 2x smaller
+                    newShip.rotation.x = Math.PI / 2; // Horizontal
                     newShip.position.set(
                         20 + Math.random() * 5,
                         2 + (Math.random() - 0.5) * 10,
@@ -308,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
+    
         countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
         countCtx.fillStyle = '#ffffff';
         countCtx.shadowColor = '#00eaff';
@@ -316,11 +315,12 @@ document.addEventListener('DOMContentLoaded', () => {
         countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160);
         countCtx.shadowBlur = 0;
         countTexture.needsUpdate = true;
-
+    
         renderer.render(scene, camera);
     }
     animate();
 
+    
     // Mouse Interaction
     document.addEventListener('mousemove', (event) => {
         const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
