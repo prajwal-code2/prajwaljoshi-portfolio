@@ -302,10 +302,10 @@ body.light #contact p {
 /* Footer */
 footer {
     text-align: center;
-    padding: 2rem 0;
+    padding: 1rem 0;
 }
 footer p {
-    font-size: 1rem; /* Matches About */
+    font-size: 0.5rem; /* Matches About */
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
