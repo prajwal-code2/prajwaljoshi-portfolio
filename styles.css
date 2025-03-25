@@ -1,12 +1,10 @@
-/* styles.css */
-
 body {
     font-family: 'Exo 2', sans-serif;
     margin: 0;
     padding: 0;
     transition: background 0.3s, color 0.3s;
     overflow-x: hidden;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.7); /* Black translucent across entire page */
     color: #00eaff;
 }
 
@@ -95,10 +93,9 @@ body {
     opacity: 0.7;
 }
 
-/* Projects Section */
+/* Projects */
 #projects {
     padding: 5rem 0;
-    background: rgba(0, 0, 0, 0.7);
 }
 #projects h2 {
     font-size: 2rem;
@@ -153,9 +150,8 @@ body {
 }
 
 /* Common Section Styling */
-#about, #contact, footer {
-    padding: 5rem 0;
-    background: rgba(0, 0, 0, 0.7);
+.gradient-bg {
+    background: rgba(0, 0, 0, 0.7); /* Consistent across sections */
 }
 
 /* About */
@@ -182,22 +178,23 @@ body {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-#contact p, #contact .contact-details {
+#contact p {
     font-size: 1rem;
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
+#contact .contact-details {
+    font-size: 1rem;
+}
 
 /* Footer */
-footer {
-    text-align: center;
-    padding: 1rem 0;
-    background: rgba(0, 0, 0, 0.85);
+.footer-bg {
+    background: rgba(0, 0, 0, 0.9); /* Darker than others */
 }
 footer p {
-    font-size: 0.5rem;
+    font-size: 0.875rem; /* Smaller than About/Contact */
     color: #ffffff;
-    text-shadow: 0 0 4px rgba(0, 234, 255, 0.8);
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 
 /* Modal */
@@ -216,8 +213,11 @@ footer p {
     #projects h2, #about h2, #contact h2 {
         font-size: 1.75rem;
     }
-    #about p, #contact p, footer p {
+    #about p, #contact p {
         font-size: 0.875rem;
+    }
+    footer p {
+        font-size: 0.75rem;
     }
     .hero h1 {
         font-size: 3rem;

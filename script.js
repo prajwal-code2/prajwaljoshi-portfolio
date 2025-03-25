@@ -1,5 +1,3 @@
-// script.js
-
 // Three.js Setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -27,6 +25,18 @@ loader.load(
         robotModel.rotation.y = Math.PI / 2;
         scene.add(robotModel);
         console.log('Model loaded successfully:', robotModel);
+
+        robotModel.traverse((child) => {
+            if (child.isMesh) {
+                console.log('Mesh:', child.name, 'Material:', child.material);
+                if (!child.material.map) {
+                    console.log('No texture found, applying fallback color');
+                    child.material.color.set(0x00eaff);
+                } else {
+                    console.log('Texture:', child.material.map.source);
+                }
+            }
+        });
     },
     (xhr) => {
         if (xhr.total > 0) {
@@ -98,32 +108,28 @@ for (let i = 0; i < 8; i++) {
     ship.add(glow);
 }
 
-// Detection Count Display - Positioned above the robot
+// Detection Count Display - Larger and above robot
 const countCanvas = document.createElement('canvas');
 countCanvas.width = 1024;
 countCanvas.height = 256;
 const countCtx = countCanvas.getContext('2d');
-countCtx.font = '80px Exo 2';
+countCtx.font = '100px Exo 2'; // Larger
 countCtx.fillStyle = '#ffcc00';
 const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(16, 4, 1);
-if (robotModel) {
-    countSprite.position.set(robotModel.position.x, robotModel.position.y + 5, robotModel.position.z);
-} else {
-    countSprite.position.set(-15, 5, 5); // default near robot
-}
+countSprite.scale.set(20, 5, 1); // Larger scale
+countSprite.position.set(-15, 5, 10); // Exactly above robot
 scene.add(countSprite);
 
-// Typewriter Effect - Larger text starting aligned below the "P"
+// Typewriter Effect - Larger and starts at 'P'
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
-typewriterCanvas.height = 120;
+typewriterCanvas.width = 1024;
+typewriterCanvas.height = 150; // Matches index.html
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '64px Exo 2';
+typewriterCtx.font = '64px Exo 2'; // Just below h1's 5rem (80px at default)
 typewriterCtx.fillStyle = '#00eaff';
-
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
 let currentText = titleText;
@@ -134,9 +140,11 @@ const delayBetween = 1000;
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
+    typewriterCtx.fillStyle = '#00eaff';
+    const offsetX = 150; // Starts roughly at 'P' in "Prajwal Joshi"
+    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 100);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), 0, 80);
-    typewriterCtx.fillRect(currentTextWidth, 32, 2, 48);
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 36, 2, 64); // Cursor matches text
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -148,7 +156,7 @@ function typeWriter() {
         setTimeout(typeWriter, typeSpeed / 2);
     } else if (isErasing && currentIndex === 0) {
         isErasing = false;
-        currentText = (currentText === titleText) ? taglineText : titleText;
+        currentText = currentText === titleText ? taglineText : titleText;
         setTimeout(typeWriter, delayBetween);
     }
 
@@ -156,14 +164,7 @@ function typeWriter() {
     typewriterContainer.appendChild(typewriterCanvas);
 }
 
-// Adjust typewriter canvas width based on the hero title width to align with the "P"
-window.addEventListener('load', () => {
-    const h1 = document.getElementById('hero-title');
-    const h1Width = h1.getBoundingClientRect().width;
-    typewriterContainer.style.width = h1Width + 'px';
-    typewriterCanvas.width = h1Width;
-    typeWriter();
-});
+typeWriter();
 
 camera.position.z = 20;
 
@@ -176,7 +177,6 @@ function animate() {
     const dynamicTilt = Math.sin(time) * Math.PI / 6;
     scannerField.rotation.y = dynamicTilt;
 
-    // Update ship movements and detection logic
     ships.forEach((ship, index) => {
         ship.position.x -= ship.userData.speed;
         if (ship.position.x < -20 && !ship.userData.detected) {
@@ -197,7 +197,6 @@ function animate() {
                 ship.userData.detectionTime = Date.now();
                 totalDetections++;
 
-                // Create detection dot
                 const dotGeometry = new THREE.SphereGeometry(0.1, 8, 8);
                 const dotMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9 });
                 const dot = new THREE.Mesh(dotGeometry, dotMaterial);
@@ -205,26 +204,28 @@ function animate() {
                 scene.add(dot);
                 ship.userData.detectDot = dot;
 
-                // Create detection text above the ship
                 const detectCanvas = document.createElement('canvas');
                 detectCanvas.width = 256;
-                detectCanvas.height = 64;
+                detectCanvas.height = 96; // Larger
                 const detectCtx = detectCanvas.getContext('2d');
-                detectCtx.font = '48px Exo 2';
+                detectCtx.font = '48px Exo 2'; // Larger
                 detectCtx.fillStyle = '#00ff00';
-                detectCtx.fillText('DETECTED', 20, 40);
+                detectCtx.fillText('DETECTED', 20, 60);
                 const detectTexture = new THREE.CanvasTexture(detectCanvas);
                 const detectSpriteMaterial = new THREE.SpriteMaterial({ map: detectTexture, transparent: true });
                 const detectSprite = new THREE.Sprite(detectSpriteMaterial);
-                detectSprite.scale.set(6, 2, 1);
-                detectSprite.position.set(ship.position.x, ship.position.y + 2, ship.position.z);
+                detectSprite.scale.set(5, 1.5, 1); // Larger scale
+                detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                 scene.add(detectSprite);
                 ship.userData.detectSprite = detectSprite;
 
-                // Add a bounding box around the detected ship
-                const boxHelper = new THREE.BoxHelper(ship, 0xffff00);
-                scene.add(boxHelper);
-                ship.userData.detectBox = boxHelper;
+                // Bounding Box for Detected Ships
+                const boxGeometry = new THREE.BoxGeometry(1, 2, 1);
+                const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
+                const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
+                boundingBox.position.copy(ship.position);
+                scene.add(boundingBox);
+                ship.userData.boundingBox = boundingBox;
             }
         }
 
@@ -233,10 +234,7 @@ function animate() {
             if (elapsed >= 3000) {
                 scene.remove(ship.userData.detectDot);
                 scene.remove(ship.userData.detectSprite);
-                if (ship.userData.detectBox) {
-                    scene.remove(ship.userData.detectBox);
-                    ship.userData.detectBox = null;
-                }
+                scene.remove(ship.userData.boundingBox);
                 scene.remove(ship);
                 ships.splice(index, 1);
 
@@ -254,28 +252,16 @@ function animate() {
                 newShip.add(glow);
                 ships.push(newShip);
             } else {
-                if (ship.userData.detectDot) {
-                    ship.userData.detectDot.position.copy(ship.position);
-                }
-                if (ship.userData.detectSprite) {
-                    ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 2, ship.position.z);
-                }
-                if (ship.userData.detectBox) {
-                    ship.userData.detectBox.update();
-                }
+                ship.userData.detectDot.position.copy(ship.position);
+                ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
+                ship.userData.boundingBox.position.copy(ship.position);
             }
         }
     });
 
-    // Update detection count display
     countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
     countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160);
     countTexture.needsUpdate = true;
-
-    // Position countSprite above the robot if available
-    if (robotModel) {
-        countSprite.position.set(robotModel.position.x, robotModel.position.y + 5, robotModel.position.z);
-    }
 
     renderer.render(scene, camera);
 }
@@ -290,7 +276,14 @@ document.addEventListener('mousemove', (event) => {
     camera.lookAt(scene.position);
 });
 
-// Navbar Shrink, Background Reveal, and Changing Gradients While Scrolling
+// Resize Handler
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Navbar Shrink and Background Reveal
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     const scrollY = window.scrollY;
@@ -304,17 +297,6 @@ window.addEventListener('scroll', () => {
     const scrollFraction = scrollY / (document.body.scrollHeight - window.innerHeight);
     const yPosition = scrollFraction * 100;
     backgroundImage.style.backgroundPosition = `center ${yPosition}%`;
-
-    // Changing gradients for the hero section based on scroll position
-    const hero = document.querySelector('.hero');
-    const gradients = [
-        'linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8))',
-        'linear-gradient(135deg, rgba(20, 20, 40, 0.8), rgba(40, 0, 40, 0.8))',
-        'linear-gradient(135deg, rgba(40, 0, 40, 0.8), rgba(0, 40, 40, 0.8))'
-    ];
-    const gradIndex = Math.floor(scrollFraction * gradients.length);
-    const gradient = gradients[gradIndex] || gradients[gradients.length - 1];
-    hero.style.background = gradient;
 });
 
 // Show live demo in modal
