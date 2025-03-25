@@ -266,23 +266,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.add(detectSprite);
                     ship.userData.detectSprite = detectSprite;
     
-                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // Width (3) along x-axis by default
+                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75);
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
                     boundingBox.position.copy(ship.position);
-                    // No rotation—width (3) is already along x-axis
-                    // If ship length is along z-axis, uncomment: boundingBox.rotation.y = Math.PI / 2;
                     scene.add(boundingBox);
                     ship.userData.boundingBox = boundingBox;
+                    console.log('Bounding box created for ship at:', ship.position); // Debug
                 }
             }
     
             if (ship.userData.detected && ship.userData.detectionTime) {
                 const elapsed = Date.now() - ship.userData.detectionTime;
                 if (elapsed >= 3000) {
-                    scene.remove(ship.userData.detectDot);
-                    scene.remove(ship.userData.detectSprite);
-                    scene.remove(ship.userData.boundingBox);
+                    // Remove all associated objects together
+                    if (ship.userData.detectDot) scene.remove(ship.userData.detectDot);
+                    if (ship.userData.detectSprite) scene.remove(ship.userData.detectSprite);
+                    if (ship.userData.boundingBox) scene.remove(ship.userData.boundingBox);
                     scene.remove(ship);
                     ships.splice(index, 1);
     
@@ -304,11 +304,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     glow.position.set(0, 0, 0);
                     newShip.add(glow);
                     ships.push(newShip);
+                    console.log('Ship and bounding box removed after 3s at:', ship.position); // Debug
                 } else {
-                    ship.userData.detectDot.position.copy(ship.position);
-                    ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
-                    ship.userData.boundingBox.position.copy(ship.position);
-                    // No rotation update—keep bounding box stable
+                    // Update positions, ensure bounding box persists
+                    if (ship.userData.detectDot) ship.userData.detectDot.position.copy(ship.position);
+                    if (ship.userData.detectSprite) ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
+                    if (ship.userData.boundingBox) {
+                        ship.userData.boundingBox.position.copy(ship.position);
+                        // Ensure visibility
+                        ship.userData.boundingBox.visible = true;
+                    }
                 }
             }
         });
