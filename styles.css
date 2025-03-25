@@ -155,6 +155,7 @@ body {
 }
 
 /* About */
+/* About */
 #about h2 {
     font-size: 2rem;
     background: linear-gradient(90deg, #00eaff, #ff00ff);
@@ -164,7 +165,7 @@ body {
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
 #about p {
-    font-size: 1rem;
+    font-size: 1rem; /* This is the target size */
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
@@ -189,10 +190,10 @@ body {
 
 /* Footer */
 .footer-bg {
-    background: rgba(0, 0, 0, 0.9); /* Darker than others */
+    background: rgba(0, 0, 0, 0.9);
 }
 footer p {
-    font-size: 0.875rem; /* Smaller than About/Contact */
+    font-size: 1rem; /* Matches About exactly */
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
@@ -217,7 +218,7 @@ footer p {
         font-size: 0.875rem;
     }
     footer p {
-        font-size: 0.75rem;
+        font-size: 0.875rem;
     }
     .hero h1 {
         font-size: 3rem;
