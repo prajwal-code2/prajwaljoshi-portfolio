@@ -114,41 +114,30 @@ countCanvas.width = 1024;
 countCanvas.height = 256;
 const countCtx = countCanvas.getContext('2d');
 countCtx.font = '100px Exo 2'; // Larger
-countCtx.fillStyle = '#ffcc00';
-const countTexture = new THREE.CanvasTexture(countCanvas);
+countCtx.fillStyle = '#ffffff'; // In both places
+countCtx.shadowColor = '#00eaff';
+countCtx.shadowBlur = 10;const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
-countSprite.scale.set(20, 5, 1); // Larger scale
-countSprite.position.set(-15, 5, 10); // Exactly above robot
+countSprite.scale.set(60, 15, 5); // Slightly larger for visibility
+countSprite.position.set(5, -2, 0); // Directly above robot (-15, 0, 5)
+countSprite.renderOrder = 1;
 scene.add(countSprite);
 
-// [Rest of your script.js remains unchanged until the Typewriter section]
 
-// Typewriter Effect - Larger and starts at 'P'
-const typewriterContainer = document.getElementById('typewriter-container');
-const typewriterCanvas = document.createElement('canvas');
-typewriterCanvas.width = 1280; // Increased width for larger text
-typewriterCanvas.height = 200; // Increased height to fit larger text
-const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '72px Exo 2'; // Increased to 4.5rem (just below 5rem)
-typewriterCtx.fillStyle = '#00eaff';
+
+// Typewriter Effect
+const typewriterText = document.getElementById('typewriter-text');
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
 let currentText = titleText;
 let currentIndex = 0;
 let isErasing = false;
-const typeSpeed = 100;
-const delayBetween = 1200;
+const typeSpeed = 120;
+const delayBetween = 1500;
 
 function typeWriter() {
-    typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.font = '72px Exo 2'; // Re-apply font to ensure it sticks
-    typewriterCtx.fillStyle = '#00eaff';
-    const offsetX = 210; // Starts roughly at 'P' in "Prajwal Joshi"
-    typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 120); // Adjusted Y for larger text
-    const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 40, 4, 72); // Cursor matches text size
-
+    typewriterText.textContent = currentText.slice(0, currentIndex);
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
         setTimeout(typeWriter, typeSpeed);
@@ -162,14 +151,11 @@ function typeWriter() {
         currentText = currentText === titleText ? taglineText : titleText;
         setTimeout(typeWriter, delayBetween);
     }
-
-    typewriterContainer.innerHTML = '';
-    typewriterContainer.appendChild(typewriterCanvas);
 }
-
 typeWriter();
 
-// [Rest of your script.js remains unchanged]
+
+// Camera
 camera.position.z = 20;
 
 // Animation Loop
@@ -210,20 +196,19 @@ function animate() {
 
                 const detectCanvas = document.createElement('canvas');
                 detectCanvas.width = 256;
-                detectCanvas.height = 96; // Larger
+                detectCanvas.height = 96;
                 const detectCtx = detectCanvas.getContext('2d');
-                detectCtx.font = '48px Exo 2'; // Larger
+                detectCtx.font = '48px Exo 2';
                 detectCtx.fillStyle = '#00ff00';
                 detectCtx.fillText('DETECTED', 20, 60);
                 const detectTexture = new THREE.CanvasTexture(detectCanvas);
                 const detectSpriteMaterial = new THREE.SpriteMaterial({ map: detectTexture, transparent: true });
                 const detectSprite = new THREE.Sprite(detectSpriteMaterial);
-                detectSprite.scale.set(5, 1.5, 1); // Larger scale
+                detectSprite.scale.set(5, 1.5, 1);
                 detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                 scene.add(detectSprite);
                 ship.userData.detectSprite = detectSprite;
 
-                // Bounding Box for Detected Ships
                 const boxGeometry = new THREE.BoxGeometry(1, 2, 1);
                 const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                 const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
