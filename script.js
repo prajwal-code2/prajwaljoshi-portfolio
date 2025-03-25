@@ -232,8 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (child.isMesh) child.material.opacity = 0.7;
                 });
                 ship.userData.detected = false;
-                // No rotation on respawn—keep stable
-                // ship.rotation.y = -Math.PI / 2; // Uncomment if nose needs to point left
             }
     
             if (!ship.userData.detected) {
@@ -268,11 +266,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.add(detectSprite);
                     ship.userData.detectSprite = detectSprite;
     
-                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // Size unchanged
+                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // Width (3) along x-axis by default
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
                     boundingBox.position.copy(ship.position);
-                    boundingBox.rotation.y = Math.PI / 2; // Align width (3) with ship’s z-axis (assuming forward is z)
+                    // No rotation—width (3) is already along x-axis
+                    // If ship length is along z-axis, uncomment: boundingBox.rotation.y = Math.PI / 2;
                     scene.add(boundingBox);
                     ship.userData.boundingBox = boundingBox;
                 }
@@ -294,8 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         2 + (Math.random() - 0.5) * 10,
                         5.5 + (Math.random() - 0.5) * 10
                     );
-                    // No rotation on respawn—keep stable
-                    // newShip.rotation.y = -Math.PI / 2; // Uncomment if nose needs to point left
                     newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
                     scene.add(newShip);
                     newShip.traverse((child) => {
@@ -311,6 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ship.userData.detectDot.position.copy(ship.position);
                     ship.userData.detectSprite.position.set(ship.position.x, ship.position.y + 1, ship.position.z);
                     ship.userData.boundingBox.position.copy(ship.position);
+                    // No rotation update—keep bounding box stable
                 }
             }
         });
@@ -327,7 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     animate();
 
-    
     // Mouse Interaction
     document.addEventListener('mousemove', (event) => {
         const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
