@@ -108,7 +108,7 @@ for (let i = 0; i < 8; i++) {
     ship.add(glow);
 }
 
-// Detection Count Display - Larger and closer
+// Detection Count Display - Larger and centered
 const countCanvas = document.createElement('canvas');
 countCanvas.width = 1024;
 countCanvas.height = 256;
@@ -119,16 +119,16 @@ const countTexture = new THREE.CanvasTexture(countCanvas);
 const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
 const countSprite = new THREE.Sprite(countSpriteMaterial);
 countSprite.scale.set(16, 4, 1);
-countSprite.position.set(-15, 5, 10); // Moved closer (z = 10 from 5)
+countSprite.position.set(0, 5, 10); // Centered above robot (x = 0)
 scene.add(countSprite);
 
-// Typewriter Effect - Smaller and centered
+// Typewriter Effect - Centered below name
 const typewriterContainer = document.getElementById('typewriter-container');
 const typewriterCanvas = document.createElement('canvas');
 typewriterCanvas.width = 1024;
-typewriterCanvas.height = 120; // Matches index.html height
+typewriterCanvas.height = 120;
 const typewriterCtx = typewriterCanvas.getContext('2d');
-typewriterCtx.font = '160px Exo 2'; // Smaller text
+typewriterCtx.font = '48px Exo 2';
 typewriterCtx.fillStyle = '#00eaff';
 const titleText = "Computer Vision Specialist";
 const taglineText = "Transforming Pixels into Actionable Insights";
@@ -140,12 +140,12 @@ const delayBetween = 1000;
 
 function typeWriter() {
     typewriterCtx.clearRect(0, 0, typewriterCanvas.width, typewriterCanvas.height);
-    typewriterCtx.fillStyle = document.body.classList.contains('dark') ? '#00eaff' : '#00a4b0';
+    typewriterCtx.fillStyle = '#00eaff';
     const textWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
     const offsetX = (typewriterCanvas.width - textWidth) / 2; // Center text
     typewriterCtx.fillText(currentText.slice(0, currentIndex), offsetX, 80);
     const currentTextWidth = typewriterCtx.measureText(currentText.slice(0, currentIndex)).width;
-    typewriterCtx.fillRect(offsetX + currentTextWidth, 32, 2, 48); // Smaller cursor matching text
+    typewriterCtx.fillRect(offsetX + currentTextWidth, 32, 2, 48); // Cursor matches text
 
     if (!isErasing && currentIndex < currentText.length) {
         currentIndex++;
@@ -288,22 +288,6 @@ window.addEventListener('scroll', () => {
     const scrollFraction = scrollY / (document.body.scrollHeight - window.innerHeight);
     const yPosition = scrollFraction * 100;
     backgroundImage.style.backgroundPosition = `center ${yPosition}%`;
-});
-
-// Dark/Light Mode Toggle
-const toggleButton = document.getElementById('themeToggle');
-const docBody = document.body;
-const currentTheme = localStorage.getItem('theme') || 'dark';
-docBody.classList.add(currentTheme);
-
-toggleButton.addEventListener('click', () => {
-    if (docBody.classList.contains('dark')) {
-        docBody.classList.replace('dark', 'light');
-        localStorage.setItem('theme', 'light');
-    } else {
-        docBody.classList.replace('light', 'dark');
-        localStorage.setItem('theme', 'dark');
-    }
 });
 
 // Show live demo in modal

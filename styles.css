@@ -4,6 +4,8 @@ body {
     padding: 0;
     transition: background 0.3s, color 0.3s;
     overflow-x: hidden;
+    background: rgba(0, 0, 0, 0.7);
+    color: #00eaff;
 }
 
 /* Background Image */
@@ -19,78 +21,17 @@ body {
     z-index: -1;
 }
 
-/* Dark Mode (default) */
-body.dark {
-    background: rgba(0, 0, 0, 0.7);
-    color: #00eaff;
-}
-body.dark .text-content {
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
-}
-body.dark .navbar {
-    background: rgba(0, 0, 0, 0.9);
-}
-body.dark .navbar.shrink {
-    background: rgba(0, 0, 0, 0.95);
-}
-body.dark .hero {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8));
-}
-body.dark .gradient-bg {
-    background: rgba(0, 0, 0, 0.7);
-}
-body.dark .btn-gradient {
-    background: linear-gradient(90deg, #00eaff, #ff00ff);
-    color: #000;
-}
-body.dark .gradient-text {
-    background: linear-gradient(90deg, #00eaff, #ff00ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* Light Mode */
-body.light {
-    background: rgba(255, 255, 255, 0.7);
-    color: #1a1a3a;
-}
-body.light .text-content {
-    color: #1a1a3a;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-}
-body.light .navbar {
-    background: rgba(255, 255, 255, 0.9);
-}
-body.light .navbar.shrink {
-    background: rgba(255, 255, 255, 0.95);
-}
-body.light .hero {
-    background: linear-gradient(135deg, rgba(240, 240, 255, 0.8), rgba(255, 255, 255, 0.8));
-}
-body.light .gradient-bg {
-    background: rgba(240, 240, 255, 0.7);
-}
-body.light .btn-gradient {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
-}
-body.light .gradient-text {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 /* Navbar */
 .navbar {
     padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.9);
     transition: padding 0.3s ease, background 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000;
 }
 .navbar.shrink {
     padding: 0.5rem 2rem;
+    background: rgba(0, 0, 0, 0.95);
 }
 .navbar-brand, .nav-link {
     color: #00eaff !important;
@@ -99,16 +40,12 @@ body.light .gradient-text {
     text-transform: uppercase;
     transition: color 0.3s ease;
 }
-body.light .navbar-brand, body.light .nav-link {
-    color: #1a1a3a !important;
-}
 .nav-link:hover {
     color: #ff00ff !important;
 }
-body.light .nav-link:hover {
-    color: #00a4b0 !important;
-}
 .btn-gradient {
+    background: linear-gradient(90deg, #00eaff, #ff00ff);
+    color: #000;
     border: none;
     padding: 0.4rem 1rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -126,6 +63,7 @@ body.light .nav-link:hover {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8));
 }
 .hero h1 {
     font-family: 'Orbitron', sans-serif;
@@ -168,17 +106,10 @@ body.light .nav-link:hover {
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
     padding: 0.5rem 1rem;
     background-color: rgba(0, 0, 0, 0.7);
-    display: block; /* Ensures centering works */
-    margin: 0 auto; /* Centers horizontally */
-    width: fit-content; /* Keeps background tight to text */
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
     border-radius: 5px;
-}
-body.light #projects h2 {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 .project-card {
     background: rgba(0, 0, 20, 0.85);
@@ -186,10 +117,6 @@ body.light #projects h2 {
     border-radius: 10px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-body.light .project-card {
-    background: rgba(240, 240, 255, 0.85);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .project-card:hover {
     transform: translateY(-8px);
@@ -207,27 +134,14 @@ body.light .project-card {
     padding: 1.5rem;
     color: #ffffff;
 }
-body.light .card-body {
-    color: #1a1a3a;
-}
 .btn-outline-light {
     color: #00eaff;
     border-color: #00eaff;
-}
-body.light .btn-outline-light {
-    color: #1a1a3a;
-    border-color: #1a1a3a;
-    background: rgba(255, 255, 255, 0.1);
 }
 .btn-outline-light:hover {
     color: #000;
     background: #00eaff;
     border-color: #00eaff;
-}
-body.light .btn-outline-light:hover {
-    color: #fff;
-    background: #00a4b0;
-    border-color: #00a4b0;
 }
 
 /* Gradient Text */
@@ -237,11 +151,8 @@ body.light .btn-outline-light:hover {
 
 /* Common Section Styling */
 #about, #contact, footer {
-    padding: 3rem 0;
+    padding: 5rem 0;
     background: rgba(0, 0, 0, 0.7);
-}
-body.light #about, body.light #contact, body.light footer {
-    background: rgba(240, 240, 255, 0.7);
 }
 
 /* About */
@@ -253,21 +164,10 @@ body.light #about, body.light #contact, body.light footer {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-body.light #about h2 {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-}
 #about p {
     font-size: 1rem;
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
-}
-body.light #about p {
-    color: #1a1a3a;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 /* Contact */
@@ -279,39 +179,24 @@ body.light #about p {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-body.light #contact h2 {
-    background: linear-gradient(90deg, #00a4b0, #4a3ecc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-}
 #contact p {
-    font-size: 1rem; /* Matches About */
+    font-size: 1rem;
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-body.light #contact p {
-    color: #1a1a3a;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-}
 #contact .contact-details {
-    font-size: 1rem; /* Matches About, overrides previous */
+    font-size: 1rem;
 }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 1rem 0;
+    padding: 2rem 0;
 }
 footer p {
-    font-size: 0.5rem; /* Matches About */
+    font-size: 1rem;
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
-}
-body.light footer p {
-    color: #1a1a3a;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 /* Modal */
@@ -321,15 +206,8 @@ body.light footer p {
     border: none;
     border-radius: 10px;
 }
-body.light .modal-content {
-    background: rgba(240, 240, 255, 0.9);
-    color: #1a1a3a;
-}
 .modal-header {
     border-bottom: 1px solid #00eaff;
-}
-body.light .modal-header {
-    border-bottom: 1px solid #00a4b0;
 }
 
 /* Responsive adjustments */
