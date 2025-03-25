@@ -1,141 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prajwal Joshi</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prajwal Joshi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Background Image Container -->
-  <div id="background-image" class="background-image"></div>
+    <!-- Background Image Container -->
+    <div id="background-image" class="background-image"></div>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#">Prajwal Joshi</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section with Robot Scan -->
-  <section id="home" class="hero text-center">
-    <canvas id="threeCanvas"></canvas>
-    <div class="container">
-      <h1 class="display-1 fw-bold">Prajwal Joshi</h1>
-      <div id="typewriter-container" class="lead futuristic-text" style="height: 120px;"></div>
-    </div>
-  </section>
-
-  <!-- Projects Section -->
-  <section id="projects" class="container py-5">
-    <h2 class="gradient-text mb-5">Projects</h2>
-    <div class="row">
-      <div class="col-md-4 mb-4">
-        <div class="card project-card">
-          <img src="assets/object-detection.jpg" class="card-img-top" alt="Object Detection" />
-          <div class="card-body">
-            <h5 class="card-title">Object Detection System</h5>
-            <p class="card-text">Real-time vehicle and object detection using YOLO.</p>
-            <div class="btn-group">
-              <a href="https://github.com/prajwal-code2" class="btn btn-outline-light" target="_blank">GitHub</a>
-              <button class="btn btn-gradient" onclick="showDemo('demo1')">Live Demo</button>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Prajwal Joshi</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
             </div>
-          </div>
         </div>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="card project-card">
-          <img src="assets/parking-automation.jpg" class="card-img-top" alt="Parking Automation" />
-          <div class="card-body">
-            <h5 class="card-title">Parking Time Monitor</h5>
-            <p class="card-text">Automated tracking of parking duration with alerts.</p>
-            <div class="btn-group">
-              <a href="https://github.com/prajwal-code2" class="btn btn-outline-light" target="_blank">GitHub</a>
-              <button class="btn btn-gradient" onclick="showDemo('demo2')">Live Demo</button>
+    </nav>
+
+    <!-- Hero Section with 3D Scene -->
+    <section id="home" class="hero text-center">
+        <canvas id="threeCanvas"></canvas>
+        <div class="container">
+            <h1 id="hero-title" class="display-1 fw-bold">Prajwal Joshi</h1>
+            <div id="typewriter-container" class="lead futuristic-text" style="height: 120px;"></div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="container py-5">
+        <h2 class="gradient-text mb-5">Projects</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card project-card">
+                    <img src="assets/object-detection.jpg" class="card-img-top" alt="Object Detection">
+                    <div class="card-body">
+                        <h5 class="card-title">Object Detection System</h5>
+                        <p class="card-text">Real-time vehicle and object detection using YOLO.</p>
+                        <div class="btn-group">
+                            <a href="https://github.com/prajwal-code2" class="btn btn-outline-light" target="_blank">GitHub</a>
+                            <button class="btn btn-gradient" onclick="showDemo('demo1')">Live Demo</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="card project-card">
-          <img src="assets/pill-counter.jpg" class="card-img-top" alt="Pill Counter" />
-          <div class="card-body">
-            <h5 class="card-title">Pill Counting Automation</h5>
-            <p class="card-text">High-speed pill detection for packaging systems.</p>
-            <div class="btn-group">
-              <a href="https://github.com/prajwal-code2" class="btn btn-outline-light" target="_blank">GitHub</a>
-              <button class="btn btn-gradient" onclick="showDemo('demo3')">Live Demo</button>
+            <div class="col-md-4 mb-4">
+                <div class="card project-card">
+                    <img src="assets/parking-automation.jpg" class="card-img-top" alt="Parking Automation">
+                    <div class="card-body">
+                        <h5 class="card-title">Parking Time Monitor</h5>
+                        <p class="card-text">Automated tracking of parking duration with alerts.</p>
+                        <div class="btn-group">
+                            <a href="https://github.com/prajwal-code2" class="btn btn-outline-light" target="_blank">GitHub</a>
+                            <button class="btn btn-gradient" onclick="showDemo('demo2')">Live Demo</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="col-md-4 mb-4">
+                <div class="card project-card">
+                    <img src="assets/pill-counter.jpg" class="card-img-top" alt="Pill Counter">
+                    <div class="card-body">
+                        <h5 class="card-title">Pill Counting Automation</h5>
+                        <p class="card-text">High-speed pill detection for packaging systems.</p>
+                        <div class="btn-group">
+                            <a href="https://github.com/prajwal-code2" class="btn btn-outline-light" target="_blank">GitHub</a>
+                            <button class="btn btn-gradient" onclick="showDemo('demo3')">Live Demo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <!-- Demo Modal -->
-    <div class="modal fade" id="demoModal" tabindex="-1">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Live Demo</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <iframe id="demoFrame" width="100%" height="400" frameborder="0"></iframe>
-          </div>
+        <!-- Demo Modal -->
+        <div class="modal fade" id="demoModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Live Demo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe id="demoFrame" width="100%" height="400" frameborder="0"></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- About Section -->
-  <section id="about" class="py-5 text-center gradient-bg">
-    <div class="container">
-      <h2 class="gradient-text mb-4">About</h2>
-      <p class="lead text-content futuristic-text">
-        I’m Prajwal Joshi, a Computer Vision Expert and Head of Technology at Insight Fusion Analytics. I specialize in turning visual data into actionable intelligence through advanced object detection, tracking, and automation systems. With a Deep Learning Specialization and Advanced Computer Vision Certification, my work includes real-time parking monitoring solutions and high-speed pill-counting automation, delivering precision and innovation.
-      </p>
-      <p class="text-content futuristic-text">
-        <strong>Skills:</strong> Object Detection (YOLO), Object Tracking, Action Recognition, Automation, Python, OpenCV, TensorFlow, PyTorch, Data Analytics
-      </p>
-    </div>
-  </section>
+    <!-- About Section -->
+    <section id="about" class="py-5 text-center gradient-bg">
+        <div class="container">
+            <h2 class="gradient-text mb-4">About</h2>
+            <p class="lead text-content futuristic-text">I’m Prajwal Joshi, a Computer Vision Expert and Head of Technology at Insight Fusion Analytics. I specialize in turning visual data into actionable intelligence through advanced object detection, tracking, and automation systems. With a Deep Learning Specialization and Advanced Computer Vision Certification, my work includes real-time parking monitoring solutions and high-speed pill-counting automation, delivering precision and innovation.</p>
+            <p class="text-content futuristic-text"><strong>Skills:</strong> Object Detection (YOLO), Object Tracking, Action Recognition, Automation, Python, OpenCV, TensorFlow, PyTorch, Data Analytics</p>
+        </div>
+    </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="container py-5 text-center">
-    <h2 class="gradient-text mb-4">Contact</h2>
-    <p class="text-content contact-details">
-      Email: <a href="mailto:prajwaljoshi421@gmail.com" class="text-gradient futuristic-text">prajwaljoshi421@gmail.com</a>
-    </p>
-    <p class="text-content contact-details">
-      GitHub: <a href="https://github.com/prajwal-code2" class="text-gradient futuristic-text" target="_blank">prajwal-code2</a>
-    </p>
-    <p class="text-content contact-details">
-      LinkedIn: <a href="https://www.linkedin.com/in/prajwal-joshi-570935165/" class="text-gradient futuristic-text" target="_blank">Prajwal Joshi</a>
-    </p>
-  </section>
+    <!-- Contact Section -->
+    <section id="contact" class="container py-5 text-center">
+        <h2 class="gradient-text mb-4">Contact</h2>
+        <p class="text-content contact-details">Email: <a href="mailto:prajwaljoshi421@gmail.com" class="text-gradient futuristic-text">prajwaljoshi421@gmail.com</a></p>
+        <p class="text-content contact-details">GitHub: <a href="https://github.com/prajwal-code2" class="text-gradient futuristic-text" target="_blank">prajwal-code2</a></p>
+        <p class="text-content contact-details">LinkedIn: <a href="https://www.linkedin.com/in/prajwal-joshi-570935165/" class="text-gradient futuristic-text" target="_blank">Prajwal Joshi</a></p>
+    </section>
 
-  <!-- Footer -->
-  <footer class="gradient-bg text-center py-3">
-    <div class="container">
-      <p class="text-content futuristic-text">© 2025 Prajwal Joshi. All rights reserved.</p>
-    </div>
-  </footer>
+    <!-- Footer -->
+    <footer class="gradient-bg text-center py-3">
+        <div class="container">
+            <p class="text-content futuristic-text">© 2025 Prajwal Joshi. All rights reserved.</p>
+        </div>
+    </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
