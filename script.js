@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = new THREE.GLTFLoader();
     let robotModel;
     loader.load(
-        '/prajwaljoshi-portfolio/model/scene.gltf', // Verify path
+        '/prajwaljoshi-portfolio/model/scene.gltf', // Verify this path
         (gltf) => {
             robotModel = gltf.scene;
             robotModel.scale.set(1, 1, 1);
@@ -44,7 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         },
         (xhr) => {
-            console.log(xhr.loaded / xhr.total * 100 + '% loaded');
+            if (xhr.total > 0) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            } else {
+                console.log('Loading model... (size unknown)');
+            }
         },
         (error) => {
             console.error('Error loading GLTF model:', error);
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
             cube.position.set(-15, 0, 5);
             scene.add(cube);
-            console.log('Fallback cube added');
+            console.log('Fallback cube added due to loading failure');
         }
     );
 
@@ -109,18 +113,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ship.add(glow);
     }
 
-    // Detection Count Display
+    // Detection Count Display - Larger and above robot
     const countCanvas = document.createElement('canvas');
     countCanvas.width = 1024;
     countCanvas.height = 256;
     const countCtx = countCanvas.getContext('2d');
     countCtx.font = '100px Exo 2';
-    countCtx.fillStyle = '#00ff00';
+    countCtx.fillStyle = '#ffffff'; // White with glow
+    countCtx.shadowColor = '#00eaff';
+    countCtx.shadowBlur = 10;
     const countTexture = new THREE.CanvasTexture(countCanvas);
     const countSpriteMaterial = new THREE.SpriteMaterial({ map: countTexture, transparent: true });
     const countSprite = new THREE.Sprite(countSpriteMaterial);
-    countSprite.scale.set(25, 6, 1);
-    countSprite.position.set(-15, 5, 5);
+    countSprite.scale.set(60, 15, 5); // Your updated scale
+    countSprite.position.set(5, -2, 0); // Your updated position
+    countSprite.renderOrder = 1;
     scene.add(countSprite);
     console.log('Counter added at:', countSprite.position);
 
@@ -155,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     typeWriter();
 
+    // Camera
     camera.position.z = 20;
 
     // Animation Loop
@@ -248,8 +256,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         countCtx.clearRect(0, 0, countCanvas.width, countCanvas.height);
-        countCtx.fillStyle = '#00ff00';
+        countCtx.fillStyle = '#ffffff'; // Keep white with glow
+        countCtx.shadowColor = '#00eaff';
+        countCtx.shadowBlur = 10;
         countCtx.fillText(`SHIPS DETECTED: ${totalDetections}`, 40, 160);
+        countCtx.shadowBlur = 0; // Reset shadow to avoid affecting other draws
         countTexture.needsUpdate = true;
 
         renderer.render(scene, camera);
