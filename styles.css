@@ -191,13 +191,13 @@ body {
 /* Footer */
 footer {
     text-align: center;
-    padding: 2rem 0;
+    padding: 1rem 0;
     background: rgba(0, 0, 0, 0.85);
 }
 footer p {
-    font-size: 0.7rem;
+    font-size: 0.5rem;
     color: #ffffff;
-    text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
+    text-shadow: 0 0 4px rgba(0, 234, 255, 0.8);
 }
 
 /* Modal */
