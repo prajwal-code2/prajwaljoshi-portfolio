@@ -55,8 +55,7 @@ body {
     box-shadow: 0 0 12px rgba(0, 234, 255, 0.5);
 }
 
-/* Hero with 3D Scene */
-/* [Rest of CSS unchanged until Hero] */
+
 
 /* Hero with 3D Scene */
 .hero {
@@ -68,16 +67,20 @@ body {
     overflow: hidden;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 40, 0.8));
 }
+.hero .container {
+    text-align: center; /* Ensure all children are centered */
+}
 .hero h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 5rem;
     text-shadow: 0 0 12px rgba(0, 234, 255, 0.8);
     z-index: 2;
     position: relative;
+    display: inline-block; /* Keep it centered */
 }
 .futuristic-text {
     font-family: 'Exo 2', sans-serif;
-    font-size: 3rem; /* This won't affect canvas text, but kept for consistency */
+    font-size: 3rem; /* Base size, overridden below */
     letter-spacing: 4px;
     text-transform: uppercase;
     z-index: 2;
@@ -89,21 +92,43 @@ body {
 #threeCanvas {
     position: absolute;
     top: 0;
-    left: 0;
+    left: -100px;
     width: 100%;
     height: 100%;
     z-index: 1;
     opacity: 0.7;
 }
 
-/* Ensure container doesn’t shrink the canvas */
+/* Typewriter container */
 #typewriter-container {
     width: 100%;
-    max-width: 1024px; /* Matches canvas width */
+    max-width: 1024px;
+    height: 150px !important;
     margin: 0 auto;
+    text-align: left; /* Center contents */
 }
 
-/* [Rest of CSS unchanged] */
+/* Typewriter text */
+#typewriter-text {
+    font-size: 24px;
+    font-family: 'Exo 2', sans-serif;
+    color: #00eaff;
+    display: inline-block;
+    padding-left: 210px; /* Offset to align under 'P' */
+    text-align: left; /* Text grows rightward from starting point */
+}
+
+/* Typewriter cursor */
+#typewriter-cursor {
+    font-size: 40px;
+    color: #00eaff;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
 
 /* Projects */
 #projects {
