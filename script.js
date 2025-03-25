@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     2 + (Math.random() - 0.5) * 10,
                     5.5 + (Math.random() - 0.5) * 10
                 );
+                // No dynamic rotation—keep stable, assume default is correct or adjust statically
+                // ship.rotation.y = -Math.PI / 2; // Uncomment if nose needs to point left
                 ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
-                // Point nose toward robot
-                ship.lookAt(-15, 0, 5); // Face robot at (-15, 0, 5)
                 scene.add(ship);
                 ships.push(ship);
 
@@ -232,7 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (child.isMesh) child.material.opacity = 0.7;
                 });
                 ship.userData.detected = false;
-                ship.lookAt(-15, 0, 5); // Reorient toward robot on respawn
+                // No rotation on respawn—keep stable
+                // ship.rotation.y = -Math.PI / 2; // Uncomment if nose needs to point left
             }
     
             if (!ship.userData.detected) {
@@ -267,10 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.add(detectSprite);
                     ship.userData.detectSprite = detectSprite;
     
-                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // Keep size, test alignment
+                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // Size unchanged
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
                     boundingBox.position.copy(ship.position);
+                    boundingBox.rotation.y = Math.PI / 2; // Align width (3) with ship’s z-axis (assuming forward is z)
                     scene.add(boundingBox);
                     ship.userData.boundingBox = boundingBox;
                 }
@@ -292,8 +294,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         2 + (Math.random() - 0.5) * 10,
                         5.5 + (Math.random() - 0.5) * 10
                     );
+                    // No rotation on respawn—keep stable
+                    // newShip.rotation.y = -Math.PI / 2; // Uncomment if nose needs to point left
                     newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
-                    newShip.lookAt(-15, 0, 5); // Face robot on respawn
                     scene.add(newShip);
                     newShip.traverse((child) => {
                         if (child.isMesh && !child.material.map) {
@@ -324,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     animate();
 
+    
     // Mouse Interaction
     document.addEventListener('mousemove', (event) => {
         const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
