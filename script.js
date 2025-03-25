@@ -104,14 +104,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create 8 ship instances
             for (let i = 0; i < 8; i++) {
                 const ship = planeModelTemplate.clone();
-                ship.scale.set(0.1875, 0.1875, 0.1875); // 0.25x smaller than 0.25
-                ship.rotation.y = Math.PI / 2; // Rotate around y-axis for horizontal flight
+                ship.scale.set(0.1875, 0.1875, 0.1875); // Current size
                 ship.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
                     5.5 + (Math.random() - 0.5) * 10
                 );
                 ship.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
+                // Point nose toward robot
+                ship.lookAt(-15, 0, 5); // Face robot at (-15, 0, 5)
                 scene.add(ship);
                 ships.push(ship);
 
@@ -158,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Fallback to cone ships due to plane loading failure');
         }
     );
+
     // Detection Count Display
     const countCanvas = document.createElement('canvas');
     countCanvas.width = 1024;
@@ -230,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (child.isMesh) child.material.opacity = 0.7;
                 });
                 ship.userData.detected = false;
+                ship.lookAt(-15, 0, 5); // Reorient toward robot on respawn
             }
     
             if (!ship.userData.detected) {
@@ -264,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.add(detectSprite);
                     ship.userData.detectSprite = detectSprite;
     
-                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // 1.5x larger than 2, 0.5, 0.5
+                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // Keep size, test alignment
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
                     boundingBox.position.copy(ship.position);
@@ -283,14 +286,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     ships.splice(index, 1);
     
                     const newShip = planeModelTemplate ? planeModelTemplate.clone() : new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.5, 8), shipMaterial.clone());
-                    newShip.scale.set(0.1875, 0.1875, 0.1875); // 0.25x smaller
-                    newShip.rotation.y = Math.PI / 2; // Horizontal flight
+                    newShip.scale.set(0.1875, 0.1875, 0.1875);
                     newShip.position.set(
                         20 + Math.random() * 5,
                         2 + (Math.random() - 0.5) * 10,
                         5.5 + (Math.random() - 0.5) * 10
                     );
                     newShip.userData = { detected: false, speed: 0.05 + Math.random() * 0.03, detectionTime: null };
+                    newShip.lookAt(-15, 0, 5); // Face robot on respawn
                     scene.add(newShip);
                     newShip.traverse((child) => {
                         if (child.isMesh && !child.material.map) {
@@ -320,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderer.render(scene, camera);
     }
     animate();
-
 
     // Mouse Interaction
     document.addEventListener('mousemove', (event) => {
