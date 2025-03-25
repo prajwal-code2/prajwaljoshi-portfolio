@@ -237,7 +237,7 @@ body.light .btn-outline-light:hover {
 
 /* Common Section Styling */
 #about, #contact, footer {
-    padding: 5rem 0;
+    padding: 3rem 0;
     background: rgba(0, 0, 0, 0.7);
 }
 body.light #about, body.light #contact, body.light footer {
