@@ -104,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create 8 ship instances
             for (let i = 0; i < 8; i++) {
                 const ship = planeModelTemplate.clone();
-                ship.scale.set(0.25, 0.25, 0.25); // 2x smaller than 0.5
-                ship.rotation.x = Math.PI / 2; // Horizontal (adjust if needed)
+                ship.scale.set(0.1875, 0.1875, 0.1875); // 0.25x smaller than 0.25
+                ship.rotation.y = Math.PI / 2; // Rotate around y-axis for horizontal flight
                 ship.position.set(
                     20 + Math.random() * 5,
                     2 + (Math.random() - 0.5) * 10,
@@ -212,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Animation Loop
     let time = 0;
+    
     function animate() {
         requestAnimationFrame(animate);
     
@@ -263,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     scene.add(detectSprite);
                     ship.userData.detectSprite = detectSprite;
     
-                    const boxGeometry = new THREE.BoxGeometry(2, 0.5, 0.5);
+                    const boxGeometry = new THREE.BoxGeometry(3, 0.75, 0.75); // 1.5x larger than 2, 0.5, 0.5
                     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true });
                     const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
                     boundingBox.position.copy(ship.position);
@@ -282,8 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     ships.splice(index, 1);
     
                     const newShip = planeModelTemplate ? planeModelTemplate.clone() : new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.5, 8), shipMaterial.clone());
-                    newShip.scale.set(0.25, 0.25, 0.25); // 2x smaller
-                    newShip.rotation.x = Math.PI / 2; // Horizontal
+                    newShip.scale.set(0.1875, 0.1875, 0.1875); // 0.25x smaller
+                    newShip.rotation.y = Math.PI / 2; // Horizontal flight
                     newShip.position.set(
                         20 + Math.random() * 5,
                         2 + (Math.random() - 0.5) * 10,
@@ -320,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     animate();
 
-    
+
     // Mouse Interaction
     document.addEventListener('mousemove', (event) => {
         const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
