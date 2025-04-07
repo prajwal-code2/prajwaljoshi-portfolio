@@ -19,15 +19,15 @@ function typeWriter() {
   }
 
   if (!isDeleting && charIndex === currentPhrase.length) {
-    setTimeout(() => isDeleting = true, 1000); // Pause for 1 second
+    setTimeout(() => isDeleting = true, 1000);
   }
 
   if (isDeleting && charIndex === 0) {
     isDeleting = false;
-    phraseIndex = (phraseIndex + 1) % phrases.length; // Cycle to next phrase
+    phraseIndex = (phraseIndex + 1) % phrases.length;
   }
 
-  setTimeout(typeWriter, isDeleting ? 50 : 100); // Adjust typing speed
+  setTimeout(typeWriter, isDeleting ? 50 : 100);
 }
 
 typeWriter();
