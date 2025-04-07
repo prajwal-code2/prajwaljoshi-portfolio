@@ -3,77 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prajwal Joshi - Computer Vision Specialist</title>
+  <title>Prajwal Joshi - Portfolio</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 </head>
 <body>
-
-  <!-- Navbar -->
-  <nav>
-    <div class="logo">Prajwal Joshi</div>
-    <ul>
-      <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#testimonials">Testimonials</a></li>
-    </ul>
-  </nav>
-
-  <!-- Hero Section with Typewriter Effect -->
-  <header class="hero-section">
-    <div class="content">
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="container">
       <h1>Prajwal Joshi</h1>
-      <h2 id="typewriter"></h2>
-      <p>Computer Vision Specialist</p>
-      <a href="#projects" class="cta-btn">View My Work</a>
+      <div id="typewriter"></div>
     </div>
-  </header>
+  </section>
 
   <!-- About Section -->
   <section id="about">
-    <h2>About Me</h2>
-    <p>I’m Prajwal Joshi, a Computer Vision Expert and Head of Technology at Insight Fusion Analytics. I specialize in transforming visual data into actionable intelligence through advanced object detection, tracking, and automation systems...</p>
+    <div class="container">
+      <h2>About Me</h2>
+      <p>
+        I’m Prajwal Joshi, a Computer Vision Expert and Head of Technology at Insight Fusion Analytics. 
+        My expertise lies in transforming visual data into actionable intelligence through advanced object detection, tracking, and automation systems.
+        With certifications in Deep Learning and Advanced Computer Vision, my work spans real-world applications such as real-time parking monitoring systems, high-speed pill-counting automation, and precision-based object tracking solutions.
+      </p>
+    </div>
   </section>
 
-  <!-- Projects Section with Modals -->
+  <!-- Skills Section -->
+  <section id="skills">
+    <div class="container">
+      <h2>Skills</h2>
+      <ul>
+        <li>Object Detection (YOLO)</li>
+        <li>Object Tracking</li>
+        <li>Action Recognition</li>
+        <li>Automation</li>
+        <li>Python</li>
+        <li>OpenCV</li>
+        <li>TensorFlow</li>
+        <li>Data Analytics</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
   <section id="projects">
-    <h2>My Projects</h2>
-    <div class="project-cards">
-      <!-- Project 1 -->
-      <div class="project-card" data-toggle="modal" data-target="#project1">
+    <div class="container">
+      <h2>Projects</h2>
+      <div class="project">
         <h3>Object Detection/Tracking System</h3>
         <p>Real-time vehicle and object detection/tracking using YOLO.</p>
+        <button class="demo-btn" onclick="openModal()">View Demo</button>
       </div>
-      <!-- Modal for Project 1 -->
-      <div id="project1" class="modal">
-        <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <h3>Object Detection/Tracking System</h3>
-          <p><a href="#" target="_blank">Demo Link</a> | <a href="#" target="_blank">GitHub</a></p>
-        </div>
+      <div class="project">
+        <h3>Parking Time Monitor</h3>
+        <p>Automated tracking of parking duration with alerts.</p>
+        <button class="demo-btn" onclick="openModal()">View Demo</button>
       </div>
-
-      <!-- Additional Project Cards can be added here -->
+      <div class="project">
+        <h3>Pill Counting Automation</h3>
+        <p>High-speed pill detection for packaging systems.</p>
+        <button class="demo-btn" onclick="openModal()">View Demo</button>
+      </div>
     </div>
   </section>
 
-  <!-- Testimonials Section with Scrolling Effect -->
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Project Details</h2>
+      <p>This is a placeholder for project details. Replace this with actual content for each project.</p>
+    </div>
+  </div>
+
+  <!-- Testimonials Section -->
   <section id="testimonials">
-    <h2>What People Say</h2>
-    <div class="testimonial-container">
-      <!-- Testimonials will scroll up-down -->
-      <div class="testimonial">"Great work!" - Client 1</div>
-      <div class="testimonial">"Amazing project!" - Client 2</div>
-      <div class="testimonial">"Exceeded expectations!" - Client 3</div>
-      <!-- More testimonials can be added here -->
+    <div class="container">
+      <h2>Testimonials</h2>
+      <div class="floating-testimonials">
+        <p>"Prajwal delivered an exceptional solution for our automation needs. Highly recommend!" — Client Name</p>
+        <p>"His expertise in computer vision is unmatched. Great to work with!" — Client Name</p>
+        <p>"Professional, timely, and innovative. Prajwal exceeded our expectations." — Client Name</p>
+      </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer>
-    <div>Contact: prajwaljoshi421@gmail.com</div>
-    <div>Follow me on <a href="https://www.linkedin.com/in/prajwal-joshi-570935165/" target="_blank">LinkedIn</a> | <a href="https://github.com/prajwal-code2" target="_blank">GitHub</a> | <a href="https://www.upwork.com/freelancers/~0158b40f97683abbe7?mp_source=share" target="_blank">Upwork</a></div>
-  </footer>
+  <!-- Call-to-Action -->
+  <section id="cta">
+    <div class="container">
+      <a href="#projects" class="cta-btn">View My Work</a>
+    </div>
+  </section>
 
   <script src="scripts.js"></script>
 </body>

@@ -1,267 +1,186 @@
-body {
+/* General Reset */
+* {
     margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: #000;
-    color: #fff;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 50px;
-    background: linear-gradient(90deg, #1e0030, #000);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-header .logo {
-    font-size: 24px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-}
-
-header .logo img {
-    width: 30px;
-    margin-right: 10px;
-}
-
-nav a {
-    margin: 0 15px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 400;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: #4a00e0;
-}
-
-.header-buttons .btn {
-    padding: 10px 20px;
-    background-color: #fff;
-    color: #000;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-left: 10px;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.header-buttons .btn:hover {
-    background-color: #4a00e0;
-    color: #fff;
-    transform: scale(1.05);
-}
-
-.hero {
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Using Inter font, similar to Cursor's font */
+  }
+  
+  body {
+    color: #333;
+    background: #f9f9f9;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  /* Hero Section */
+  #hero {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    color: white;
     text-align: center;
-    padding: 150px 0 100px;
-    background: linear-gradient(135deg, #1e0030, #4a00e0);
+    padding: 150px 20px;
     position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.hero h1 {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    z-index: 1;
-}
-
-.hero .hero-btn {
-    font-size: 18px;
-    padding: 15px 30px;
-    z-index: 1;
-    background: #00f0ff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.hero .hero-btn:hover {
-    background: #ff00ff;
-}
-
-.cube {
-    width: 200px;
-    height: 200px;
-    background: linear-gradient(45deg, #00f0ff, #ff00ff, #00ff00);
-    margin: 20px auto;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    animation: rotate 10s infinite linear, float 3s infinite ease-in-out;
+  }
+  
+  #hero::before {
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-}
-
-@keyframes rotate {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes float {
-    0%, 100% { transform: translate(-50%, -50%) rotate(0deg) translateY(0); }
-    50% { transform: translate(-50%, -50%) rotate(0deg) translateY(-20px); }
-}
-
-.features, .testimonials {
-    padding: 50px;
-    text-align: center;
-    background: #1a1a1a;
-}
-
-.card-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.card {
-    width: 300px;
-    padding: 20px;
-    background: #2a2a2a;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(74, 0, 224, 0.5);
-}
-
-.card img {
+    top: 0;
+    left: 0;
     width: 100%;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.card h3 {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 10px 0;
-}
-
-.code-editor {
-    padding: 50px;
-    text-align: center;
-    background: linear-gradient(135deg, #2a0040, #6a00ff);
-    position: relative;
-}
-
-.composer {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    height: 100%;
+    background: url('path/to/your/background-image.jpg') no-repeat center center;
+    background-size: cover;
+    opacity: 0.3;
+    z-index: -1;
+  }
+  
+  #hero h1 {
+    font-size: 3rem;
     margin-bottom: 20px;
-}
-
-.composer input {
-    padding: 10px;
-    font-family: 'Inter', sans-serif;
+  }
+  
+  #typewriter {
+    font-size: 1.5rem;
+    opacity: 0.9;
+  }
+  
+  /* About Section */
+  #about {
+    padding: 50px 0;
+    text-align: center;
+  }
+  
+  #about p {
+    font-size: 1.2rem;
+    margin-top: 20px;
+    line-height: 1.8;
+  }
+  
+  /* Skills Section */
+  #skills ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  
+  #skills li {
+    background: #ff7e5f;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+  }
+  
+  /* Projects Section */
+  #projects {
+    padding: 50px 0;
+    text-align: center;
+  }
+  
+  .project {
+    margin-bottom: 30px;
+  }
+  
+  .project h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .project p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+  
+  .demo-btn {
+    background: #ff7e5f;
+    color: white;
     border: none;
-    border-radius: 5px;
-    width: 300px;
-    background: #1a1a1a;
-    color: #fff;
-}
-
-.code-window pre {
-    display: inline-block;
-    background: #000;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .demo-btn:hover {
+    background: #feb47b;
+  }
+  
+  /* Modal Styling */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    background: white;
+    margin: 10% auto;
     padding: 20px;
     border-radius: 10px;
-    font-family: 'Courier New', monospace;
-    color: #0f0;
-    white-space: pre-wrap;
-    overflow-x: auto;
-    max-width: 800px;
-}
-
-.code-btn {
-    padding: 10px 20px;
-    background: #00f0ff;
-    border: none;
-    border-radius: 5px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  .close {
+    float: right;
     cursor: pointer;
-    transition: background 0.3s;
-}
-
-.code-btn:hover {
-    background: #ff00ff;
-}
-
-footer {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
-    background: #000;
-    font-size: 14px;
-    border-top: 1px solid #333;
-}
-
-.footer-section a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    margin: 5px 0;
-    font-weight: 400;
-    transition: color 0.3s;
-}
-
-.footer-section a:hover {
-    color: #4a00e0;
-}
-
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        padding: 20px;
-    }
-    nav, .header-buttons {
-        margin-top: 10px;
-    }
-    .card-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .hero {
-        padding: 100px 0;
-    }
-    .composer input {
-        width: 200px;
-    }
-}
-
-
-.custom-cursor {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    background: #00f0ff;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10000;
-    transition: transform 0.1s, width 0.2s, height 0.2s;
-    mix-blend-mode: difference;
-}
-
-.custom-cursor.cursor-hover {
-    width: 20px;
-    height: 20px;
-    transform: scale(1.5);
-    background: #ff00ff;
-}
+    font-size: 1.5rem;
+  }
+  
+  /* Testimonials Section */
+  #testimonials {
+    padding: 50px 0;
+    text-align: center;
+  }
+  
+  .floating-testimonials {
+    position: relative;
+    height: 100px;
+    overflow: hidden;
+  }
+  
+  .floating-testimonials p {
+    position: absolute;
+    animation: float 10s linear infinite;
+    font-size: 1.2rem;
+    color: #ff7e5f;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
+  
+  /* CTA Section */
+  #cta {
+    text-align: center;
+    padding: 50px 0;
+  }
+  
+  .cta-btn {
+    background: #ff7e5f;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .cta-btn:hover {
+    background: #feb47b;
+  }
