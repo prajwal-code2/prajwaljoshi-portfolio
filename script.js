@@ -1,59 +1,74 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Typewriter Effect
-    const typewriterText = document.getElementById('typewriter-text');
-    const texts = ["Computer Vision Specialist", "Transforming Pixels into Actionable Insights"];
-    let currentTextIndex = 0;
-    let currentIndex = 0;
-    let isErasing = false;
-
-    function typeWriter() {
-        const currentText = texts[currentTextIndex];
-        typewriterText.textContent = currentText.slice(0, currentIndex);
-
-        if (!isErasing && currentIndex < currentText.length) {
-            currentIndex++;
-            setTimeout(typeWriter, 100);
-        } else if (!isErasing && currentIndex === currentText.length) {
-            setTimeout(() => { isErasing = true; typeWriter(); }, 1000);
-        } else if (isErasing && currentIndex > 0) {
-            currentIndex--;
-            setTimeout(typeWriter, 50);
-        } else if (isErasing && currentIndex === 0) {
-            isErasing = false;
-            currentTextIndex = (currentTextIndex + 1) % texts.length;
-            setTimeout(typeWriter, 100);
-        }
+function openComposer() {
+    const composer = document.querySelector('.composer');
+    composer.style.display = composer.style.display === 'flex' ? 'none' : 'flex';
+    if (composer.style.display === 'flex') {
+        document.getElementById('composer-input').focus();
     }
-    typeWriter();
+}
 
-    // Modal Functionality
-    const modal = document.getElementById('demoModal');
-    const demoFrame = document.getElementById('demoFrame');
-    const closeModal = document.querySelector('.modal-close');
-    const demoButtons = document.querySelectorAll('.demo-btn');
+function executeCode() {
+    const input = document.getElementById('composer-input').value.toLowerCase();
+    const codeDisplay = document.getElementById('code-display');
+    if (input.includes('web design')) {
+        codeDisplay.textContent = `function createWebsite() {
+    return "Responsive website created by Prajwal!";
+}
+console.log(createWebsite());`;
+    } else if (input.includes('app')) {
+        codeDisplay.textContent = `function buildApp() {
+    return "Mobile app developed by Prajwal!";
+}
+console.log(buildApp());`;
+    } else if (input.includes('ai')) {
+        codeDisplay.textContent = `function runAI() {
+    return "AI solution implemented by Prajwal!";
+}
+console.log(runAI());`;
+    } else {
+        codeDisplay.textContent = `function greet(name) {
+    return \`Hello, \${name}!\`;
+}
+console.log(greet("Prajwal"));`;
+    }
+}
 
-    demoButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const demoId = button.getAttribute('data-demo');
-            const demoUrls = {
-                'demo1': 'https://placeholder-demo-1.com',
-                'demo2': 'https://placeholder-demo-2.com',
-                'demo3': 'https://placeholder-demo-3.com'
-            };
-            demoFrame.src = demoUrls[demoId];
-            modal.style.display = 'flex';
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
         });
     });
+});
 
-    closeModal.addEventListener('click', () => {
-        modal.style.display = 'none';
-        demoFrame.src = '';
+// Card animation on load
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s';
+            card.style.opacity = '1';
+        }, index * 200);
     });
+});
 
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-            demoFrame.src = '';
-        }
+// Custom cursor (inspired by cursor.com interactivity)
+const cursor = document.createElement('div');
+cursor.className = 'custom-cursor';
+document.body.appendChild(cursor);
+
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+});
+
+document.querySelectorAll('a, button').forEach(element => {
+    element.addEventListener('mouseover', () => {
+        cursor.classList.add('cursor-hover');
+    });
+    element.addEventListener('mouseout', () => {
+        cursor.classList.remove('cursor-hover');
     });
 });
