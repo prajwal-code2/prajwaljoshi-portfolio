@@ -10,9 +10,8 @@
     <!-- Floating Navbar Box -->
     <div class="navbar-container">
         <nav class="navbar">
-            <div class="logo">Prajwal Joshi</div>
+            <div class="logo">PJ</div>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#demo">Projects</a></li>
                 <li><a href="#testimonials">Testimonials</a></li>
@@ -30,6 +29,7 @@
             <div class="typewriter">
                 <span id="typewriter-text"></span><span id="cursor">|</span>
             </div>
+            <img src="assets/vscode-cv-screenshot.jpg" alt="VS Code Computer Vision Code" class="vscode-screenshot">
         </div>
     </section>
 
@@ -131,24 +131,19 @@
         <h2 class="section-heading">Contact</h2>
         <div class="contact-content">
             <div class="contact-card">
-                <h3>Email</h3>
-                <p><a href="mailto:prajwaljoshi421@gmail.com">prajwaljoshi421@gmail.com</a></p>
+                <h3 class="contact-link" data-type="email">EMAIL</h3>
             </div>
             <div class="contact-card">
-                <h3>Phone</h3>
-                <p><a href="tel:+919811789311">9811789311</a></p>
+                <h3 class="contact-link" data-type="phone">PHONE</h3>
             </div>
             <div class="contact-card">
-                <h3>LinkedIn</h3>
-                <p><a href="https://www.linkedin.com/in/prajwal-joshi-570935165/" target="_blank">linkedin.com/in/prajwal-joshi-570935165</a></p>
+                <h3 class="contact-link" data-type="linkedin">LINKEDIN</h3>
             </div>
             <div class="contact-card">
-                <h3>GitHub</h3>
-                <p><a href="https://github.com/prajwal-code2" target="_blank">github.com/prajwal-code2</a></p>
+                <h3 class="contact-link" data-type="github">GITHUB</h3>
             </div>
             <div class="contact-card">
-                <h3>Upwork</h3>
-                <p><a href="https://www.upwork.com/freelancers/~0158b40f97683abbe7?mp_source=share" target="_blank">upwork.com/freelancers/~0158b40f97683abbe7</a></p>
+                <h3 class="contact-link" data-type="upwork">UPWORK</h3>
             </div>
         </div>
     </section>
@@ -185,6 +180,71 @@
                 closeModal();
             }
         }
+
+        // Contact link functionality
+        document.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const type = e.target.getAttribute('data-type');
+                const email = 'prajwaljoshi421@gmail.com';
+                const phone = '9811789311';
+                const linkedinUrl = 'https://www.linkedin.com/in/prajwal-joshi-570935165/';
+                const githubUrl = 'https://github.com/prajwal-code2';
+                const upworkUrl = 'https://www.upwork.com/freelancers/~0158b40f97683abbe7?mp_source=share';
+
+                switch (type) {
+                    case 'email':
+                        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`, '_blank');
+                        break;
+                    case 'phone':
+                        navigator.clipboard.writeText(phone).then(() => {
+                            alert('Phone number copied to clipboard: ' + phone);
+                        }).catch(err => {
+                            console.error('Failed to copy phone number: ', err);
+                        });
+                        break;
+                    case 'linkedin':
+                        window.open(linkedinUrl, '_blank');
+                        break;
+                    case 'github':
+                        window.open(githubUrl, '_blank');
+                        break;
+                    case 'upwork':
+                        window.open(upworkUrl, '_blank');
+                        break;
+                }
+            });
+        });
+
+        // Smooth scroll with offset for navbar links and logo
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default anchor behavior
+                const href = this.getAttribute('href');
+                const target = document.querySelector(href);
+                if (target) {
+                    const offsetTop = target.getBoundingClientRect().top + window.scrollY;
+                    const navbarOffset = 100; // Adjust this value (navbar height + padding + buffer, e.g., 60px + 20px + 20px)
+                    window.scrollTo({
+                        top: offsetTop - navbarOffset,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add click event to logo for scrolling to Home
+        document.querySelector('.logo').addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default behavior (if any)
+            const target = document.querySelector('#home');
+            if (target) {
+                const offsetTop = target.getBoundingClientRect().top + window.scrollY;
+                const navbarOffset = 100; // Same offset as navbar links
+                window.scrollTo({
+                    top: offsetTop - navbarOffset,
+                    behavior: 'smooth'
+                });
+            }
+        });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92da4758afd8bfd6',t:'MTc0NDIwNDU4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.imageSmoothingEnabled = false;
                 ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
 
-                time += 0.000125;
+                time += 0.000525;
                 requestAnimationFrame(drawGradients);
                 console.log("Gradients drawn");
             }
@@ -184,68 +184,37 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Typewriter initialized");
     }
 
-    // Testimonial Animation with Continuous Sections
-    const testimonialCards = document.querySelectorAll('.testimonial-card');
-    const container = document.querySelector('.testimonials-container');
-    const totalCards = testimonialCards.length;
-    const animationDuration = 20; // Seconds for one full cycle
-    const containerHeight = 500; // Reduced height
+    // Contact link functionality (unchanged)
+    document.querySelectorAll('.contact-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const type = e.target.getAttribute('data-type');
+            const email = 'prajwaljoshi421@gmail.com';
+            const phone = '9811789311';
+            const linkedinUrl = 'https://www.linkedin.com/in/prajwal-joshi-570935165/';
+            const githubUrl = 'https://github.com/prajwal-code2';
+            const upworkUrl = 'https://www.upwork.com/freelancers/~0158b40f97683abbe7?mp_source=share';
 
-    function snakeAnimation() {
-        let time = 0;
-
-        // Group cards by column and calculate initial positions
-        const columns = {
-            'left-column': [testimonialCards[0], testimonialCards[1]], // 0, 1
-            'middle-column': [testimonialCards[2]], // 2
-            'right-column': [testimonialCards[3], testimonialCards[4]] // 3, 4
-        };
-
-        // Set initial positions with no gap
-        columns['left-column'].forEach((card, index) => {
-            const height = card.getBoundingClientRect().height;
-            card.style.top = `${index * height}px`;
-        });
-        columns['middle-column'].forEach((card, index) => {
-            card.style.top = '0px';
-        });
-        columns['right-column'].forEach((card, index) => {
-            const height = card.getBoundingClientRect().height;
-            card.style.top = `${index * height}px`;
-        });
-
-        function updateAnimation(currentTime) {
-            time += 0.016; // Approximately 60 FPS
-            if (time > animationDuration) time = 0; // Reset for endless loop
-
-            // Animate each column
-            for (const [columnClass, cards] of Object.entries(columns)) {
-                const totalHeight = cards.reduce((sum, card) => sum + card.getBoundingClientRect().height, 0);
-                const speed = totalHeight / animationDuration;
-
-                cards.forEach((card, index) => {
-                    const height = card.getBoundingClientRect().height;
-                    let translateY;
-
-                    if (columnClass === 'middle-column') {
-                        // Single card, scroll down
-                        translateY = (time * speed) % totalHeight;
-                        if (translateY > 0) translateY -= totalHeight; // Loop
-                    } else {
-                        // Left and right columns, scroll up as a pair
-                        translateY = -((time * speed) % totalHeight);
-                        if (translateY < -totalHeight) translateY += totalHeight; // Loop
-                    }
-                    card.style.transform = `translateY(${translateY}px)`;
-                });
+            switch (type) {
+                case 'email':
+                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`, '_blank');
+                    break;
+                case 'phone':
+                    navigator.clipboard.writeText(phone).then(() => {
+                        alert('Phone number copied to clipboard: ' + phone);
+                    }).catch(err => {
+                        console.error('Failed to copy phone number: ', err);
+                    });
+                    break;
+                case 'linkedin':
+                    window.open(linkedinUrl, '_blank');
+                    break;
+                case 'github':
+                    window.open(githubUrl, '_blank');
+                    break;
+                case 'upwork':
+                    window.open(upworkUrl, '_blank');
+                    break;
             }
-
-            requestAnimationFrame(updateAnimation);
-        }
-
-        // Start animation after a delay to ensure heights are calculated
-        setTimeout(() => requestAnimationFrame(updateAnimation), 1000);
-    }
-
-    snakeAnimation();
+        });
+    });
 });

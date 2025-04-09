@@ -44,10 +44,12 @@ body {
 .logo {
     color: #fff;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem; /* Increased from 1.5rem to match larger navbar */
+    font-size: 3rem; /* Increased from 1.5rem to match larger navbar */
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px; /* Reduced from 2px */
+    letter-spacing: 5px; /* Reduced from 2px */
+    margin-left: 30px;
+    cursor: pointer; /* Indicate clickable */
 }
 
 .nav-links {
@@ -108,40 +110,25 @@ body {
 }
 
 .content h1 {
-    font-family: 'Bebas+Neue', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 10rem; /* Increased from 8rem to make "Prajwal Joshi" bigger */
     font-weight: 700;
+    text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7); /* Dark shadow for white text visibility */
+    margin-bottom: 0.2rem; /* Reduced from 0.5rem to reduce gap */
     text-transform: uppercase;
     letter-spacing: 5px;
     display: inline-block; /* Ensure heading behaves as a block for alignment */
     position: relative; /* Ensure heading stays in flow */
-    /* Pixelated effect with acrylic texture using text-shadow */
-    text-shadow: 
-        2px 0 0 #8A360F,    /* Burnt Sienna */
-        0 2px 0 #8A360F,
-        -2px 2px 0 #1E6091,   /* Deep Teal */
-        -2px 0 0 #1E6091,
-        0 -2px 0 #1E6091,
-        2px -2px 0 #D4A017,   /* Golden Ochre */
-        -2px -2px 0 #5C2E7E;  /* Plum Purple */
-    /* Enhance pixelation with rendering style */
-    image-rendering: pixelated;
-    /* Acrylic texture effect using background gradient */
-    background: linear-gradient(45deg, #8A360F, #1E6091, #D4A017, #5C2E7E);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent; /* Make text color transparent to show background */
 }
 
 .typewriter {
     font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
+    font-size: 2.5rem;
     min-height: 2rem;
     position: absolute; /* Position relative to .content */
     left: 0; /* Align with the left edge of the heading's "P" */
-    top: 8rem; /* Position directly below the 10rem heading */
+    top: 14rem; /* Position directly below the 10rem heading */
     white-space: nowrap; /* Ensure text reveals in one line */
-    color: #fff; /* Keep typewriter text white for contrast */
 }
 
 /* Align first letter of typewriter text below "P" in "Prajwal Joshi" */
@@ -150,6 +137,20 @@ body {
     top: 0; /* Reset top for absolute positioning context */
     display: inline-block;
     font-size: 2rem; /* Match typewriter font size */
+}
+
+.vscode-screenshot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 19rem; /* Just below typewriter (14rem) + small gap (5rem) */
+    max-width: 128%; /* Ensure it fits within canvas */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    /* Add blur effect around the edges using drop-shadow */
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
 }
 
 #cursor {
@@ -185,6 +186,7 @@ body {
 
 .about-content p {
     margin-bottom: 15px;
+    font-size: 1.2rem; /* Increased text size */
 }
 
 .about-content p strong {
@@ -249,7 +251,7 @@ body {
 }
 
 .demo-ribbon {
-    padding: 8px 30px 8px 15px; /* Increased right padding to accommodate zig-zag */
+    padding: 8px 20px 8px 8px; /* Increased right padding to accommodate zig-zag */
     background: linear-gradient(45deg, #ff4d94, #e60073);
     color: #fff;
     border: none;
@@ -260,7 +262,7 @@ body {
     clip-path: polygon(0 0, 85% 0, 95% 25%, 85% 50%, 95% 75%, 85% 100%, 0 100%);
     position: relative;
     z-index: 1;
-    margin-right: -5px; /* Remove gap by pulling ribbon right */
+    margin-right: -20px; /* Remove gap by pulling ribbon right */
 }
 
 .demo-ribbon:hover {
@@ -339,61 +341,80 @@ body {
     margin: 20px auto;
     width: 80%;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
-    overflow: hidden; /* Ensure animation stays within bounds */
 }
 
 .testimonials-container {
     position: relative;
-    height: 500px; /* Reduced to half of 1000px */
+    height: 500px; /* Dedicated section length */
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
     grid-template-rows: 1fr; /* Single row for stacking */
-    gap: 20px;
+    gap: 20px; /* Constant horizontal gap */
+    overflow: hidden; /* Cut off excess height */
 }
 
 .testimonial-card {
     background: #1a1a1a;
     border-radius: 10px;
     padding: 20px;
-    width: 400px; /* Increased width */
+    width: 470px; /* Uniform width for all cards */
     box-shadow: 0 4px 8px rgba(255, 77, 148, 0.2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: absolute; /* For scrolling animation */
     opacity: 1; /* Fully visible */
-    transition: transform 0.1s linear; /* Smooth scrolling */
+    position: absolute; /* For precise positioning */
 }
 
 .left-column {
     left: 0;
 }
 
+.left-column:nth-child(1) {
+    top: 20px; /* First left testimonial at the top */
+}
+
+.left-column:nth-child(2) {
+    top: 260px; /* Allow dynamic height, positioned below first */
+    /* bottom: 0px; Align bottom to bottom with gap */
+}
+
 .middle-column {
     left: 33.33%;
+    top: 20px; /*Centered vertically within the space */
 }
 
 .right-column {
     left: 66.66%;
 }
 
+.right-column:nth-child(4) {
+    top: 20px; /* First right testimonial at the top */
+}
+
+.right-column:nth-child(5) {
+    top: 470px; /* Allow dynamic height, positioned below first */
+    /* bottom: 0px; Align bottom to bottom with gap */
+}
+
 .testimonial-review {
-    font-size: 1rem;
+    font-size: 1.2rem; /* Increased text size */
     margin-bottom: 10px;
-    flex-grow: 1; /* Allow review to take available space, varying height */
+    flex-grow: 1; /* Allow height to vary with text */
+    overflow: hidden; /* Prevent text overflow within card */
 }
 
 .testimonial-name {
-    font-size: 1.2rem;
+    font-size: 1.4rem; /* Increased text size */
     color: #ff4d94;
     margin-bottom: 5px;
 }
 
 .testimonial-source {
-    font-size: 0.9rem;
+    font-size: 1.1rem; /* Increased text size */
     color: #888;
 }
 
@@ -425,24 +446,22 @@ body {
     text-align: center;
     box-shadow: 0 4px 8px rgba(255, 77, 148, 0.2);
     transition: transform 0.3s ease;
+    cursor: pointer; /* Indicate clickable */
 }
 
 .contact-card:hover {
     transform: translateY(-5px);
 }
 
-.contact-card h3 {
+.contact-link {
     font-size: 1.2rem;
     color: #ff4d94;
-    margin-bottom: 10px;
-}
-
-.contact-card p a {
-    color: #ff4d94;
+    margin: 0;
+    cursor: pointer;
     text-decoration: none;
 }
 
-.contact-card p a:hover {
+.contact-link:hover {
     text-decoration: underline;
 }
 
