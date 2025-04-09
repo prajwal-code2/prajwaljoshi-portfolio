@@ -1,99 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prajwal Joshi - Portfolio</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prajwal Joshi Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Hero Section -->
-  <section id="hero">
-    <div class="container">
-      <h1>Prajwal Joshi</h1>
-      <div id="typewriter"></div>
+    <!-- Floating Navbar Box -->
+    <div class="navbar-container">
+        <nav class="navbar">
+            <div class="logo">Prajwal Joshi</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#demo">Projects</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
     </div>
-  </section>
 
-  <!-- About Section -->
-  <section id="about">
-    <div class="container">
-      <h2>About Me</h2>
-      <p>
-        I’m Prajwal Joshi, a Computer Vision Expert and Head of Technology at Insight Fusion Analytics. 
-        My expertise lies in transforming visual data into actionable intelligence through advanced object detection, tracking, and automation systems.
-        With certifications in Deep Learning and Advanced Computer Vision, my work spans real-world applications such as real-time parking monitoring systems, high-speed pill-counting automation, and precision-based object tracking solutions.
-      </p>
+    <!-- Hero Section with Canvas and Typewriter -->
+    <section class="hero" id="home">
+        <h2 class="section-heading">Home</h2>
+        <canvas id="gradient-canvas"></canvas>
+        <div class="content">
+            <h1>Prajwal Joshi</h1>
+            <div class="typewriter">
+                <span id="typewriter-text"></span><span id="cursor">|</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section with Skills -->
+    <section class="about-section" id="about">
+        <h2 class="section-heading">About</h2>
+        <div class="about-content">
+            <p>I’m Prajwal Joshi, a passionate Computer Vision Expert and Head of Technology at Insight Fusion Analytics. With a mission to transform raw visual data into powerful, actionable insights, I leverage cutting-edge techniques in object detection, tracking, and automation. Holding a Deep Learning Specialization and an Advanced Computer Vision Certification, I’ve pioneered solutions like real-time parking monitoring systems and high-speed pill-counting automation, driving precision and innovation in every project.</p>
+            <p>Currently serving as Head of Technology at Insight Fusion Analytics since June 2024, I’ve also collaborated on numerous client projects through Upwork [Placeholder for project details].</p>
+            <p><strong>Skills:</strong> Object Detection (YOLO), Object Tracking, Action Recognition, Automation, Python, OpenCV, TensorFlow, Data Analytics, Linux, GitHub, VSCode</p>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="demo-section" id="demo">
+        <h2 class="section-heading">Projects</h2>
+        <div class="demo-container">
+            <div class="demo-card">
+                <img src="assets/object-detection.jpg" class="demo-img" alt="Object Detection">
+                <div class="demo-body">
+                    <h5 class="demo-title">Object Detection System</h5>
+                    <p class="demo-text">Real-time vehicle and object detection using YOLO.</p>
+                    <div class="demo-buttons">
+                        <button class="demo-ribbon" onclick="showDemo('demo1')">Live Demo</button>
+                        <a href="https://github.com/prajwal-code2" class="demo-button" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-card">
+                <img src="assets/parking-automation.jpg" class="demo-img" alt="Parking Automation">
+                <div class="demo-body">
+                    <h5 class="demo-title">Parking Time Monitor</h5>
+                    <p class="demo-text">Automated tracking of parking duration with alerts.</p>
+                    <div class="demo-buttons">
+                        <button class="demo-ribbon" onclick="showDemo('demo2')">Live Demo</button>
+                        <a href="https://github.com/prajwal-code2" class="demo-button" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-card">
+                <img src="assets/pill-counter.jpg" class="demo-img" alt="Pill Counter">
+                <div class="demo-body">
+                    <h5 class="demo-title">Pill Counting Automation</h5>
+                    <p class="demo-text">High-speed pill detection for packaging systems.</p>
+                    <div class="demo-buttons">
+                        <button class="demo-ribbon" onclick="showDemo('demo3')">Live Demo</button>
+                        <a href="https://github.com/prajwal-code2" class="demo-button" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Modal -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <h3 class="modal-title">Live Demo</h3>
+            <div class="modal-body">
+                <iframe id="demoFrame" width="100%" height="400" frameborder="0"></iframe>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- Skills Section -->
-  <section id="skills">
-    <div class="container">
-      <h2>Skills</h2>
-      <ul>
-        <li>Object Detection (YOLO)</li>
-        <li>Object Tracking</li>
-        <li>Action Recognition</li>
-        <li>Automation</li>
-        <li>Python</li>
-        <li>OpenCV</li>
-        <li>TensorFlow</li>
-        <li>Data Analytics</li>
-      </ul>
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+        <h2 class="section-heading">Testimonials</h2>
+        <div class="testimonials-container">
+            <div class="testimonial-card left-column" data-index="0">
+                <p class="testimonial-review">"The freelancer did a great Job in setting up these two Python notebooks and I can recommend to work with him."</p>
+                <p class="testimonial-name">Philipp Wagner</p>
+                <p class="testimonial-source">Upwork</p>
+            </div>
+            <div class="testimonial-card left-column" data-index="1">
+                <p class="testimonial-review">"Prajwal is one of the most sincere, smart, and dedicated freelancers I have ever worked with; he was most resourceful, creative, diligent, alert, polite, and always quick to respond! I will hire him again, for sure! The amazing thing about him was his penchant for prefection."</p>
+                <p class="testimonial-name">Mohamed Talib</p>
+                <p class="testimonial-source">Upwork</p>
+            </div>
+            <div class="testimonial-card middle-column" data-index="2">
+                <p class="testimonial-review">"I had a wonderful experience working with Prajwal. He demonstrated deep expertise in Machine Learning, Convolutional Neural Networks, and Image Processing throughout the project. His commitment to delivering high-quality results and their excellent communication skills made the collaboration highly productive. I would highly recommend Prajwal for any project requiring expertise in these areas."</p>
+                <p class="testimonial-name">Kunal Kumar</p>
+                <p class="testimonial-source">Upwork</p>
+            </div>
+            <div class="testimonial-card right-column" data-index="3">
+                <p class="testimonial-review">"I was afraid to use upwork, but he pleasantly surprised me, the communication was pleasant and even though I set the rules of what I wanted to do at the beginning and changed them several times over time, he always remodeled the project as I wanted. If I need anything again next time, I will definitely come back to this gentleman."</p>
+                <p class="testimonial-name">Petr Zoul</p>
+                <p class="testimonial-source">Upwork</p>
+            </div>
+            <div class="testimonial-card right-column" data-index="4">
+                <p class="testimonial-review">"This was my second time working with the worker and I am again extremely satisfied. If I need advice in the future, I will definitely contact them again"</p>
+                <p class="testimonial-name">Petr Zoul</p>
+                <p class="testimonial-source">Upwork</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <h2 class="section-heading">Contact</h2>
+        <div class="contact-content">
+            <div class="contact-card">
+                <h3>Email</h3>
+                <p><a href="mailto:prajwaljoshi421@gmail.com">prajwaljoshi421@gmail.com</a></p>
+            </div>
+            <div class="contact-card">
+                <h3>Phone</h3>
+                <p><a href="tel:+919811789311">9811789311</a></p>
+            </div>
+            <div class="contact-card">
+                <h3>LinkedIn</h3>
+                <p><a href="https://www.linkedin.com/in/prajwal-joshi-570935165/" target="_blank">linkedin.com/in/prajwal-joshi-570935165</a></p>
+            </div>
+            <div class="contact-card">
+                <h3>GitHub</h3>
+                <p><a href="https://github.com/prajwal-code2" target="_blank">github.com/prajwal-code2</a></p>
+            </div>
+            <div class="contact-card">
+                <h3>Upwork</h3>
+                <p><a href="https://www.upwork.com/freelancers/~0158b40f97683abbe7?mp_source=share" target="_blank">upwork.com/freelancers/~0158b40f97683abbe7</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Copyright Rectangle -->
+    <div class="copyright-rectangle">
+        <p>© 2025 Prajwal Joshi. All rights reserved.</p>
     </div>
-  </section>
 
-  <!-- Projects Section -->
-  <section id="projects">
-    <div class="container">
-      <h2>Projects</h2>
-      <div class="project">
-        <h3>Object Detection/Tracking System</h3>
-        <p>Real-time vehicle and object detection/tracking using YOLO.</p>
-        <button class="demo-btn" onclick="openModal()">View Demo</button>
-      </div>
-      <div class="project">
-        <h3>Parking Time Monitor</h3>
-        <p>Automated tracking of parking duration with alerts.</p>
-        <button class="demo-btn" onclick="openModal()">View Demo</button>
-      </div>
-      <div class="project">
-        <h3>Pill Counting Automation</h3>
-        <p>High-speed pill detection for packaging systems.</p>
-        <button class="demo-btn" onclick="openModal()">View Demo</button>
-      </div>
-    </div>
-  </section>
+    <script src="script.js"></script>
+    <script>
+        // Modal functionality
+        function showDemo(demoId) {
+            const demoFrame = document.getElementById('demoFrame');
+            const demoUrls = {
+                'demo1': 'https://example.com/demo1', // Replace with actual demo URL
+                'demo2': 'https://example.com/demo2', // Replace with actual demo URL
+                'demo3': 'https://example.com/demo3'  // Replace with actual demo URL
+            };
+            demoFrame.src = demoUrls[demoId] || 'https://example.com/default';
+            document.getElementById("demoModal").style.display = "block";
+        }
 
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Project Details</h2>
-      <p>This is a placeholder for project details. Replace this with actual content for each project.</p>
-    </div>
-  </div>
+        function closeModal() {
+            document.getElementById("demoModal").style.display = "none";
+            const demoFrame = document.getElementById('demoFrame');
+            demoFrame.src = ''; // Clear the iframe src when closing
+        }
 
-  <!-- Testimonials Section -->
-  <section id="testimonials">
-    <div class="container">
-      <h2>Testimonials</h2>
-      <div class="floating-testimonials">
-        <p>"Prajwal delivered an exceptional solution for our automation needs. Highly recommend!" — Client Name</p>
-        <p>"His expertise in computer vision is unmatched. Great to work with!" — Client Name</p>
-        <p>"Professional, timely, and innovative. Prajwal exceeded our expectations." — Client Name</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Call-to-Action -->
-  <section id="cta">
-    <div class="container">
-      <a href="#projects" class="cta-btn">View My Work</a>
-    </div>
-  </section>
-
-  <script src="scripts.js"></script>
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById("demoModal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>

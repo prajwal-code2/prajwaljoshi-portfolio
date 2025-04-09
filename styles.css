@@ -1,186 +1,459 @@
-/* General Reset */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Bebas+Neue&display=swap');
+
+/* Reset default styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif; /* Using Inter font, similar to Cursor's font */
-  }
-  
-  body {
-    color: #333;
-    background: #f9f9f9;
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-  
-  /* Hero Section */
-  #hero {
-    background: linear-gradient(135deg, #ff7e5f, #feb47b);
-    color: white;
-    text-align: center;
-    padding: 150px 20px;
-    position: relative;
-  }
-  
-  #hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('path/to/your/background-image.jpg') no-repeat center center;
-    background-size: cover;
-    opacity: 0.3;
-    z-index: -1;
-  }
-  
-  #hero h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-  }
-  
-  #typewriter {
-    font-size: 1.5rem;
-    opacity: 0.9;
-  }
-  
-  /* About Section */
-  #about {
-    padding: 50px 0;
-    text-align: center;
-  }
-  
-  #about p {
-    font-size: 1.2rem;
-    margin-top: 20px;
-    line-height: 1.8;
-  }
-  
-  /* Skills Section */
-  #skills ul {
+}
+
+body {
+    font-family: 'Orbitron', sans-serif; /* Edgy, futuristic font as default */
+    line-height: 1.6;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+    height: 200vh; /* Adjusted for natural scrolling */
+}
+
+/* Navbar Container (Floating Box) */
+.navbar-container {
+    position: fixed;
+    top: 20px; /* Fixed distance from top */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for centering */
+    width: 80%; /* Reduced from 90% to increase side gaps */
+    z-index: 1000;
+    background-color: #000; /* Opaque black background */
+    padding: 3px; /* Reduced padding */
+    box-shadow: 0 4px 15px rgba(255, 77, 148, 0.5); /* Enhanced shadow */
+    border: none; /* Remove outline */
+    border-radius: 10px; /* Keep rounded edges */
+}
+
+/* Navbar Styles */
+.navbar {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 1rem; /* Further reduced padding */
+    height: 60px; /* Increased from 40px to 60px */
+}
+
+.logo {
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; /* Increased from 1.5rem to match larger navbar */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Reduced from 2px */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 1.5rem; /* Reduced from 2rem */
+}
+
+.nav-links a {
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem; /* Increased from 1rem to match larger navbar */
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.8px; /* Reduced from 1px */
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #ff4d94;
+}
+
+/* Hero Section Styles */
+.hero {
+    height: 100vh;
+    display: flex;
     justify-content: center;
-    padding: 50px 0;
-  }
-  
-  #skills li {
-    background: #ff7e5f;
-    color: white;
-    padding: 10px 20px;
+    align-items: flex-start;
+    position: relative;
+    padding-top: 80px; /* Adjusted for smaller navbar height, will be overridden by canvas top */
+}
+
+.hero .section-heading {
+    display: none; /* Hide heading for Home to avoid overlap with main title */
+}
+
+#gradient-canvas {
+    position: absolute;
+    top: 60px; /* Adjusted to start just after navbar (60px height) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%; /* Reduced from 98% to increase gap (~5% on each side) */
+    height: 90vh; /* Increased to 90vh for larger canvas */
     border-radius: 20px;
-    font-size: 1rem;
-  }
-  
-  /* Projects Section */
-  #projects {
-    padding: 50px 0;
+    z-index: -1;
+    border: none; /* Remove outline */
+    image-rendering: pixelated; /* Apply pixelated rendering to the canvas */
+}
+
+.content {
+    position: relative; /* Positioning context for absolute typewriter */
+    text-align: center; /* Center the overall layout */
+    padding-top: 2vh; /* Reduced from 5vh to shift text upward */
+    z-index: 1;
+}
+
+.content h1 {
+    font-family: 'Bebas+Neue', sans-serif;
+    font-size: 10rem; /* Increased from 8rem to make "Prajwal Joshi" bigger */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    display: inline-block; /* Ensure heading behaves as a block for alignment */
+    position: relative; /* Ensure heading stays in flow */
+    /* Pixelated effect with acrylic texture using text-shadow */
+    text-shadow: 
+        2px 0 0 #8A360F,    /* Burnt Sienna */
+        0 2px 0 #8A360F,
+        -2px 2px 0 #1E6091,   /* Deep Teal */
+        -2px 0 0 #1E6091,
+        0 -2px 0 #1E6091,
+        2px -2px 0 #D4A017,   /* Golden Ochre */
+        -2px -2px 0 #5C2E7E;  /* Plum Purple */
+    /* Enhance pixelation with rendering style */
+    image-rendering: pixelated;
+    /* Acrylic texture effect using background gradient */
+    background: linear-gradient(45deg, #8A360F, #1E6091, #D4A017, #5C2E7E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Make text color transparent to show background */
+}
+
+.typewriter {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    min-height: 2rem;
+    position: absolute; /* Position relative to .content */
+    left: 0; /* Align with the left edge of the heading's "P" */
+    top: 8rem; /* Position directly below the 10rem heading */
+    white-space: nowrap; /* Ensure text reveals in one line */
+    color: #fff; /* Keep typewriter text white for contrast */
+}
+
+/* Align first letter of typewriter text below "P" in "Prajwal Joshi" */
+.typewriter span:first-child::first-letter {
+    position: relative;
+    top: 0; /* Reset top for absolute positioning context */
+    display: inline-block;
+    font-size: 2rem; /* Match typewriter font size */
+}
+
+#cursor {
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Section Headings */
+.section-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ff4d94;
     text-align: center;
-  }
-  
-  .project {
-    margin-bottom: 30px;
-  }
-  
-  .project h3 {
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+/* About Section */
+.about-section {
+    position: relative;
+    margin: 20px auto;
+    width: 80%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+.about-content p {
+    margin-bottom: 15px;
+}
+
+.about-content p strong {
+    color: #ff4d94;
+}
+
+/* Demo Section */
+.demo-section {
+    position: relative;
+    margin: 20px auto;
+    width: 80%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+.demo-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.demo-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 32%; /* Approximately equal width for three tiles */
+    box-shadow: 0 4px 8px rgba(255, 77, 148, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.demo-card:hover {
+    transform: translateY(-5px);
+}
+
+.demo-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.demo-body {
+    padding: 15px;
+    text-align: center;
+}
+
+.demo-title {
     font-size: 1.5rem;
     margin-bottom: 10px;
-  }
-  
-  .project p {
+    color: #ff4d94;
+}
+
+.demo-text {
     font-size: 1rem;
     margin-bottom: 15px;
-  }
-  
-  .demo-btn {
-    background: #ff7e5f;
-    color: white;
+}
+
+.demo-buttons {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.demo-ribbon {
+    padding: 8px 30px 8px 15px; /* Increased right padding to accommodate zig-zag */
+    background: linear-gradient(45deg, #ff4d94, #e60073);
+    color: #fff;
     border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
+    border-radius: 5px 0 0 5px;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.3s ease;
-  }
-  
-  .demo-btn:hover {
-    background: #feb47b;
-  }
-  
-  /* Modal Styling */
-  .modal {
+    clip-path: polygon(0 0, 85% 0, 95% 25%, 85% 50%, 95% 75%, 85% 100%, 0 100%);
+    position: relative;
+    z-index: 1;
+    margin-right: -5px; /* Remove gap by pulling ribbon right */
+}
+
+.demo-ribbon:hover {
+    background: linear-gradient(45deg, #e60073, #ff4d94);
+}
+
+.demo-button {
+    padding: 8px 15px;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-left: 0; /* Remove negative margin to eliminate gap */
+    z-index: 0;
+    position: relative;
+    left: -5px; /* Adjust position to align with ribbon edge */
+}
+
+.demo-button:hover {
+    background: #555;
+}
+
+/* Modal Styles */
+.modal {
     display: none;
     position: fixed;
-    z-index: 1;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .modal-content {
-    background: white;
-    margin: 10% auto;
+    z-index: 1001;
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    margin: 15% auto;
     padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    max-width: 800px;
     border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
     text-align: center;
-  }
-  
-  .close {
-    float: right;
-    cursor: pointer;
-    font-size: 1.5rem;
-  }
-  
-  /* Testimonials Section */
-  #testimonials {
-    padding: 50px 0;
-    text-align: center;
-  }
-  
-  .floating-testimonials {
     position: relative;
-    height: 100px;
-    overflow: hidden;
-  }
-  
-  .floating-testimonials p {
-    position: absolute;
-    animation: float 10s linear infinite;
-    font-size: 1.2rem;
-    color: #ff7e5f;
-  }
-  
-  @keyframes float {
-    0% { transform: translateY(100%); }
-    100% { transform: translateY(-100%); }
-  }
-  
-  /* CTA Section */
-  #cta {
-    text-align: center;
-    padding: 50px 0;
-  }
-  
-  .cta-btn {
-    background: #ff7e5f;
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 20px;
-    font-size: 1.2rem;
+}
+
+.close {
+    color: #ff4d94;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .cta-btn:hover {
-    background: #feb47b;
-  }
+}
+
+.close:hover,
+.close:focus {
+    color: #e60073;
+    text-decoration: none;
+}
+
+.modal-title {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    padding: 10px 0;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    position: relative;
+    margin: 20px auto;
+    width: 80%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    overflow: hidden; /* Ensure animation stays within bounds */
+}
+
+.testimonials-container {
+    position: relative;
+    height: 500px; /* Reduced to half of 1000px */
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
+    grid-template-rows: 1fr; /* Single row for stacking */
+    gap: 20px;
+}
+
+.testimonial-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px; /* Increased width */
+    box-shadow: 0 4px 8px rgba(255, 77, 148, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute; /* For scrolling animation */
+    opacity: 1; /* Fully visible */
+    transition: transform 0.1s linear; /* Smooth scrolling */
+}
+
+.left-column {
+    left: 0;
+}
+
+.middle-column {
+    left: 33.33%;
+}
+
+.right-column {
+    left: 66.66%;
+}
+
+.testimonial-review {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    flex-grow: 1; /* Allow review to take available space, varying height */
+}
+
+.testimonial-name {
+    font-size: 1.2rem;
+    color: #ff4d94;
+    margin-bottom: 5px;
+}
+
+.testimonial-source {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Contact Section */
+.contact-section {
+    position: relative;
+    margin: 20px auto;
+    width: 100%; /* Full screen width */
+    padding: 40px 0;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 0;
+}
+
+.contact-content {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.contact-card {
+    background: #1a1a1a;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(255, 77, 148, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+}
+
+.contact-card h3 {
+    font-size: 1.2rem;
+    color: #ff4d94;
+    margin-bottom: 10px;
+}
+
+.contact-card p a {
+    color: #ff4d94;
+    text-decoration: none;
+}
+
+.contact-card p a:hover {
+    text-decoration: underline;
+}
+
+/* Copyright Rectangle */
+.copyright-rectangle {
+    width: 100%;
+    background-color: #1a1a1a;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.8rem;
+    color: #888;
+    position: relative;
+    bottom: 0;
+}

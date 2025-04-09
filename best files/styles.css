@@ -1,0 +1,152 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Bebas+Neue&display=swap');
+
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif; /* Edgy, futuristic font as default */
+    line-height: 1.6;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+    height: 200vh; /* Ensure enough height for scrolling */
+}
+
+/* Navbar Container (Floating Box) */
+.navbar-container {
+    position: fixed;
+    top: 20px; /* Fixed distance from top */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for centering */
+    width: 80%; /* Reduced from 90% to increase side gaps */
+    z-index: 1000;
+    background-color: #000; /* Opaque black background */
+    padding: 3px; /* Reduced padding */
+    box-shadow: 0 4px 15px rgba(255, 77, 148, 0.5); /* Enhanced shadow */
+    border: none; /* Remove outline */
+    border-radius: 10px; /* Keep rounded edges */
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 1rem; /* Further reduced padding */
+    height: 60px; /* Increased from 40px to 60px */
+}
+
+.logo {
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; /* Increased from 1.5rem to match larger navbar */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Reduced from 2px */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 1.5rem; /* Reduced from 2rem */
+}
+
+.nav-links a {
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem; /* Increased from 1rem to match larger navbar */
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.8px; /* Reduced from 1px */
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #ff4d94;
+}
+
+/* Hero Section Styles */
+.hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    padding-top: 80px; /* Adjusted for smaller navbar height, will be overridden by canvas top */
+}
+
+#gradient-canvas {
+    position: absolute;
+    top: 60px; /* Adjusted to start just after navbar (60px height) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%; /* Reduced from 98% to increase gap (~5% on each side) */
+    height: 90vh; /* Increased to 90vh for larger canvas */
+    border-radius: 20px;
+    z-index: -1;
+    border: none; /* Remove outline */
+}
+
+.content {
+    position: relative; /* Positioning context for absolute typewriter */
+    text-align: center; /* Center the overall layout */
+    padding-top: 2vh; /* Reduced from 5vh to shift text upward */
+    z-index: 1;
+}
+
+.content h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10rem; /* Increased from 8rem to make "Prajwal Joshi" bigger */
+    font-weight: 700;
+    text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7); /* Dark shadow for white text visibility */
+    margin-bottom: 0.2rem; /* Reduced from 0.5rem to reduce gap */
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    display: inline-block; /* Ensure heading behaves as a block for alignment */
+    position: relative; /* Ensure heading stays in flow */
+}
+
+.typewriter {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    min-height: 2rem;
+    position: absolute; /* Position relative to .content */
+    left: 0; /* Align with the left edge of the heading's "P" */
+    top: 14rem; /* Position directly below the 10rem heading */
+    white-space: nowrap; /* Ensure text reveals in one line */
+}
+
+/* Align first letter of typewriter text below "P" in "Prajwal Joshi" */
+.typewriter span:first-child::first-letter {
+    position: relative;
+    top: 0; /* Reset top for absolute positioning context */
+    display: inline-block;
+    font-size: 2rem; /* Match typewriter font size */
+}
+
+#cursor {
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Scroll Content */
+.scroll-content {
+    padding: 80px 20px 20px 20px; /* Adjusted for smaller navbar height */
+    z-index: 0;
+}
+
+.scroll-content p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}

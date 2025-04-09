@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Array of seven colors as specified
             const colors = [
-                '#FF0000', // Red
+                '#FF0000', // Red 
                 '#800000', // Maroon
                 '#FFA500', // Orange
                 '#006400', // Dark Green
@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
 
             function resizeCanvas() {
-                canvas.width = window.innerWidth * 0.9;
-                canvas.height = window.innerHeight * 0.9;
+                canvas.width = window.innerWidth * 0.9; // Reduced from 0.98 to increase gap (~5% on each side)
+                canvas.height = window.innerHeight * 0.9; // Increased to 90vh
                 drawGradients();
             }
 
@@ -36,12 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeCanvas();
 
             function drawGradients() {
+                // Create a temporary canvas for pixelated rendering
                 const tempCanvas = document.createElement('canvas');
                 const tempCtx = tempCanvas.getContext('2d');
-                const scale = 4;
+                const scale = 4; // Downscale factor (e.g., 1/4 resolution)
                 tempCanvas.width = canvas.width / scale;
                 tempCanvas.height = canvas.height / scale;
 
+                // Draw gradients on the temporary canvas at lower resolution
                 tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
 
                 const width = tempCanvas.width;
@@ -50,27 +52,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 const centerY = height / 2;
 
                 const gradients = [
-                    { gradient: tempCtx.createLinearGradient(0, 0, width, height), stops: [0, 0.33, 0.66, 1] },
-                    { gradient: tempCtx.createLinearGradient(width, 0, 0, height), stops: [0, 0.33, 0.66, 1] },
-                    { gradient: tempCtx.createLinearGradient(0, height, width, 0), stops: [0, 0.33, 0.66, 1] },
-                    { gradient: tempCtx.createLinearGradient(centerX, centerY, 0, 0), stops: [0, 0.33, 0.66, 1] }
+                    // Gradient 1: Top-left to Bottom-right (Diagonal)
+                    {
+                        gradient: tempCtx.createLinearGradient(0, 0, width, height),
+                        stops: [0, 0.33, 0.66, 1]
+                    },
+                    // Gradient 2: Top-right to Bottom-left (Diagonal)
+                    {
+                        gradient: tempCtx.createLinearGradient(width, 0, 0, height),
+                        stops: [0, 0.33, 0.66, 1]
+                    },
+                    // Gradient 3: Bottom-left to Top-right (Diagonal)
+                    {
+                        gradient: tempCtx.createLinearGradient(0, height, width, 0),
+                        stops: [0, 0.33, 0.66, 1]
+                    },
+                    // Gradient 4: Center to Top-left (Diagonal)
+                    {
+                        gradient: tempCtx.createLinearGradient(centerX, centerY, 0, 0),
+                        stops: [0, 0.33, 0.66, 1]
+                    }
                 ];
 
                 gradients.forEach((gradientObj, index) => {
                     const cycleOffset = index * (1 / gradients.length);
-                    const t = (time + cycleOffset) % 1;
-                    const progress = t * (colors.length - 1);
+                    const t = (time + cycleOffset) % 1; // Continuous cycle from 0 to 1
+                    const progress = t * (colors.length - 1); // Progress through the seven colors (0 to 6)
 
-                    const pos1 = ((progress - 1.5) % colors.length + colors.length) % colors.length;
+                    // Calculate four evenly spaced color positions with smooth linear transition
+                    const pos1 = ((progress - 1.5) % colors.length + colors.length) % colors.length; // Spread across palette
                     const pos2 = ((progress - 0.5) % colors.length + colors.length) % colors.length;
                     const pos3 = ((progress + 0.5) % colors.length + colors.length) % colors.length;
                     const pos4 = ((progress + 1.5) % colors.length + colors.length) % colors.length;
 
-                    const color1 = interpolateColor(colors[Math.floor(pos1)], colors[(Math.floor(pos1) + 1) % colors.length], pos1 % 1);
-                    const color2 = interpolateColor(colors[Math.floor(pos2)], colors[(Math.floor(pos2) + 1) % colors.length], pos2 % 1);
-                    const color3 = interpolateColor(colors[Math.floor(pos3)], colors[(Math.floor(pos3) + 1) % colors.length], pos3 % 1);
-                    const color4 = interpolateColor(colors[Math.floor(pos4)], colors[(Math.floor(pos4) + 1) % colors.length], pos4 % 1);
+                    const color1 = interpolateColor(
+                        colors[Math.floor(pos1)],
+                        colors[(Math.floor(pos1) + 1) % colors.length],
+                        pos1 % 1
+                    );
+                    const color2 = interpolateColor(
+                        colors[Math.floor(pos2)],
+                        colors[(Math.floor(pos2) + 1) % colors.length],
+                        pos2 % 1
+                    );
+                    const color3 = interpolateColor(
+                        colors[Math.floor(pos3)],
+                        colors[(Math.floor(pos3) + 1) % colors.length],
+                        pos3 % 1
+                    );
+                    const color4 = interpolateColor(
+                        colors[Math.floor(pos4)],
+                        colors[(Math.floor(pos4) + 1) % colors.length],
+                        pos4 % 1
+                    );
 
+                    // Assign colors to stops with higher opacity for visibility
                     gradientObj.gradient.addColorStop(gradientObj.stops[0], `rgba(${hexToRgb(color1).r}, ${hexToRgb(color1).g}, ${hexToRgb(color1).b}, 0.8)`);
                     gradientObj.gradient.addColorStop(gradientObj.stops[1], `rgba(${hexToRgb(color2).r}, ${hexToRgb(color2).g}, ${hexToRgb(color2).b}, 0.8)`);
                     gradientObj.gradient.addColorStop(gradientObj.stops[2], `rgba(${hexToRgb(color3).r}, ${hexToRgb(color3).g}, ${hexToRgb(color3).b}, 0.8)`);
@@ -79,7 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     tempCtx.fillRect(0, 0, width, height);
                 });
 
-                const radialGradient = tempCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.min(width, height) * 0.2);
+                // Subtle Radial Overlay on temporary canvas
+                const radialGradient = tempCtx.createRadialGradient(
+                    centerX, centerY, 0,
+                    centerX, centerY, Math.min(width, height) * 0.2
+                );
                 const t3 = (Math.sin(time * 0.6) + 1) / 2;
                 const rColor1 = interpolateColor(colors[3], colors[0], t3); // Dark Green to Red
                 const rColor2 = interpolateColor(colors[6], colors[4], t3); // Purple to Dark Blue
@@ -89,19 +129,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.fillStyle = radialGradient;
                 tempCtx.fillRect(0, 0, width, height);
 
+                // Draw the pixelated result on the main canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.imageSmoothingEnabled = false;
+                ctx.imageSmoothingEnabled = false; // Disable smoothing for pixelation
                 ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
 
-                time += 0.000125;
+                time += 0.0000325; // Slow increment for smooth transitions (~480-second cycle)
                 requestAnimationFrame(drawGradients);
                 console.log("Gradients drawn");
             }
 
+            // Helper function to interpolate between two colors
             function interpolateColor(color1, color2, factor) {
                 if (!color1 || !color2) {
                     console.error("Invalid color input", { color1, color2 });
-                    return '#000000';
+                    return '#000000'; // Fallback to black if invalid
                 }
                 const r1 = parseInt(color1.substr(1, 2), 16);
                 const g1 = parseInt(color1.substr(3, 2), 16);
@@ -115,13 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
             }
 
+            // Helper function to convert hex to RGB
             function hexToRgb(hex) {
                 const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
                 return result ? {
                     r: parseInt(result[1], 16),
                     g: parseInt(result[2], 16),
                     b: parseInt(result[3], 16)
-                } : { r: 0, g: 0, b: 0 };
+                } : { r: 0, g: 0, b: 0 }; // Fallback to black if parsing fails
             }
 
             requestAnimationFrame(drawGradients);
@@ -183,69 +226,4 @@ document.addEventListener('DOMContentLoaded', () => {
         ], 2500);
         console.log("Typewriter initialized");
     }
-
-    // Testimonial Animation with Continuous Sections
-    const testimonialCards = document.querySelectorAll('.testimonial-card');
-    const container = document.querySelector('.testimonials-container');
-    const totalCards = testimonialCards.length;
-    const animationDuration = 20; // Seconds for one full cycle
-    const containerHeight = 500; // Reduced height
-
-    function snakeAnimation() {
-        let time = 0;
-
-        // Group cards by column and calculate initial positions
-        const columns = {
-            'left-column': [testimonialCards[0], testimonialCards[1]], // 0, 1
-            'middle-column': [testimonialCards[2]], // 2
-            'right-column': [testimonialCards[3], testimonialCards[4]] // 3, 4
-        };
-
-        // Set initial positions with no gap
-        columns['left-column'].forEach((card, index) => {
-            const height = card.getBoundingClientRect().height;
-            card.style.top = `${index * height}px`;
-        });
-        columns['middle-column'].forEach((card, index) => {
-            card.style.top = '0px';
-        });
-        columns['right-column'].forEach((card, index) => {
-            const height = card.getBoundingClientRect().height;
-            card.style.top = `${index * height}px`;
-        });
-
-        function updateAnimation(currentTime) {
-            time += 0.016; // Approximately 60 FPS
-            if (time > animationDuration) time = 0; // Reset for endless loop
-
-            // Animate each column
-            for (const [columnClass, cards] of Object.entries(columns)) {
-                const totalHeight = cards.reduce((sum, card) => sum + card.getBoundingClientRect().height, 0);
-                const speed = totalHeight / animationDuration;
-
-                cards.forEach((card, index) => {
-                    const height = card.getBoundingClientRect().height;
-                    let translateY;
-
-                    if (columnClass === 'middle-column') {
-                        // Single card, scroll down
-                        translateY = (time * speed) % totalHeight;
-                        if (translateY > 0) translateY -= totalHeight; // Loop
-                    } else {
-                        // Left and right columns, scroll up as a pair
-                        translateY = -((time * speed) % totalHeight);
-                        if (translateY < -totalHeight) translateY += totalHeight; // Loop
-                    }
-                    card.style.transform = `translateY(${translateY}px)`;
-                });
-            }
-
-            requestAnimationFrame(updateAnimation);
-        }
-
-        // Start animation after a delay to ensure heights are calculated
-        setTimeout(() => requestAnimationFrame(updateAnimation), 1000);
-    }
-
-    snakeAnimation();
 });
