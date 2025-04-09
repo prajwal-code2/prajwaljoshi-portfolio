@@ -2,7 +2,7 @@
 console.log("Script loaded");
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded");
-    const canvas = document.getElementById('gradient-canvas');
+    const canvas = document.getElementById('gradient-canvas'); // Fixed typo: getElementById
     if (!canvas) {
         console.error("Canvas element not found");
     } else {
@@ -128,8 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const typewriterText = document.querySelector('#typewriter-text');
-    const cursor = document.querySelector('#cursor');
+    const typewriterText = document.getElementById('typewriter-text');
+    const cursor = document.getElementById('cursor');
     if (!typewriterText || !cursor) {
         console.error("Typewriter elements not found", { typewriterText, cursor });
     } else {
@@ -217,4 +217,224 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Smooth scroll with offset for navbar links and logo
+    document.querySelectorAll('.nav-links a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default anchor behavior
+            const href = this.getAttribute('href');
+            const target = document.querySelector(href);
+            if (target) {
+                const offsetTop = target.getBoundingClientRect().top + window.scrollY;
+                const navbarOffset = 100; // Adjust this value (navbar height + padding + buffer, e.g., 60px + 20px + 20px)
+                window.scrollTo({
+                    top: offsetTop - navbarOffset,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Add click event to logo for scrolling to Home
+    document.querySelector('.logo').addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent any default behavior (if any)
+        const target = document.querySelector('#home');
+        if (target) {
+            const offsetTop = target.getBoundingClientRect().top + window.scrollY;
+            const navbarOffset = 100; // Same offset as navbar links
+            window.scrollTo({
+                top: offsetTop - navbarOffset,
+                behavior: 'smooth'
+            });
+        }
+    });
+
+    // Testimonial Animation
+    const testimonialsContainer = document.querySelector('.testimonials-container');
+    const leftColumn = document.querySelector('.left-column');
+    const middleColumn = document.querySelector('.middle-column');
+    const rightColumn = document.querySelector('.right-column');
+
+    // Hardcoded testimonial data (based on original HTML)
+    const testimonials = [
+        {
+            id: 0,
+            review: '"The freelancer did a great Job in setting up these two Python notebooks and I can recommend to work with him."',
+            name: 'Philipp Wagner',
+            source: 'Upwork'
+        },
+        {
+            id: 1,
+            review: '"Prajwal is one of the most sincere, smart, and dedicated freelancers I have ever worked with; he was most resourceful, creative, diligent, alert, polite, and always quick to respond! I will hire him again, for sure! The amazing thing about him was his penchant for prefection."',
+            name: 'Mohamed Talib',
+            source: 'Upwork'
+        },
+        {
+            id: 2,
+            review: '"I had a wonderful experience working with Prajwal. He demonstrated deep expertise in Machine Learning, Convolutional Neural Networks, and Image Processing throughout the project. His commitment to delivering high-quality results and their excellent communication skills made the collaboration highly productive. I would highly recommend Prajwal for any project requiring expertise in these areas."',
+            name: 'Kunal Kumar',
+            source: 'Upwork'
+        },
+        {
+            id: 3,
+            review: '"I was afraid to use upwork, but he pleasantly surprised me, the communication was pleasant and even though I set the rules of what I wanted to do at the beginning and changed them several times over time, he always remodeled the project as I wanted. If I need anything again next time, I will definitely come back to this gentleman."',
+            name: 'Petr Zoul',
+            source: 'Upwork'
+        },
+        {
+            id: 4,
+            review: '"This was my second time working with the worker and I am again extremely satisfied. If I need advice in the future, I will definitely contact them again"',
+            name: 'Petr Zoul',
+            source: 'Upwork'
+        }
+    ];
+
+    // Initial setup
+    let currentTestimonials = [0, 1, 2]; // Start with testimonials 0, 1, 2
+    let availableTestimonials = [3, 4]; // Remaining testimonials
+
+    function createTestimonialCard(id, review, name, source) {
+        const card = document.createElement('div');
+        card.classList.add('testimonial-card');
+        card.innerHTML = `
+            <div class="text-container">
+                <p class="testimonial-review">${review}</p>
+                <p class="testimonial-name">${name}</p>
+                <p class="testimonial-source">${source}</p>
+            </div>
+        `;
+        card.dataset.id = id;
+        return card;
+    }
+
+    function updateTestimonials() {
+        leftColumn.innerHTML = '';
+        middleColumn.innerHTML = '';
+        rightColumn.innerHTML = '';
+
+        const leftCard = createTestimonialCard(
+            currentTestimonials[0],
+            testimonials[currentTestimonials[0]].review,
+            testimonials[currentTestimonials[0]].name,
+            testimonials[currentTestimonials[0]].source
+        );
+        const middleCard = createTestimonialCard(
+            currentTestimonials[1],
+            testimonials[currentTestimonials[1]].review,
+            testimonials[currentTestimonials[1]].name,
+            testimonials[currentTestimonials[1]].source
+        );
+        const rightCard = createTestimonialCard(
+            currentTestimonials[2],
+            testimonials[currentTestimonials[2]].review,
+            testimonials[currentTestimonials[2]].name,
+            testimonials[currentTestimonials[2]].source
+        );
+
+        leftColumn.appendChild(leftCard);
+        middleColumn.appendChild(middleCard);
+        rightColumn.appendChild(rightCard);
+    }
+
+    function updateSpecificTestimonial(column, id, review, name, source) {
+        // Preserve existing card if it exists, update only the content
+        let card = column.querySelector('.testimonial-card');
+        if (card) {
+            card.innerHTML = `
+                <div class="text-container">
+                    <p class="testimonial-review">${review}</p>
+                    <p class="testimonial-name">${name}</p>
+                    <p class="testimonial-source">${source}</p>
+                </div>
+            `;
+            card.dataset.id = id;
+        } else {
+            column.innerHTML = ''; // Clear only if no card exists
+            card = createTestimonialCard(id, review, name, source);
+            column.appendChild(card);
+        }
+        // Ensure the new content is rendered without animation interference
+        const textContainer = card.querySelector('.text-container');
+        if (textContainer) {
+            textContainer.style.opacity = ''; // Reset to default (should be 1 from CSS)
+            textContainer.style.transform = ''; // Reset to default
+            textContainer.classList.remove('disappear-text', 'appear-text'); // Clear animation classes
+        }
+    }
+
+    function disappearAndReplace() {
+        console.log('Starting disappearAndReplace at:', new Date().toISOString());
+        // Randomly select a column to replace (0: left, 1: middle, 2: right)
+        let columnToReplace = Math.floor(Math.random() * 3);
+        while (availableTestimonials.length === 0) {
+            availableTestimonials = currentTestimonials.slice(); // Reset available when exhausted
+            currentTestimonials = []; // Clear current to refill
+        }
+
+        // Ensure different testimonials
+        let newId;
+        do {
+            newId = availableTestimonials[Math.floor(Math.random() * availableTestimonials.length)];
+        } while (currentTestimonials.includes(newId));
+
+        // Store the old ID and prepare new ID
+        const oldId = currentTestimonials[columnToReplace];
+        const columns = [leftColumn, middleColumn, rightColumn];
+        const targetColumn = columns[columnToReplace];
+        const oldCard = targetColumn.querySelector(`.testimonial-card[data-id="${oldId}"] .text-container`);
+
+        if (oldCard) {
+            console.log('Starting disappear animation for ID:', oldId);
+            // Start disappear animation
+            oldCard.style.transition = 'transform 2s ease-out, opacity 2s ease-out';
+            oldCard.classList.add('disappear-text');
+
+            // Wait for disappear animation to complete before updating
+            setTimeout(() => {
+                console.log('Disappear complete for ID:', oldId);
+                // Remove disappear class and update content
+                oldCard.classList.remove('disappear-text');
+                oldCard.style.opacity = '0'; // Ensure hidden
+                oldCard.style.transform = 'translateY(-100%)'; // End position
+
+                // Update the testimonial array
+                currentTestimonials[columnToReplace] = newId;
+                availableTestimonials = availableTestimonials.filter(id => id !== newId);
+                if (!availableTestimonials.includes(oldId)) availableTestimonials.push(oldId);
+
+                // Update only the targeted column with new content
+                const newTestimonial = testimonials[newId];
+                updateSpecificTestimonial(targetColumn, newId, newTestimonial.review, newTestimonial.name, newTestimonial.source);
+                console.log('Updated to new ID:', newId);
+
+                // Get the new card's text container and start appear animation
+                const newCard = targetColumn.querySelector(`.testimonial-card[data-id="${newId}"] .text-container`);
+                if (newCard) {
+                    console.log('Starting appear animation for ID:', newId);
+                    newCard.classList.add('appear-text'); // Rely on CSS animation
+
+                    // Wait for appear animation to complete, then ensure visibility
+                    setTimeout(() => {
+                        console.log('Appear complete for ID:', newId);
+                        newCard.classList.remove('appear-text');
+                        // Ensure content is visible after animation
+                        newCard.style.opacity = '1';
+                        newCard.style.transform = 'translateY(0)';
+
+                        // Schedule next change after 5 seconds of visibility
+                        setTimeout(() => {
+                            console.log('Scheduling next change at:', new Date().toISOString());
+                            disappearAndReplace();
+                        }, 5000); // 5 seconds visibility
+                    }, 2000); // Match appear duration
+                }
+            }, 2000); // Wait for 2-second disappear animation
+        }
+    }
+
+    // Initial display
+    console.log('Initializing testimonials');
+    updateTestimonials(); // Initial full setup
+    console.log('Initial setup complete');
+    setTimeout(disappearAndReplace, 5000); // Start the cycle after 5 seconds
 });

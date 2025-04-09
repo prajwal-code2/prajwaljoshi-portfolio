@@ -341,70 +341,59 @@ body {
     margin: 20px auto;
     width: 80%;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
 }
 
 .testimonials-container {
     position: relative;
-    height: 500px; /* Dedicated section length */
+    height: 500px; /* Increased to 500px for larger constant length */
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
-    grid-template-rows: 1fr; /* Single row for stacking */
-    gap: 20px; /* Constant horizontal gap */
-    overflow: hidden; /* Cut off excess height */
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start; /* Align items at the top */
+    overflow: hidden; /* Prevent overflow of fixed height */
 }
 
 .testimonial-card {
     background: #1a1a1a;
     border-radius: 10px;
     padding: 20px;
-    width: 470px; /* Uniform width for all cards */
+    width: 470px;
     box-shadow: 0 4px 8px rgba(255, 77, 148, 0.2);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    opacity: 1; /* Fully visible */
-    position: absolute; /* For precise positioning */
+    justify-content: flex-start; /* Allow content to grow from top */
+    min-height: 0; /* Allow dynamic height based on content */
+    max-height: 500px; /* Cap at container height */
+    overflow: hidden; /* Hide overflow if content exceeds max-height */
 }
 
-.left-column {
-    left: 0;
+.text-container {
+    flex-grow: 1;
+    position: relative;
+    will-change: transform, opacity; /* Optimize animation performance */
+    opacity: 1; /* Ensure default visibility */
+    transform: translateY(0); /* Ensure default position */
+    background-color: #1a1a1a; /* Match card background to prevent transparency issues */
+    transition: transform 2s ease-in, opacity 2s ease-in; /* Smooth transitions */
 }
 
-.left-column:nth-child(1) {
-    top: 20px; /* First left testimonial at the top */
-}
-
-.left-column:nth-child(2) {
-    top: 260px; /* Allow dynamic height, positioned below first */
-    /* bottom: 0px; Align bottom to bottom with gap */
-}
-
-.middle-column {
-    left: 33.33%;
-    top: 20px; /*Centered vertically within the space */
-}
-
-.right-column {
-    left: 66.66%;
-}
-
-.right-column:nth-child(4) {
-    top: 20px; /* First right testimonial at the top */
-}
-
-.right-column:nth-child(5) {
-    top: 470px; /* Allow dynamic height, positioned below first */
-    /* bottom: 0px; Align bottom to bottom with gap */
+.left-column, .middle-column, .right-column {
+    position: relative;
+    width: 470px;
+    height: auto; /* Allow dynamic height per column */
+    max-height: 500px; /* Cap at container height */
 }
 
 .testimonial-review {
     font-size: 1.2rem; /* Increased text size */
     margin-bottom: 10px;
-    flex-grow: 1; /* Allow height to vary with text */
-    overflow: hidden; /* Prevent text overflow within card */
+    overflow-wrap: break-word; /* Ensure long text wraps */
+    text-overflow: ellipsis; /* Add ellipsis if text overflows */
+    display: -webkit-box;
+    -webkit-line-clamp: 12; /* Adjusted to ~12 lines to fit within 500px */
+    -webkit-box-orient: vertical;
 }
 
 .testimonial-name {
@@ -416,6 +405,45 @@ body {
 .testimonial-source {
     font-size: 1.1rem; /* Increased text size */
     color: #888;
+}
+
+/* Disappear and Appear Animations */
+.disappear-text {
+    animation: textDisappear 2s ease-out forwards; /* Smooth 2-second disappear animation */
+}
+
+.appear-text {
+    animation: textAppear 2s ease-in forwards; /* Smooth 2-second appear animation */
+}
+
+@keyframes textDisappear {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50%);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes textAppear {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(50%);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Contact Section */
